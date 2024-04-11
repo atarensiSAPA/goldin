@@ -28,4 +28,41 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+//Google OAUTH
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
+//driver de Socialite
+Route::get('/login-google', function () {
+    return Socialite::driver('google')->redirect();
+});
+
+//callback de Google
+Route::get('/google-callback', function () {
+    //Obtenemos el usuario
+    $user = Socialite::driver('google')->user();
+ 
+    //Comprobamos si el usuario ya existe
+    $userExists = User::where('external_id', $user->id)->first();
+
+    //Si existe, lo logueamos
+    if($userExists){
+        Auth::login($userExists);
+    }else{
+        //Si no existe, lo creamos y logueamos
+        $newUser = User::create([
+            'name' => $user->name,
+            'email' => $user->email,
+            'avatar' => $user->avatar,
+            'external_id' => $user->id,
+            'external_auth' => 'google',
+        ]);
+        Auth::login($newUser);
+    }
+
+    //Redirigimos a la home
+    return redirect('/dashboard');
+});
+
 require __DIR__.'/auth.php';
