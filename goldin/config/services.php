@@ -37,4 +37,11 @@ return [
         'client_secret' => env('GOOGLE_OAUTH_KEY'),
         'redirect' => '/google-callback',
     ],
+
+    // Configuración de la API de Twitter
+    'twitter' => [
+        'client_id' => env('TWITTER_OAUTH_ID'),
+        'client_secret' => env('TWITTER_OAUTH_KEY'),
+        'redirect' => '/twitter-callback',
+    ],
 ];

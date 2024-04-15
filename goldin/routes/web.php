@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\oauthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,41 +29,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-//Google OAUTH
-use Laravel\Socialite\Facades\Socialite;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
-//driver de Socialite
-Route::get('/login-google', function () {
-    return Socialite::driver('google')->redirect();
-});
-
+//Oauth Google
+Route::get('/login-google', [oauthController::class, 'loginWithGoogle']);
 //callback de Google
-Route::get('/google-callback', function () {
-    //Obtenemos el usuario
-    $user = Socialite::driver('google')->user();
- 
-    //Comprobamos si el usuario ya existe
-    $userExists = User::where('external_id', $user->id)->first();
+Route::get('/google-callback', [oauthController::class, 'cbGoogle']);
 
-    //Si existe, lo logueamos
-    if($userExists){
-        Auth::login($userExists);
-    }else{
-        //Si no existe, lo creamos y logueamos
-        $newUser = User::create([
-            'name' => $user->name,
-            'email' => $user->email,
-            'avatar' => $user->avatar,
-            'external_id' => $user->id,
-            'external_auth' => 'google',
-        ]);
-        Auth::login($newUser);
-    }
-
-    //Redirigimos a la home
-    return redirect('/dashboard');
-});
+//Oauth Twitter
+Route::get('/login-twitter', [oauthController::class, 'loginWithTwitter']);
+//callback de Twitter
+Route::get('/twitter-callback', [oauthController::class, 'cbTwitter']);
 
 require __DIR__.'/auth.php';
