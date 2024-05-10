@@ -57,20 +57,25 @@
         </div>
     </div> --}}
 
-    @forelse ($creates as $create)
-        <!-- I want you list all the fields of creats -->
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>{{ $create->title }}</h4>
+    <div class="container">
+        <div class="row">
+            @forelse ($creates as $create)
+                <div class="col-md-3 mt-4">
+                    <a href="{{ route('creates.show', $create->box_name) }}" class="text-decoration-none text-dark">
+                        <div class="card bg-transparent text-white border-0" id="card-{{ $create->box_name }}">
+                            <div class="card-body position-relative">
+                                <img src="{{ asset('images/' . $create->box_img) }}" alt="" class="img-fluid radius-0">
+                                <div class="overlay position-absolute top-0 start-0 pt-2 pl-2 radius-0 h-auto">
+                                    <b class="coinText">{{ $create->cost }} 💸</b>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <p>{{ $create->description }}</p>
-                        </div>
-                    </div>
+                    </a>
                 </div>
-            </div>
-    @endforelse
+            @empty
+                <p>No creates found.</p>
+            @endforelse
+        </div>
+    </div>
+
 </x-app-layout>

@@ -23,12 +23,13 @@ return new class extends Migration
         });
         Schema::create('creates', function (Blueprint $table) {
             $table->id();
-            $table->decimal('cost', 8, 2);
+            $table->string('box_name');
+            $table->integer('cost');
             $table->unsignedBigInteger('weapon_id');
             $table->string("box_img");
             $table->timestamps();
         
-            $table->foreign('weapon_id')->references('id')->on('weapons'); // and this line
+            $table->foreign('weapon_id')->references('id')->on('weapons');
         });
     }
 
@@ -37,6 +38,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('weapons');
         Schema::dropIfExists('creates');
     }
 };

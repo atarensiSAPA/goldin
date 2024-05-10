@@ -25,6 +25,11 @@ Route::get('/dashboard', [createsController::class, 'index'], function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+//Agafa el id de la ruta i el passa al controlador per saber quin caixa ha de mostrar
+Route::get('/creates/{box_name}', [createsController::class, 'openCreate'], function () {
+    return view('creates.openCreate');
+})->middleware(['auth', 'verified'])->name('creates.show');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -12,4 +12,8 @@ class creates extends Model
     public static function createsDB(){
         return creates::all();
     }
+    public function weapon()
+    {
+        return $this->belongsTo('App\Models\weapons', 'weapon_id');
+    }
 }
