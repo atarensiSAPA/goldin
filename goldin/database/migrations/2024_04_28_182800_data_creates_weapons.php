@@ -12,13 +12,26 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //weapons
         DB::table('weapons')->insert([
             'weapon_name' => 'AK-47',
             'weapon_skin' => 'Redline',
             'description' => 'The AK-47 is a powerful option that is favored by many players. It is a high-impact rifle that is capable of taking down enemies with a single shot to the head. The Redline skin is a popular choice for many players, as it features a sleek red and black design that is both stylish and intimidating.',
-            'cost' => 2700.00,
+            'price' => 2700.00,
             'units' => 100,
             'weapon_img' => 'ak47_redline.png',
+            'rarity' => 'epic',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('weapons')->insert([
+            'weapon_name' => 'AWP',
+            'weapon_skin' => 'Dragon-lore',
+            'description' => 'The AWP is a powerful sniper rifle that is capable of taking down enemies with a single shot to the chest or head. The Dragon Lore skin is a rare and valuable option that is highly sought after by many players. It features a detailed dragon design that is both intricate and intimidating.',
+            'price' => 4750.00,
+            'units' => 25,
+            'weapon_img' => 'awp-dragonlore.png',
+            'rarity' => 'mitic',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -26,26 +39,68 @@ return new class extends Migration
             'weapon_name' => 'AK-47 2',
             'weapon_skin' => 'Redline 2',
             'description' => 'The AK-47 is a powerful option that is favored by many players. It is a high-impact rifle that is capable of taking down enemies with a single shot to the head. The Redline skin is a popular choice for many players, as it features a sleek red and black design that is both stylish and intimidating.',
-            'cost' => 2900.00,
+            'price' => 2900.00,
             'units' => 50,
             'weapon_img' => 'ak47_redline.png',
+            'rarity' => 'epic',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
+        //creates
 
+        DB::table('creates')->insert([
+            'box_name' => 'AK-47-Redline-Box-1',
+            'cost' => NULL,
+            'weapon_id' => 2,
+            'box_img' => NULL,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('creates')->insert([
+            'box_name' => 'AK-47-Redline-Box-1',
+            'cost' => NULL,
+            'weapon_id' => 2,
+            'box_img' => NULL,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('creates')->insert([
+            'box_name' => 'AK-47-Redline-Box-1',
+            'cost' => NULL,
+            'weapon_id' => 2,
+            'box_img' => NULL,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('creates')->insert([
+            'box_name' => 'AK-47-Redline-Box-1',
+            'cost' => NULL,
+            'weapon_id' => 3,
+            'box_img' => NULL,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('creates')->insert([
+            'box_name' => 'AK-47-Redline-Box-1',
+            'cost' => NULL,
+            'weapon_id' => 3,
+            'box_img' => NULL,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('creates')->insert([
+            'box_name' => 'AK-47-Redline-Box-1',
+            'cost' => NULL,
+            'weapon_id' => 3,
+            'box_img' => NULL,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
         DB::table('creates')->insert([
             'box_name' => 'AK-47-Redline-Box-1',
             'cost' => 200,
             'weapon_id' => 1,
-            'box_img' => 'ak47_redline_box.png',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-        DB::table('creates')->insert([
-            'box_name' => 'AK-47-Redline-Box-1',
-            'cost' => 200,
-            'weapon_id' => 2,
             'box_img' => 'ak47_redline_box.png',
             'created_at' => now(),
             'updated_at' => now(),

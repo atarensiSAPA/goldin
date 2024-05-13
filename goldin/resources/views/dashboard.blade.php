@@ -68,6 +68,9 @@
                                 <div class="overlay position-absolute top-0 start-0 pt-2 pl-2 radius-0 h-auto">
                                     <b class="coinText">{{ $create->cost }} 💸</b>
                                 </div>
+                                <div style="color: white; text-align: center;">
+                                    <b>{{ $create->box_name }}</b>
+                                </div>
                             </div>
                         </div>
                     </a>

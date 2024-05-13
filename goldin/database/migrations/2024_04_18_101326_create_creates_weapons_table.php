@@ -16,17 +16,18 @@ return new class extends Migration
             $table->string('weapon_name');
             $table->string('weapon_skin');
             $table->text('description');
-            $table->decimal('cost', 8, 2);
+            $table->decimal('price', 8, 2);
             $table->integer('units');
             $table->string('weapon_img');
+            $table->string('rarity');
             $table->timestamps();
         });
         Schema::create('creates', function (Blueprint $table) {
             $table->id();
             $table->string('box_name');
-            $table->integer('cost');
+            $table->integer('cost')->nullable();
             $table->unsignedBigInteger('weapon_id');
-            $table->string("box_img");
+            $table->string("box_img")->nullable();
             $table->timestamps();
         
             $table->foreign('weapon_id')->references('id')->on('weapons');

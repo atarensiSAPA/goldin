@@ -13,13 +13,26 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Menu') }}
+                        {{ __('Cases') }}
                     </x-nav-link>
                 </div>
             </div>
 
+
+
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden sm:flex sm:items-center sm:ml-6">
+                
+                <!-- Show the coins from the user -->
+                <div class="hidden sm:flex sm:items-center sm:ml-6 sm:mr-4">
+                    <div class="text-light text-lg font-medium">
+                        {{ Auth::user()->coins }}
+                    </div>
+                    <div class="text-light text-lg font-medium ml-2">
+                        <img src="{{ asset('images/user-coin.png') }}" alt="coin" width="30" height="30">
+                    </div>
+                </div>
+
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-light hover:text-gray-300 focus:outline-none transition ease-in-out duration-150 bg-dark">
