@@ -25,6 +25,14 @@ Route::get('/dashboard', [createsController::class, 'index'], function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/shop', function () {
+    return view('shop.show-shop');
+})->name('shop');
+
+Route::get('/minigames', function () {
+    return view('minigames.minigames-selector');
+})->name('minigames-selector');
+
 //Agafa el id de la ruta i el passa al controlador per saber quin caixa ha de mostrar
 Route::get('/creates/{box_name}', [createsController::class, 'openCreate'], function () {
     return view('creates.openCreate');
