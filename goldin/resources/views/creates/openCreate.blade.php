@@ -16,7 +16,7 @@
                 </div>
                 <div class="d-flex justify-content-center mt-3 flex-wrap">
                     @foreach ($creates as $create)
-                        @if ($create->weapon)
+                        @if ($create->weapon->units > 0)
                             <div class="mx-2 mb-3 dark:bg-gray-800" style="border: 3px solid {{ $create->color }}; border-radius: 15px; padding: 10px 10px 5px 10px; color:white;">
                                 <img src="{{ asset('images/' . $create->weapon->weapon_img) }}" alt="{{ $create->weapon->name }}" width="235" height="235">
                                 <p>€{{ $create->weapon->price }}</p>

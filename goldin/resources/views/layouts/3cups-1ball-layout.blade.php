@@ -6,7 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <!--Show the title of the create-->
-        <title>Shop</title>
+        <title>3 cups 1 ball</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -28,7 +28,7 @@
             <!-- Page Heading -->
             <header class="dark:bg-gray-800 text-light shadow-sm">
                 <div class="container py-3 px-3">
-                    <h2 class="font-weight-bold h4">Shop</h2>
+                    <h2 class="font-weight-bold h4">3 cups 1 ball</h2>
                 </div>
             </header>
 

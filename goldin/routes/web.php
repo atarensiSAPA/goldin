@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\oauthController;
 use App\Http\Controllers\createsController;
+use App\Http\Controllers\shopController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,13 +26,22 @@ Route::get('/dashboard', [createsController::class, 'index'], function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/shop', function () {
-    return view('shop.show-shop');
-})->name('shop');
-
+//Rutas de minigames
 Route::get('/minigames', function () {
     return view('minigames.minigames-selector');
 })->name('minigames-selector');
+
+Route::get('/minigames/black-jack', function () {
+    return view('minigames.black-jack');
+})->name('black-jack');
+
+Route::get('/minigames/3cups-1ball', function () {
+    return view('minigames.3cups-1ball');
+})->name('3cups-1ball');
+
+Route::get('/minigames/plinko', function () {
+    return view('minigames.plinko');
+})->name('plinko');
 
 //Agafa el id de la ruta i el passa al controlador per saber quin caixa ha de mostrar
 Route::get('/creates/{box_name}', [createsController::class, 'openCreate'], function () {
@@ -43,7 +53,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
 
 //Oauth Google
 Route::get('/login-google', [oauthController::class, 'loginWithGoogle']);

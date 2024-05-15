@@ -12,6 +12,11 @@ class createsController extends Controller
         //mostrar totes les caixes agrupades per nom de caixa i agafar la primera que tenga precio
         $creates = creates::whereNotNull('cost')->get()->groupBy('box_name')->map->first();
 
+        // Replace hyphens with spaces in create names
+        foreach ($creates as $create) {
+            $create->box_name = str_replace('-', ' ', $create->box_name);
+        }
+
         return view('dashboard', ['creates' => $creates]);
     }
 
@@ -24,7 +29,7 @@ class createsController extends Controller
         $creates = creates::where('box_name', $box_name)->with('weapon')->get();
     
         // Define the order of rarities
-        $rarityOrder = ['mitico', 'legendario', 'epico', 'raro', 'comun'];
+        $rarityOrder = ['mitic', 'legendary', 'epic', 'raree', 'commun'];
     
         // Sort the creates by the rarity order
         $creates = $creates->sortBy(function ($create) use ($rarityOrder) {

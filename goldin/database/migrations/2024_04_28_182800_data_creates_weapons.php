@@ -46,6 +46,17 @@ return new class extends Migration
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+        DB::table('weapons')->insert([
+            'weapon_name' => 'AK-47 3',
+            'weapon_skin' => 'Redline 3',
+            'description' => 'The AK-47 is a powerful option that is favored by many players. It is a high-impact rifle that is capable of taking down enemies with a single shot to the head. The Redline skin is a popular choice for many players, as it features a sleek red and black design that is both stylish and intimidating.',
+            'price' => 2900.00,
+            'units' => 0,
+            'weapon_img' => 'ak47_redline.png',
+            'rarity' => 'legendary',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         //creates
 
@@ -68,7 +79,7 @@ return new class extends Migration
         DB::table('creates')->insert([
             'box_name' => 'AK-47-Redline-Box-1',
             'cost' => NULL,
-            'weapon_id' => 2,
+            'weapon_id' => 4,
             'box_img' => NULL,
             'created_at' => now(),
             'updated_at' => now(),
