@@ -14,12 +14,19 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <script src="{{ asset('js/plinkoJs.js') }}" defer></script>
 
         <!-- Bootstrap -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Styles -->
         <link href="{{ asset('css/dashboardCss.css') }}" rel="stylesheet">
+
+        <style>
+            #plinkoCanvas {
+                border: 1px solid black;
+            }
+        </style>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
