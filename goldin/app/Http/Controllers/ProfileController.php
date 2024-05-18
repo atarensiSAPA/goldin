@@ -11,12 +11,31 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+
+    public function editProfile()
+    {
+        $user = Auth::user();
+        return view('profile.partials.edit-profile-form', ['user' => $user]);
+    }
+
+    public function show()
+    {
+        $user = Auth::user();
+    
+        // Calculate the user's level and experience
+        $user->addExperience(0);
+    
+        $maxExperience = $user->max_experience; // Use the accessor to get the max_experience
+    
+        return view('profile.user-information', ['user' => $user, 'maxExperience' => $maxExperience]);
+    }
+
     /**
      * Display the user's profile form.
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
+        return view('profile.user-information', [
             'user' => $request->user(),
         ]);
     }
@@ -34,7 +53,7 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('profile.user-information')->with('status', 'profile-updated');
     }
 
     /**

@@ -29,30 +29,37 @@ Route::get('/dashboard', [createsController::class, 'index'], function () {
 //Rutas de minigames
 Route::get('/minigames', function () {
     return view('minigames.minigames-selector');
-})->name('minigames-selector');
+})->middleware(['auth', 'verified'])->name('minigames-selector');
 
 Route::get('/minigames/black-jack', function () {
     return view('minigames.black-jack');
-})->name('black-jack');
+})->middleware(['auth', 'verified'])->name('black-jack');
 
 Route::get('/minigames/3cups-1ball', function () {
     return view('minigames.3cups-1ball');
-})->name('3cups-1ball');
+})->middleware(['auth', 'verified'])->name('3cups-1ball');
 
 Route::get('/minigames/plinko', function () {
     return view('minigames.plinko');
-})->name('plinko');
+})->middleware(['auth', 'verified'])->name('plinko');
 
 //Agafa el id de la ruta i el passa al controlador per saber quin caixa ha de mostrar
 Route::get('/creates/{box_name}', [createsController::class, 'openCreate'], function () {
     return view('creates.openCreate');
 })->middleware(['auth', 'verified'])->name('creates.show');
 
+// Rutas del perfil
 Route::middleware('auth')->group(function () {
+    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/profile/{id}', [ProfileController::class, 'show'])->middleware(['auth', 'verified'])->name('profile');
+
+
+Route::get('/edit-profile', [ProfileController::class, 'editProfile'])->middleware(['auth', 'verified'])->name('edit-profile');
 
 //Oauth Google
 Route::get('/login-google', [oauthController::class, 'loginWithGoogle']);
@@ -63,5 +70,7 @@ Route::get('/google-callback', [oauthController::class, 'cbGoogle']);
 Route::get('/login-twitter', [oauthController::class, 'loginWithTwitter']);
 //callback de Twitter
 Route::get('/twitter-callback', [oauthController::class, 'cbTwitter']);
+
+
 
 require __DIR__.'/auth.php';

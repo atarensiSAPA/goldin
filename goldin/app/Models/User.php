@@ -24,6 +24,10 @@ class User extends Authenticatable
         'avatar',
         'external_id',
         'external_auth',
+        'role',
+        'coins',
+        'level',
+        'experience',
     ];
 
     /**
@@ -45,4 +49,24 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function getMaxExperienceAttribute()
+    {
+        // Calculate max_experience based on the user's level
+        return pow(2, $this->level) * 100;
+    }
+
+    public function addExperience($experienceGained)
+    {
+        $this->experience += $experienceGained;
+    
+        // Check if the user has enough experience to level up
+        while ($this->experience >= $this->max_experience) {
+            $this->experience -= $this->max_experience;
+            $this->level++;
+            $this->experience = 0; // Reset experience to 0 after leveling up
+        }
+    
+        $this->save();
+    }
 }

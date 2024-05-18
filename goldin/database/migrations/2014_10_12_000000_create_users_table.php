@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->integer('role')->default(0); // 0 = user, 1 = VIP, 2 = admin
             $table->integer('coins')->default(0);
+            $table->integer('level')->default(1);
+            $table->integer('experience')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->string('avatar')->nullable();
@@ -28,8 +30,8 @@ return new class extends Migration
         });
 
         DB::table('users')->insert([
-            ['name' => 'admin', 'email' => 'admin@sapalomera.cat', 'password' => bcrypt('admin'), 'email_verified_at' => now(), 'created_at' => now(), 'updated_at' => now(), 'role' => 2, 'coins' => 100, 'avatar' => 'admin.jpg', 'external_id' => '123456', 'external_auth' => 'google'],
-            ['name' => 'angel', 'email' => 'a.tarensi2@sapalomera.cat', 'password' => bcrypt('angel'), 'email_verified_at' => now(), 'created_at' => now(), 'updated_at' => now(), 'role' => 0, 'coins' => 800, 'avatar' => null, 'external_id' => null, 'external_auth' => null],
+            ['name' => 'admin', 'email' => 'admin@sapalomera.cat', 'password' => bcrypt('admin'), 'email_verified_at' => now(), 'created_at' => now(), 'updated_at' => now(), 'role' => 2, 'coins' => 100, 'experience' => 120, 'avatar' => 'admin.jpg', 'external_id' => '123456', 'external_auth' => 'google'],
+            ['name' => 'angel', 'email' => 'a.tarensi2@sapalomera.cat', 'password' => bcrypt('angel'), 'email_verified_at' => now(), 'created_at' => now(), 'updated_at' => now(), 'role' => 0, 'coins' => 800, 'experience' => 200, 'avatar' => null, 'external_id' => null, 'external_auth' => null],
         ]);
     }
 
