@@ -37,6 +37,9 @@ class AuthenticatedSessionController extends Controller
         
         if (Auth::attempt($request->only('email', 'password'))) {
             $request->session()->forget('login_attempts');
+
+            $user = Auth::user();
+            $user->addExperience(0);
     
             $request->session()->regenerate();
     

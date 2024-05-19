@@ -14,7 +14,7 @@
             Email: {{ $user->email }}
         </p>
         <p class="text-lg font-light text-gray-700 dark:text-gray-200 inline-flex">
-            Coins: {{ $user->coins }} <img src="{{ asset('images/user-coin.png') }}" alt="coin" width="30" height="30">
+            Coins: {{ $user->coins }} <img src="{{ asset('images/user_coin.png') }}" alt="coin" width="30" height="30">
         </p>
         <p class="text-lg font-light text-gray-700 dark:text-gray-200">
             Level: {{ $user->level }}

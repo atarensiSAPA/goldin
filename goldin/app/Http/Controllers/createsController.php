@@ -9,87 +9,74 @@ class createsController extends Controller
 {
     public function index()
     {
-        //mostrar totes les caixes agrupades per nom de caixa i agafar la primera que tenga precio
-        $creates = creates::whereNotNull('cost')->get()->groupBy('box_name')->map->first();
-
-        // Replace hyphens with spaces in create names
+        $creates = creates::get()->groupBy('box_name')->map->first();
+    
         foreach ($creates as $create) {
-            $create->box_name = str_replace('-', ' ', $create->box_name);
+            $create->box_name = str_replace('_', ' ', $create->box_name);
         }
-
+    
         return view('dashboard', ['creates' => $creates]);
     }
-
+    
     public function openCreate(Request $request)
     {
-        // Get the box_name from the URL
         $box_name = $request->route('box_name');
+        $creates = creates::where('box_name', $box_name)->with('weapons')->get();
     
-        // Get all creates with the same box_name and a cost
-        $creates = creates::where('box_name', $box_name)->with('weapon')->get();
+        $rarityOrder = ['mitic', 'legendary', 'epic', 'rare', 'commun'];
     
-        // Define the order of rarities
-        $rarityOrder = ['mitic', 'legendary', 'epic', 'raree', 'commun'];
-    
-        // Sort the creates by the rarity order
         $creates = $creates->sortBy(function ($create) use ($rarityOrder) {
-            return array_search($create->weapon->rarity, $rarityOrder);
+            return array_search($create->weapons->first()->rarity, $rarityOrder);
         });
     
-        // Call showColors and pass the creates
         $creates = $this->showColors($creates);
     
-        $firstCreateWithCost = $creates->firstWhere('cost', '!=', null);
-        if ($firstCreateWithCost) {
-            $createTitle = str_replace('-', ' ', $firstCreateWithCost->box_name);
+        $firstCreate = $creates->first();
+        if ($firstCreate) {
+            $createTitle = str_replace('_', ' ', $firstCreate->box_name);
         } else {
-            // Handle the case where there are no creates with a cost
             $createTitle = 'No creates found';
         }
-
-        // //llamar a calculateAppearancePercentage y pasarle el arma
-        // foreach ($creates as $create) {
-        //     $create->weapon->appearance_percentage = $this->calculateAppearancePercentage($create->weapon);
-        // }
-
-        //call the function of percentatge
         foreach ($creates as $create) {
-            $create->weapon->appearance_percentage = $this->calculateAppearancePercentage($create->weapon);
+            $create->weapons = $create->weapons->sortBy(function ($weapon) use ($rarityOrder) {
+                $weapon->appearance_percentage = $this->calculateAppearancePercentage($weapon);
+                return array_search($weapon->rarity, $rarityOrder);
+            });
         }
     
         return view('creates.openCreate', ['creates' => $creates, 'createTitle' => $createTitle]);
     }
-
+    
     public function showColors($creates)
     {
         foreach ($creates as $create) {
-            if ($create->weapon) {
-                switch ($create->weapon->rarity) {
-                    case 'mitic':
-                        $create->color = 'rgba(255,0,0,0.8)';
-                        break;
-                    case 'legendary':
-                        $create->color = 'rgba(255,165,0,0.8)';
-                        break;
-                    case 'epic':
-                        $create->color = 'rgba(128,0,128,0.8)';
-                        break;
-                    case 'rare':
-                        $create->color = 'rgba(0,0,255,0.8)';
-                        break;
-                    case 'commun':
-                        $create->color = 'rgba(0,128,0,0.8)';
-                        break;
-                }
+            foreach ($create->weapons as $weapon) {
+                $weapon->color = $this->getColorForRarity($weapon->rarity);
             }
         }
-    
+
         return $creates;
+    }
+    
+    public function getColorForRarity($rarity)
+    {
+        switch ($rarity) {
+            case 'mitic':
+                return 'rgba(255,0,0,0.8)';
+            case 'legendary':
+                return 'rgba(255,165,0,0.8)';
+            case 'epic':
+                return 'rgba(128,0,128,0.8)';
+            case 'rare':
+                return 'rgba(0,0,255,0.8)';
+            case 'commun':
+                return 'rgba(0,128,0,0.8)';
+        }
     }
 
     public function calculateAppearancePercentage($weapon)
     {
-        // // Define Base Percentages
+                // // Define Base Percentages
         // $basePercentages = [
         //     'mitic' => 1,
         //     'legendary' => 5,
@@ -125,7 +112,6 @@ class createsController extends Controller
         //     'basePercentage' => $basePercentage,
         //     'totalWeaponsInRarity' => $totalWeaponsInRarity,
         // ];
-        // Define Base Percentages
         $basePercentages = [
             'mitic' => 1,
             'legendary' => 5,
@@ -136,14 +122,4 @@ class createsController extends Controller
     
         return $basePercentages[$weapon->rarity] ?? 'N/A';
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }
-    

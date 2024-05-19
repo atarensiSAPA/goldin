@@ -26,11 +26,15 @@ return new class extends Migration
             $table->id();
             $table->string('box_name');
             $table->integer('cost')->nullable();
-            $table->unsignedBigInteger('weapon_id');
             $table->string("box_img")->nullable();
             $table->timestamps();
+        });
         
-            $table->foreign('weapon_id')->references('id')->on('weapons');
+        Schema::create('create_weapon', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('create_id')->constrained('creates');
+            $table->foreignId('weapon_id')->constrained('weapons');
+            $table->timestamps();
         });
     }
 

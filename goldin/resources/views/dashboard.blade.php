@@ -34,13 +34,13 @@
         <div class="row">
             @forelse ($creates as $create)
                 <div class="col-md-3 mt-4">
-                    <a href="{{ route('creates.show', str_replace(' ', '-', $create->box_name)) }}" class="text-decoration-none text-dark">
+                    <a href="{{ route('creates.show', str_replace(' ', '_', $create->box_name)) }}" class="text-decoration-none text-dark">
                         <div class="card bg-transparent text-white border-0" id="card-{{ $create->box_name }}">
                             <div class="card-body position-relative">
-                                <img src="{{ asset('images/' . $create->box_img) }}" alt="" class="img-fluid radius-0">
+                                <img src="{{ asset('images/creates/' . $create->box_img) }}" alt="" class="img-fluid radius-0">
                                 <div class="overlay position-absolute top-0 start-0 pt-2 pl-2 radius-0 h-auto d-flex align-items-center">
                                     <b class="coinText">{{ $create->cost }}</b>
-                                    <img src="{{ asset('images/user-coin.png') }}" alt="coin" width="30" height="30" class="ms-2">
+                                    <img src="{{ asset('images/user_coin.png') }}" alt="coin" width="30" height="30" class="ms-2">
                                 </div>                                
                                 <div style="color: white; text-align: center;">
                                     <b>{{ $create->box_name }}</b>

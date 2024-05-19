@@ -64,9 +64,13 @@ class User extends Authenticatable
         while ($this->experience >= $this->max_experience) {
             $this->experience -= $this->max_experience;
             $this->level++;
-            $this->experience = 0; // Reset experience to 0 after leveling up
         }
     
         $this->save();
+    }
+
+    public function weapons()
+    {
+        return $this->belongsToMany(weapons::class, 'user_weapon');
     }
 }

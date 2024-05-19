@@ -32,7 +32,7 @@
                         {{ Auth::user()->coins }}
                     </div>
                     <div class="text-light text-lg font-medium ml-2">
-                        <img src="{{ asset('images/user-coin.png') }}" alt="coin" width="30" height="30">
+                        <img src="{{ asset('images/user_coin.png') }}" alt="coin" width="30" height="30">
                     </div>
                 </div>
 
