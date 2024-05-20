@@ -26,6 +26,8 @@ Route::get('/dashboard', [createsController::class, 'index'], function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::post('/ajaxOpenBox', [createsController::class, 'ajaxOpenBox'])->middleware(['auth', 'verified']);
+
 //Rutas de minigames
 Route::get('/minigames', function () {
     return view('minigames.minigames-selector');

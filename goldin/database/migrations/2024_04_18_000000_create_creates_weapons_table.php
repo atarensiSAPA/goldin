@@ -24,7 +24,7 @@ return new class extends Migration
         });
         Schema::create('creates', function (Blueprint $table) {
             $table->id();
-            $table->string('box_name');
+            $table->string('box_name')->unique();
             $table->integer('cost')->nullable();
             $table->string("box_img")->nullable();
             $table->timestamps();
