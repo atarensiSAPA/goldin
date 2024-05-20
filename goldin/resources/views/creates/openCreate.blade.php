@@ -30,6 +30,28 @@
             </div>
         </div>
     </div>
+    {{-- <script>
+        document.getElementById('openBoxButton').addEventListener('click', function() {
+            fetch('/ajaxOpenBox', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    box_name: '{{ $creates->first()->box_name }}'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    document.querySelector('.weapon-image').src = '{{ asset('images/skins/') }}/' + data.weapon.weapon_img;
+                }
+            });
+        });
+    </script> --}}
     <script>
         $(document).ready(function() {
             $('#openBoxButton').click(function() {
