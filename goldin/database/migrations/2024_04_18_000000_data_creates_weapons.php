@@ -24,7 +24,7 @@ return new class extends Migration
             ],
             [
                 'weapon_name' => 'AK-47',
-                'weapon_skin' => 'asiimov',
+                'weapon_skin' => 'Asiimov',
                 'description' => 'The AK-47 is a powerful option that is favored by many players. It is a high-impact rifle that is capable of taking down enemies with a single shot to the head. The Redline skin is a popular choice for many players, as it features a sleek red and black design that is both stylish and intimidating.',
                 'price' => 90.50,
                 'units' => 96,
@@ -42,7 +42,7 @@ return new class extends Migration
             ],
             [
                 'weapon_name' => 'AWP',
-                'weapon_skin' => 'wildfire',
+                'weapon_skin' => 'Wildfire',
                 'description' => 'The AWP is a powerful sniper rifle that is capable of taking down enemies with a single shot to the chest or head. The Dragon Lore skin is a rare and valuable option that is highly sought after by many players. It features a detailed dragon design that is both intricate and intimidating.',
                 'price' => 105.20,
                 'units' => 66,
@@ -51,7 +51,7 @@ return new class extends Migration
             ],
             [
                 'weapon_name' => 'Karambit',
-                'weapon_skin' => 'case_hardened',
+                'weapon_skin' => 'Case_hardened',
                 'description' => 'The Karambit is a unique and deadly knife that is favored by many players. It features a curved blade that is capable of inflicting serious damage on enemies. The Case Hardened skin is a rare and valuable option that is highly sought after by many players. It features a detailed blue and gold design that is both stylish and intimidating.',
                 'price' => 170.00,
                 'units' => 17,
@@ -60,7 +60,7 @@ return new class extends Migration
             ],
             [
                 'weapon_name' => 'Karambit',
-                'weapon_skin' => 'fade',
+                'weapon_skin' => 'Fade',
                 'description' => 'The Karambit is a unique and deadly knife that is favored by many players. It features a curved blade that is capable of inflicting serious damage on enemies. The Case Hardened skin is a rare and valuable option that is highly sought after by many players. It features a detailed blue and gold design that is both stylish and intimidating.',
                 'price' => 120.00,
                 'units' => 25,
@@ -69,7 +69,7 @@ return new class extends Migration
             ],
             [
                 'weapon_name' => 'Bayonet',
-                'weapon_skin' => 'lore',
+                'weapon_skin' => 'Lore',
                 'description' => 'The Bayonet is a versatile and deadly knife that is favored by many players. It features a sharp blade that is capable of inflicting serious damage on enemies. The Fade skin is a rare and valuable option that is highly sought after by many players. It features a detailed rainbow design that is both stylish and intimidating.',
                 'price' => 246.10,
                 'units' => 23,
@@ -78,7 +78,7 @@ return new class extends Migration
             ],
             [
                 'weapon_name' => 'USP',
-                'weapon_skin' => 'kill_confirmed',
+                'weapon_skin' => 'Kill_confirmed',
                 'description' => 'The USP is a reliable and accurate pistol that is favored by many players. It is a high-impact weapon that is capable of taking down enemies with a single shot to the head. The Kill Confirmed skin is a rare and valuable option that is highly sought after by many players. It features a detailed gold and black design that is both stylish and intimidating.',
                 'price' => 15.80,
                 'units' => 246,

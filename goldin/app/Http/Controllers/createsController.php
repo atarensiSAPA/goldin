@@ -5,6 +5,8 @@ use App\Models\creates;
 use Illuminate\Http\Request;
 use App\Models\weapons;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Exception;
 
 class createsController extends Controller
 {
@@ -120,51 +122,83 @@ class createsController extends Controller
         return $basePercentages[$weapon->rarity] ?? 'N/A';
     }
 
+
+
     public function ajaxOpenBox(Request $request)
     {
         $user = Auth::user();
         $box_name = $request->input('box_name');
-        $creates = creates::where('box_name', $box_name)->with('weapons')->get();
+        $create = creates::where('box_name', $box_name)->with('weapons')->first();
     
-        dd($user);
-
-        if ($creates->isEmpty()) {
+        if (!$create) {
             return response()->json(['error' => 'No creates found.'], 404);
         }
     
-        if ($user->coins < $creates->first()->cost) {
+        if ($user->coins < $create->cost) {
             return response()->json(['error' => 'You do not have enough coins.'], 403);
         }
-    
-        $user->coins -= $creates->first()->cost;
+        
+        $user->coins -= $create->cost;
         $user->save();
-    
-        $weapons = $creates->flatMap->weapons->all();
+        
+        $weapons = $create->weapons;
         $weapon = $this->getWeaponBasedOnPercentage($weapons);
-    
+        
         if (!$weapon) {
             return response()->json(['error' => 'No weapon found.'], 500);
         }
-    
+        
         $user->weapons()->attach($weapon->id);
+
+        // Add 50 exp per box
+        $user->addExperience(50);
     
-        return response()->json(['weapon' => $weapon]);
+        $color = $this->getColorForRarity($weapon->rarity);
+        
+        return response()->json(['weapon' => $weapon, 'coins' => $user->coins, 'color' => $color]);
     }
     
     private function getWeaponBasedOnPercentage($weapons)
     {
-        $totalPercentage = array_sum(array_column($weapons, 'appearance_percentage'));
-        $rand = mt_rand(1, (int) $totalPercentage);
+        $basePercentages = [
+            'mitic' => 1,
+            'legendary' => 5,
+            'epic' => 15,
+            'rare' => 30,
+            'commun' => 49,
+        ];
+    
+        $totalPercentage = 0;
+        $mostCommonWeapon = null;
+        $mostCommonWeaponPercentage = 0;
     
         foreach ($weapons as $weapon) {
-            $rand -= $weapon->appearance_percentage;
-            if ($rand <= 0) {
-                return $weapon;
+            if (isset($basePercentages[$weapon->rarity]) && $weapon->units > 0) {
+                $weapon->appearance_percentage = $basePercentages[$weapon->rarity];
+                $totalPercentage += $weapon->appearance_percentage;
+    
+                if ($weapon->appearance_percentage > $mostCommonWeaponPercentage) {
+                    $mostCommonWeapon = $weapon;
+                    $mostCommonWeaponPercentage = $weapon->appearance_percentage;
+                }
+            }
+        }
+    
+        if ($totalPercentage < 100 && $mostCommonWeapon) {
+            $mostCommonWeapon->appearance_percentage += 100 - $totalPercentage;
+        }
+    
+        $rand = mt_rand(1, 100);
+    
+        foreach ($weapons as $weapon) {
+            if ($weapon->units > 0) {
+                $rand -= $weapon->appearance_percentage;
+                if ($rand <= 0) {
+                    return $weapon;
+                }
             }
         }
     
         return null;
     }
-    
-
 }

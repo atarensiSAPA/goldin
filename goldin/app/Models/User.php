@@ -71,6 +71,6 @@ class User extends Authenticatable
 
     public function weapons()
     {
-        return $this->belongsToMany(weapons::class, 'user_weapon');
+        return $this->belongsToMany(weapons::class, 'user_weapon', 'user_id', 'weapon_id');
     }
 }

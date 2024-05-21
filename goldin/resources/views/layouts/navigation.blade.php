@@ -28,7 +28,7 @@
                 
                 <!-- Show the coins from the user -->
                 <div class="hidden sm:flex sm:items-center sm:ml-6 sm:mr-4">
-                    <div class="text-light text-lg font-medium">
+                    <div id="coins" class="text-light text-lg font-medium">
                         {{ Auth::user()->coins }}
                     </div>
                     <div class="text-light text-lg font-medium ml-2">
