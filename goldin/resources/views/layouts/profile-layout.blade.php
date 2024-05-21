@@ -13,12 +13,22 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
         <!-- Bootstrap -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Styles -->
         <link href="{{ asset('css/dashboardCss.css') }}" rel="stylesheet">
+        <style>
+            div.weapon-container > div.weapon-buttons {
+                display: none;
+            }
+        
+            div.weapon-container:hover > div.weapon-buttons {
+                display: flex;
+            }
+        </style>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">

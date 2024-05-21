@@ -13,7 +13,7 @@
         <p class="text-lg font-light text-gray-700 dark:text-gray-200">
             Email: {{ $user->email }}
         </p>
-        <p class="text-lg font-light text-gray-700 dark:text-gray-200 inline-flex">
+        <p class="text-lg font-light text-gray-700 dark:text-gray-200 inline-flex d-flex align-items-center">
             Coins: {{ $user->coins }} <img src="{{ asset('images/user_coin.png') }}" alt="coin" width="30" height="30">
         </p>
         <p class="text-lg font-light text-gray-700 dark:text-gray-200">

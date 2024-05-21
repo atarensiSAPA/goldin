@@ -138,8 +138,8 @@ class createsController extends Controller
             return response()->json(['error' => 'You do not have enough coins.'], 403);
         }
         
-        $user->coins -= $create->cost;
-        $user->save();
+        // $user->coins -= $create->cost;
+        // $user->save();
         
         $weapons = $create->weapons;
         $weapon = $this->getWeaponBasedOnPercentage($weapons);

@@ -52,7 +52,6 @@ Route::get('/creates/{box_name}', [createsController::class, 'openCreate'], func
 
 // Rutas del perfil
 Route::middleware('auth')->group(function () {
-    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -62,6 +61,8 @@ Route::get('/profile/{id}', [ProfileController::class, 'show'])->middleware(['au
 
 
 Route::get('/edit-profile', [ProfileController::class, 'editProfile'])->middleware(['auth', 'verified'])->name('edit-profile');
+
+Route::post('/sell-weapon', [ProfileController::class, 'sell'])->middleware(['auth', 'verified'])->name('edit-profile');
 
 //Oauth Google
 Route::get('/login-google', [oauthController::class, 'loginWithGoogle']);

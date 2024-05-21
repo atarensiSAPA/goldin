@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('weapon_name');
             $table->string('weapon_skin');
             $table->text('description');
-            $table->decimal('price', 8, 2);
+            $table->integer('price');
             $table->integer('units');
             $table->string('weapon_img');
             $table->string('rarity');
