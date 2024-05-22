@@ -24,7 +24,7 @@ class ProfileController extends Controller
     public function show()
     {
         $user = Auth::user();
-        $weapons = $user->weapons;
+        $weapons = $user->weapons()->orderBy('updated_at', 'desc')->get();
     
         // Calculate the user's level and experience
         $user->addExperience(0);
@@ -92,6 +92,51 @@ class ProfileController extends Controller
     
         // Devuelve una respuesta de éxito
         return response()->json(['success' => true]);
+    }
+
+    public function filterWeapons(Request $request)
+    {
+        $filter = $request->input('filter');
+        $user = Auth::user();
+    
+        switch ($filter) {
+            case 'obtention':
+                $weapons = $user->weapons()->orderBy('updated_at')->get();
+                break;
+            case 'price':
+                $weapons = $user->weapons()->orderBy('price', 'desc')->get();
+                break;
+                case 'rarity':
+                    // Define el orden de las rarezas
+                    $rarityOrder = ['commun', 'rare', 'epic', 'legendary', 'mitic'];
+                
+                    // Obtiene todas las armas del usuario
+                    $weapons = $user->weapons()->get();
+                
+                    // Ordena las armas por rareza
+                    $weapons = $weapons->sortBy(function ($weapon) use ($rarityOrder) {
+                        return array_search($weapon->rarity, $rarityOrder);
+                    });
+                
+                    // Dentro de cada grupo de rareza, ordena las armas por precio
+                    $weapons = $weapons->sortByDesc(function ($weapon) {
+                        return $weapon->price;
+                    });
+                
+                    // Convierte la colección ordenada en un array simple
+                    $weapons = $weapons->values()->all();
+                    break;
+            default:
+                $weapons = $user->weapons;
+                break;
+        }
+    
+        // Add color and appearance percentage to each weapon
+        foreach ($weapons as $weapon) {
+            $weapon->color = $this->getColorForRarity($weapon->rarity);
+        }
+    
+        return response()->json(['weapons' => $weapons]);
     }
 
     /**

@@ -148,7 +148,7 @@ class createsController extends Controller
             return response()->json(['error' => 'No weapon found.'], 500);
         }
         
-        $user->weapons()->attach($weapon->id);
+        $user->weapons()->attach($weapon->id, ['created_at' => now(), 'updated_at' => now()]);
 
         // Add 50 exp per box
         $user->addExperience(50);

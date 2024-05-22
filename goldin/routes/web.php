@@ -64,6 +64,8 @@ Route::get('/edit-profile', [ProfileController::class, 'editProfile'])->middlewa
 
 Route::post('/sell-weapon', [ProfileController::class, 'sell'])->middleware(['auth', 'verified'])->name('edit-profile');
 
+Route::post('/filter-weapons', [ProfileController::class, 'filterWeapons'])->middleware(['auth', 'verified'])->name('edit-profile');
+
 //Oauth Google
 Route::get('/login-google', [oauthController::class, 'loginWithGoogle']);
 //callback de Google
