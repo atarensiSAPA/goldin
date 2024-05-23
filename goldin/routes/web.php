@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\blackJackController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\oauthController;
@@ -33,9 +34,9 @@ Route::get('/minigames', function () {
     return view('minigames.minigames-selector');
 })->middleware(['auth', 'verified'])->name('minigames-selector');
 
-Route::get('/minigames/black-jack', function () {
-    return view('minigames.black-jack');
-})->middleware(['auth', 'verified'])->name('black-jack');
+//Black jack
+Route::get('/minigames/black-jack', [blackJackController::class, 'show'])->middleware(['auth', 'verified'])->name('black-jack');
+Route::post('/bet', [blackJackController::class, 'placeBet']);
 
 Route::get('/minigames/3cups-1ball', function () {
     return view('minigames.3cups-1ball');
