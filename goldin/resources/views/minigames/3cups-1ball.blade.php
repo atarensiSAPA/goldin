@@ -21,15 +21,16 @@
         </div>
         <div style="text-align: center;">
             <div id="message" class="mt-3" style="color: white; font-size: 30px"></div>
-            <div id="winnings" class="coin-animation" style="color: green; font-size: 25px"></div>
+            <div id="winnings" style="font-size: 25px"></div>
         </div>
     </div>
 </div>
 
 <script>
     let betAmount = 0;
+    let betButton = document.getElementById('bet');
 
-    document.getElementById('bet').addEventListener('click', function() {
+    betButton.addEventListener('click', function() {
     let betInput = document.getElementById('bet-input').value;
     betAmount = parseInt(betInput);
     if(betInput == betAmount && betAmount >= 100){
@@ -48,6 +49,8 @@
 
                     document.getElementById('message').innerHTML = "";
                     document.getElementById('winnings').innerHTML = "";
+
+                    betButton.disabled = true;
                     
                     //reiniciar el juego
                     resetGame();
@@ -111,7 +114,15 @@
                 },
                 success: function(data) {
                     document.getElementById('coins').innerText = data.coins;
-                    document.getElementById('winnings').innerText = winnersMoney > 0 ? "You have won " + winnersMoney + " coins!" : "You lost your bet!";
+                    let winningsElement = document.getElementById('winnings');
+                    winningsElement.innerText = winnersMoney > 0 ? "You have won " + winnersMoney + " coins!" : "You lost your bet!";
+                    if (winnersMoney <= 0) {
+                        winningsElement.style.color = 'red';
+                    } else {
+                        winningsElement.style.color = 'green';
+                    }
+
+                    betButton.disabled = false;
                 },
                 error: function(error) {
                     console.error('Error:', error);

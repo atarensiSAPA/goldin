@@ -5,8 +5,10 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\oauthController;
 use App\Http\Controllers\createsController;
+use App\Http\Controllers\dailyCreates;
 use App\Http\Controllers\minigamesController;
 use App\Http\Controllers\shopController;
+use App\Http\Controllers\dailyCreatesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +31,8 @@ Route::get('/dashboard', [createsController::class, 'index'], function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::post('/ajaxOpenBox', [createsController::class, 'ajaxOpenBox'])->middleware(['auth', 'verified']);
+
+Route::get('/dailyCreates', [dailyCreatesController::class, 'show'])->middleware(['auth', 'verified'])->name('daily-creates');
 
 //Rutas de minigames
 Route::get('/minigames', function () {

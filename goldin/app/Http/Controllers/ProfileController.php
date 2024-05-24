@@ -101,31 +101,31 @@ class ProfileController extends Controller
     
         switch ($filter) {
             case 'obtention':
-                $weapons = $user->weapons()->orderBy('updated_at')->get();
+                $weapons = $user->weapons()->orderBy('updated_at', 'desc')->get();
                 break;
             case 'price':
                 $weapons = $user->weapons()->orderBy('price', 'desc')->get();
                 break;
-                case 'rarity':
-                    // Define el orden de las rarezas
-                    $rarityOrder = ['commun', 'rare', 'epic', 'legendary', 'mitic'];
-                
-                    // Obtiene todas las armas del usuario
-                    $weapons = $user->weapons()->get();
-                
-                    // Ordena las armas por rareza
-                    $weapons = $weapons->sortBy(function ($weapon) use ($rarityOrder) {
-                        return array_search($weapon->rarity, $rarityOrder);
-                    });
-                
-                    // Dentro de cada grupo de rareza, ordena las armas por precio
-                    $weapons = $weapons->sortByDesc(function ($weapon) {
-                        return $weapon->price;
-                    });
-                
-                    // Convierte la colección ordenada en un array simple
-                    $weapons = $weapons->values()->all();
-                    break;
+            case 'rarity':
+                // Define el orden de las rarezas
+                $rarityOrder = ['commun', 'rare', 'epic', 'legendary', 'mitic'];
+            
+                // Obtiene todas las armas del usuario
+                $weapons = $user->weapons()->get();
+            
+                // Ordena las armas por rareza
+                $weapons = $weapons->sortBy(function ($weapon) use ($rarityOrder) {
+                    return array_search($weapon->rarity, $rarityOrder);
+                });
+            
+                // Dentro de cada grupo de rareza, ordena las armas por updated_at
+                $weapons = $weapons->sortByDesc(function ($weapon) {
+                    return $weapon->updated_at;
+                });
+            
+                // Convierte la colección ordenada en un array simple
+                $weapons = $weapons->values()->all();
+                break;
             default:
                 $weapons = $user->weapons;
                 break;

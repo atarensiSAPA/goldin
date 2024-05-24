@@ -34,41 +34,42 @@
 
 <script>
     let betAmount = 0;
+    let betButton = document.getElementById('bet');
 
-    document.getElementById('bet').addEventListener('click', function() {
+    betButton.addEventListener('click', function() {
         let betInput = document.getElementById('bet-input').value;
-        let isDecimal = betInput.includes('.');
         betAmount = parseInt(betInput);
-        if(!isDecimal && betAmount >= 100){
-                //Enviar la petición AJAX
-                $.ajax({
-                    url: '/bet',
-                    method: 'POST',
-                    data: { bet: betAmount },
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(data) {
-                        document.getElementById('bet-display').innerText = "User's bet: " + betAmount;
-                        //mostrar las monedas acutales del usuario
-                        document.getElementById('coins').innerText = data.coins;
+        if(betInput == betAmount && betAmount >= 100){
+            //Enviar la petición AJAX
+            $.ajax({
+                url: '/bet',
+                method: 'POST',
+                data: { bet: betAmount },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    document.getElementById('bet-display').innerText = "User's bet: " + betAmount;
+                    //mostrar las monedas actuales del usuario
+                    document.getElementById('coins').innerText = data.coins;
 
-                        // Habilitar los botones de "hit" y "stand"
-                        document.getElementById('hit').disabled = false;
-                        document.getElementById('stand').disabled = false;
-                        document.getElementById('message').innerHTML = "";
-                        document.getElementById('winnings').innerHTML = "";
-                        
-                        //iniciar el juego cuando el servidor devuelva la respuesta
-                        blackJackMinigame();
-                        
-                    },
-                    error: function(error) {
-                        console.error('Error:', error);
-                        alert(error.responseJSON.message);
-                    }
-                });
-        }else{
+                    // Habilitar los botones de "hit" y "stand"
+                    document.getElementById('hit').disabled = false;
+                    document.getElementById('stand').disabled = false;
+                    document.getElementById('winnings').innerHTML = "";
+                    document.getElementById('message').innerHTML = "Click hit or stand to play the game";
+                    //deshabilitar boton de bet una vez apostado
+                    betButton.disabled = true;
+                    
+                    //iniciar el juego cuando el servidor devuelva la respuesta
+                    blackJackMinigame();
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                    alert(error.responseJSON.message);
+                }
+            });
+        } else {
             alert("The bet needs to be an integer and at least 100 or higher");
         }
     });
@@ -101,43 +102,56 @@
         displayHand('player-hand', playerHand);
         displayDealerHand(dealerHand, true);
 
-        // Función para "golpear" y recibir una carta adicional
-        document.getElementById('hit').addEventListener('click', function() {
+        // Limpiar eventos previos para evitar múltiples registros
+        $('#hit').off('click').on('click', function() {
             playerHand.push(deck.pop());
             displayHand('player-hand', playerHand);
+
+            var playerValue = calculateHandValue(playerHand);
+
+            // Si el jugador se pasa de 21, pierde automáticamente
+            if (playerValue > 21) {
+                endGame("Player busts. Dealer wins.", false);
+            }
+
+            // Si el jugador tiene 21, se revela la mano del dealer y el dealer juega su turno
+            if (playerValue === 21) {
+                revealDealerHand();
+                var dealerValue = calculateHandValue(dealerHand);
+
+                // El crupier recibe cartas hasta que su mano tenga un valor mayor que el del jugador o hasta que se pase de 21
+                while (dealerValue <= playerValue && dealerValue <= 21) {
+                    dealerHand.push(deck.pop());
+                    dealerValue = calculateHandValue(dealerHand);
+                }
+
+                displayDealerHand(dealerHand, false);
+                determineWinner(playerValue, dealerValue);
+            }
         });
 
-        // Función para "plantarse" y finalizar el turno del jugador
-        document.getElementById('stand').addEventListener('click', function() {
-            // El crupier recibe cartas hasta que su mano tenga un valor de 17 o más
-            var dealerHandValue = calculateHandValue(dealerHand);
-            var playerHandValue = calculateHandValue(playerHand);
-            while (dealerHandValue < 17 || (dealerHandValue < playerHandValue && dealerHandValue <= 21 && playerHandValue <= 21)) {
+        $('#stand').off('click').on('click', function() {
+            // Deshabilitar los botones "Hit" y "Stand"
+            document.getElementById('hit').disabled = true;
+            document.getElementById('stand').disabled = true;
+
+            // Mostrar todas las cartas del dealer
+            revealDealerHand();
+
+            // Calcular los valores de las manos
+            var playerValue = calculateHandValue(playerHand);
+            var dealerValue = calculateHandValue(dealerHand);
+
+            // El crupier recibe cartas hasta que su mano tenga un valor mayor que el del jugador o hasta que se pase de 21
+            while (dealerValue <= playerValue && dealerValue <= 21) {
                 dealerHand.push(deck.pop());
-                dealerHandValue = calculateHandValue(dealerHand);
+                dealerValue = calculateHandValue(dealerHand);
             }
+
             displayDealerHand(dealerHand, false);
+            determineWinner(playerValue, dealerValue);
         });
 
-        // Función para determinar si una mano es "soft" (contiene un As y suma 17)
-        function isSoftHand(hand) {
-            var value = 0;
-            var hasAce = false;
-            for (var i = 0; i < hand.length; i++) {
-                var cardValue = hand[i].Value;
-                if (cardValue == "A") {
-                    hasAce = true;
-                }
-                if (cardValue == "J" || cardValue == "Q" || cardValue == "K") {
-                    value += 10;
-                } else if (cardValue == "A") {
-                    value += 11;
-                } else {
-                    value += parseInt(cardValue);
-                }
-            }
-            return value === 17 && hasAce;
-        }
         function displayHand(handElementId, hand) {
             var handHtml = "";
             for (var i = 0; i < hand.length; i++) {
@@ -158,8 +172,9 @@
             document.getElementById('dealer-hand').innerHTML = handHtml;
         }
 
-        displayHand('player-hand', playerHand);
-        displayHand('dealer-hand', dealerHand);
+        function revealDealerHand() {
+            displayDealerHand(dealerHand, false);
+        }
 
         // Función para calcular el valor de una mano
         function calculateHandValue(hand) {
@@ -187,20 +202,8 @@
             return value;
         }
 
-        document.getElementById('stand').addEventListener('click', function() {
-            // Deshabilitar el botón "Stand"
-            document.getElementById('stand').disabled = true;
-            document.getElementById('hit').disabled = true;
-
-            // Mostrar todas las cartas del dealer
-            displayHand('dealer-hand', dealerHand);
-
-            // Calcular los valores de las manos
-            var playerValue = calculateHandValue(playerHand);
-            var dealerValue = calculateHandValue(dealerHand);
-
-            // Determinar quién ha ganado
-            var message;
+        function determineWinner(playerValue, dealerValue) {
+            var message = "";
             var playerWins = false;
             var tie = false;
             if (playerValue === 21 && playerHand.length === 2 && dealerValue === 21 && dealerHand.length === 2) {
@@ -213,11 +216,7 @@
                 message = "Dealer has Black Jack. Dealer wins.";
                 playerWins = false;
             } else if (playerValue > 21) {
-                if (dealerValue > 21) {
-                    message = "Both player and dealer bust. Dealer wins.";
-                } else {
-                    message = "Player busts. Dealer wins.";
-                }
+                message = "Player busts. Dealer wins.";
                 playerWins = false;
             } else if (dealerValue > 21) {
                 message = "Dealer busts. Player wins.";
@@ -225,7 +224,7 @@
             } else if (playerValue > dealerValue) {
                 message = "Player wins.";
                 playerWins = true;
-            } else if (dealerValue > playerValue) {
+            } else if (dealerValue > playerValue && dealerValue <= 21) {
                 message = "Dealer wins.";
                 playerWins = false;
             } else {
@@ -234,47 +233,57 @@
             }
 
             // Si el jugador gana, enviar una petición AJAX para actualizar las monedas del jugador
-            if (playerWins) {
-                var winnersMoney = Math.round(betAmount * 1.25) - betAmount; // restar la apuesta original
-                ajaxSendBet();
-            } else if (tie) {
-                var winnersMoney = betAmount;
-                ajaxSendBet();
+            if (playerWins || tie) {
+                var winnersMoney = playerWins ? Math.round(betAmount * 1.25) - betAmount : betAmount;
+                ajaxSendBet(winnersMoney, message, playerWins, tie);
+            } else {
+                endGame(message, false);
             }
+        }
 
-            function ajaxSendBet(){
-                $.ajax({
-                    url: '/update-coins',
-                    method: 'POST',
-                    data: { coins: winnersMoney },
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(data) {
-                        var coinElement = document.getElementById('coins');
-                        coinElement.innerText = data.coins;
+        function ajaxSendBet(winnersMoney, message, playerWins, tie) {
+            $.ajax({
+                url: '/update-coins',
+                method: 'POST',
+                data: { coins: winnersMoney },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    var coinElement = document.getElementById('coins');
+                    coinElement.innerText = data.coins;
 
-                        var winningsElement = document.getElementById('winnings');
-                        if(tie){
-                            winningsElement.innerText = "It's a tie. Your bet of " + betAmount + " coins has been returned!";
-                        }else if(playerWins){
-                            var total = parseInt(winnersMoney) + parseInt(betAmount);
-                            winningsElement.innerText = "Player wins! You have won " + total + " coins!"; // sumar la apuesta original
-                        }
-                    },
-                    error: function(error) {
-                        console.error('Error:', error);
-                        alert(error.responseJSON.message);
+                    var winningsElement = document.getElementById('winnings');
+                    if(tie){
+                        winningsElement.innerText = "It's a tie. Your bet of " + betAmount + " coins has been returned!";
+                    } else if(playerWins){
+                        var total = parseInt(winnersMoney) + parseInt(betAmount);
+                        winningsElement.innerText = "Player wins! You have won " + total + " coins!";
+                    } else {
+                        winningsElement.innerText = "You lost your bet!";
                     }
-                });
-            }
 
+                    endGame(message, playerWins);
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                    alert(error.responseJSON.message);
+                }
+            });
+        }
+
+        function endGame(message, playerWins) {
             // Mostrar el mensaje de quién ha ganado
             document.getElementById('message').textContent = message;
-        });
-    }
 
-    
+            // Habilitar botón de apuesta
+            betButton.disabled = false;
+
+            // Deshabilitar los botones de "hit" y "stand"
+            document.getElementById('hit').disabled = true;
+            document.getElementById('stand').disabled = true;
+        }
+    }
 </script>
 
 @endsection

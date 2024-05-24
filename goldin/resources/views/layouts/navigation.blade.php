@@ -18,6 +18,9 @@
                     <x-nav-link :href="route('minigames-selector')" :active="request()->routeIs('minigames-selector')">
                         {{ __('Minigames') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('daily-creates')" :active="request()->routeIs('daily-creates')">
+                        {{ __('Daily creates') }}
+                    </x-nav-link>
                 </div>
             </div>
 
