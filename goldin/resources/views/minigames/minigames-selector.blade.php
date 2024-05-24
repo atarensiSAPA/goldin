@@ -24,7 +24,7 @@
             </div>
         </div>
         <div style="max-width: 1120px; margin: -50px auto; padding: 0 24px;">
-            <a href="{{ route('plinko') }}" class="text-decoration-none text-dark">º
+            <a href="{{ route('plinko') }}" class="text-decoration-none text-dark">
                 <div style="background-image: url('{{ asset('images/plinko.jpg') }}'); overflow: hidden; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); border-radius: 1rem; width: 500px; height: 250px; display: flex; justify-content: center; align-items: center;">
                     <div style="background-color: rgba(0, 0, 0, 0.8); padding: 10px; color: white; text-align: center; border-radius: 1rem; font-size: 24px;">
                         Plinko

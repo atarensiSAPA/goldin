@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\oauthController;
 use App\Http\Controllers\createsController;
+use App\Http\Controllers\minigamesController;
 use App\Http\Controllers\shopController;
 
 /*
@@ -35,8 +36,9 @@ Route::get('/minigames', function () {
 })->middleware(['auth', 'verified'])->name('minigames-selector');
 
 //Black jack
-Route::get('/minigames/black-jack', [blackJackController::class, 'show'])->middleware(['auth', 'verified'])->name('black-jack');
-Route::post('/bet', [blackJackController::class, 'placeBet']);
+Route::get('/minigames/black-jack', [minigamesController::class, 'showBlackJack'])->middleware(['auth', 'verified'])->name('black-jack');
+Route::post('/bet', [minigamesController::class, 'placeBet']);
+Route::post('/update-coins', [minigamesController::class, 'updateCoins']);
 
 Route::get('/minigames/3cups-1ball', function () {
     return view('minigames.3cups-1ball');
