@@ -37,12 +37,13 @@ Route::get('/minigames', function () {
 
 //Black jack
 Route::get('/minigames/black-jack', [minigamesController::class, 'showBlackJack'])->middleware(['auth', 'verified'])->name('black-jack');
+
+//3 cups 1 ball
+Route::get('/minigames/3cups-1ball', [minigamesController::class, 'show3cups1ball'])->middleware(['auth', 'verified'])->name('3cups-1ball');
+
+//Bets and update coins
 Route::post('/bet', [minigamesController::class, 'placeBet']);
 Route::post('/update-coins', [minigamesController::class, 'updateCoins']);
-
-Route::get('/minigames/3cups-1ball', function () {
-    return view('minigames.3cups-1ball');
-})->middleware(['auth', 'verified'])->name('3cups-1ball');
 
 Route::get('/minigames/plinko', function () {
     return view('minigames.plinko');

@@ -11,6 +11,9 @@ class minigamesController extends Controller
     public function showBlackJack(){
         return view('minigames.black-jack');
     }
+    public function show3cups1ball(){
+        return view('minigames.3cups-1ball');
+    }
     public function placeBet(Request $request)
     {
         $user = Auth::user();

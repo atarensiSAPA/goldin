@@ -25,8 +25,10 @@
                 <!-- Dealer's cards will go here -->
             </div>
         </div>
-        <h1 id="message" class="mt-3" style="text-align: center; color: white;"></h1>
-        <div id="winnings" class="coin-animation" style="text-align: center; color: green;"></div>
+        <div style="text-align: center;">
+            <div id="message" class="mt-3" style="color: white; font-size: 30px"></div>
+            <div id="winnings" class="coin-animation" style="color: green; font-size: 25px"></div>
+        </div>
     </div>
 </div>
 
@@ -34,9 +36,10 @@
     let betAmount = 0;
 
     document.getElementById('bet').addEventListener('click', function() {
-        betAmount = document.getElementById('bet-input').value;
-        if(parseInt(betAmount) >= 100){
-                betAmount = document.getElementById('bet-input').value;
+        let betInput = document.getElementById('bet-input').value;
+        let isDecimal = betInput.includes('.');
+        betAmount = parseInt(betInput);
+        if(!isDecimal && betAmount >= 100){
                 //Enviar la petición AJAX
                 $.ajax({
                     url: '/bet',
@@ -66,7 +69,7 @@
                     }
                 });
         }else{
-            alert("The bet needs to be at least 100 or higher");
+            alert("The bet needs to be an integer and at least 100 or higher");
         }
     });
 
