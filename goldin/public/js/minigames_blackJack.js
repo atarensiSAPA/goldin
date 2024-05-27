@@ -84,33 +84,52 @@ betButton.addEventListener('click', function() {
         dealerHand.push(deck.pop());
         playerHand.push(deck.pop());
 
-        // Mostrar las cartas iniciales
-        displayHand('player-hand', playerHand);
-        displayDealerHand(dealerHand, true);
+        // Calcular los valores de las manos
+        let playerValue = calculateHandValue(playerHand);
+        let dealerValue = calculateHandValue(dealerHand);
+
+        // Si el jugador tiene Black Jack, revelamos la mano del dealer y determinamos el ganador
+        if (playerValue === 21) {
+            displayHand('player-hand', playerHand); // Mostrar la mano del jugador
+            displayDealerHand(dealerHand, true); // Mostrar la mano del dealer
+        
+            // El crupier recibe solo una carta adicional
+            dealerHand.push(deck.pop());
+            dealerValue = calculateHandValue(dealerHand);
+        
+            revealDealerHand();
+            determineWinner(playerValue, dealerValue);
+        } else {
+            // Mostrar las cartas iniciales
+            displayHand('player-hand', playerHand);
+            displayDealerHand(dealerHand, true);
+        }
 
         // Limpiar eventos previos para evitar múltiples registros
         $('#hit').off('click').on('click', function() {
             playerHand.push(deck.pop());
+        
+            // Actualizar la interfaz de usuario con la nueva mano del jugador
             displayHand('player-hand', playerHand);
-
+        
             let playerValue = calculateHandValue(playerHand);
-
+        
             // Si el jugador se pasa de 21, pierde automáticamente
             if (playerValue > 21) {
                 endGame("Player busts. Dealer wins.", false);
             }
-
+        
             // Si el jugador tiene 21, se revela la mano del dealer y el dealer juega su turno
             if (playerValue === 21) {
                 revealDealerHand();
                 let dealerValue = calculateHandValue(dealerHand);
-
+        
                 // El crupier recibe cartas hasta que su mano tenga un valor mayor que el del jugador o hasta que se pase de 21
                 while (dealerValue <= playerValue && dealerValue <= 21) {
                     dealerHand.push(deck.pop());
                     dealerValue = calculateHandValue(dealerHand);
                 }
-
+        
                 displayDealerHand(dealerHand, false);
                 determineWinner(playerValue, dealerValue);
             }
@@ -192,12 +211,14 @@ betButton.addEventListener('click', function() {
             let message = "";
             let playerWins = false;
             let tie = false;
+            let blackJack = false;
             if (playerValue === 21 && playerHand.length === 2 && dealerValue === 21 && dealerHand.length === 2) {
                 message = "Both player and dealer have Black Jack. It's a tie.";
                 tie = true;
             } else if (playerValue === 21 && playerHand.length === 2) {
                 message = "Player has Black Jack. Player wins.";
                 playerWins = true;
+                blackJack = true;
             } else if (dealerValue === 21 && dealerHand.length === 2) {
                 message = "Dealer has Black Jack. Dealer wins.";
                 playerWins = false;
@@ -220,24 +241,24 @@ betButton.addEventListener('click', function() {
         
             // Si el jugador gana o es un empate, enviar una petición AJAX para actualizar las monedas del jugador
             if (playerWins || tie) {
-                ajaxSendBet(betAmount, playerWins, message, tie);
+                ajaxSendBet(betAmount, playerWins, message, tie, blackJack);
             } else {
                 endGame(message, false);
             }
         }
         
-        function ajaxSendBet(betAmount, playerWins, message, tie) {
+        function ajaxSendBet(betAmount, playerWins, message, tie, blackJack) {
             $.ajax({
                 url: '/update-coins',
                 method: 'POST',
-                data: { bet: betAmount, won: playerWins },
+                data: { bet: betAmount, won: playerWins, blackJack: blackJack },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(data) {
                     let coinElement = document.getElementById('coins');
                     coinElement.innerText = Math.round(data.coins);
-            
+        
                     let winningsElement = document.getElementById('winnings');
                     if(tie){
                         winningsElement.innerText = "It's a tie. Your bet of " + betAmount + " coins has been returned!";
@@ -246,7 +267,7 @@ betButton.addEventListener('click', function() {
                     } else {
                         winningsElement.innerText = "You lost your bet!";
                     }
-            
+        
                     endGame(message, playerWins);
                 },
                 error: function(error) {

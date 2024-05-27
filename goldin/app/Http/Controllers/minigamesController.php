@@ -41,6 +41,7 @@ class minigamesController extends Controller
         $user = Auth::user();
         $betAmount = $request->input('bet');
         $userWon = filter_var($request->input('won'), FILTER_VALIDATE_BOOLEAN); // Convertir a booleano
+        $blackJack = filter_var($request->input('blackJack'), FILTER_VALIDATE_BOOLEAN); // Convertir a booleano
         $winnings = 0; // Inicializar las ganancias a 0
     
         if ($userWon) {
@@ -51,6 +52,11 @@ class minigamesController extends Controller
             } else { // Si el usuario es normal o admin
                 $winnings = $betAmount * 1.25;
                 $user->addExperience(50);
+            }
+    
+            // Si el usuario tiene Black Jack, multiplicar las ganancias por 1.2
+            if ($blackJack) {
+                $winnings *= 1.2;
             }
     
             // Sumar las monedas ganadas al total de monedas del usuario
