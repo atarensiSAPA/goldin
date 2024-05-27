@@ -1,6 +1,9 @@
 <section>
     <div id="alertCancelVip" class="alert alert-danger alert-dismissible fade show m-3 position-relative hideCard" role="alert">
-        <span id="alert-message"></span>
+        <span id="alert-messageCancelVip"></span>
+    </div>
+    <div id="alertUpdateVip" class="alert alert-success alert-dismissible fade show m-3 position-relative hideCard" role="alert">
+        <span id="alert-messageUpdateVip"></span>
     </div>
     <header>
         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
@@ -106,9 +109,10 @@
                 <div class="form-group row">
                     <label for="cvv" class="col-sm-2 col-form-label text-white">CVV</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control mb-3" id="cvv" placeholder="CVV">
+                        <input type="text" class="form-control mb-3" id="cvv" placeholder="CVV" maxlength="3">
                     </div>
                 </div>
+                <div class="mt-2 text-sm text-red-600" id="errorMessage"></div>
                 <br><button id="submitPayment" class="btn btn-primary">Submit Payment</button>
             </form>
         </p>

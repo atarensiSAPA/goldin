@@ -66,17 +66,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('profile');
+    Route::get('/edit-profile', [ProfileController::class, 'editProfile'])->name('edit-profile');
+    Route::post('/sell-weapon', [ProfileController::class, 'sell']);
+    Route::post('/filter-weapons', [ProfileController::class, 'filterWeapons']);
+    Route::post('/cancel-vip', [ProfileController::class, 'cancelVip'])->name('cancel-vip');
+    Route::post('/update-vip', [ProfileController::class, 'updateVip'])->name('update-vip');
 });
-
-Route::get('/profile/{id}', [ProfileController::class, 'show'])->middleware(['auth', 'verified'])->name('profile');
-
-Route::get('/edit-profile', [ProfileController::class, 'editProfile'])->middleware(['auth', 'verified'])->name('edit-profile');
-
-Route::post('/sell-weapon', [ProfileController::class, 'sell'])->middleware(['auth', 'verified']);
-
-Route::post('/filter-weapons', [ProfileController::class, 'filterWeapons'])->middleware(['auth', 'verified']);
-
-Route::post('/cancel-vip', [ProfileController::class, 'cancelVip'])->name('cancel-vip');
 
 //Oauth Google
 Route::get('/login-google', [oauthController::class, 'loginWithGoogle']);

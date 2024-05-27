@@ -230,4 +230,13 @@ class ProfileController extends Controller
             return response()->json(['success' => false, 'error' => 'The provided password is incorrect.']);
         }
     }
+    public function updateVip(Request $request)
+    {
+        $user = Auth::user();
+        $user->role = 1;
+        $user->vip_expires_at = Carbon::now()->addMonth();
+        $user->save();
+    
+        return response()->json(['success' => true]);
+    }
 }
