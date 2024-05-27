@@ -8,6 +8,7 @@ use App\Http\Controllers\createsController;
 use App\Http\Controllers\dailyCreatesController;
 use App\Http\Controllers\minigamesController;
 use App\Http\Controllers\shopController;
+use App\Http\Controllers\administratorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +74,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/cancel-vip', [ProfileController::class, 'cancelVip'])->name('cancel-vip');
     Route::post('/update-vip', [ProfileController::class, 'updateVip'])->name('update-vip');
 });
+
+
+Route::get('/administrator', [administratorController::class, 'show'])->name('administrator');
+
+Route::get('/administrator', [administratorController::class, 'show'])->name('administrator');
 
 //Oauth Google
 Route::get('/login-google', [oauthController::class, 'loginWithGoogle']);

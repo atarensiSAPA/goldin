@@ -13,14 +13,19 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Cases') }}
+                        {{ __('Boxes') }}
                     </x-nav-link>
                     <x-nav-link :href="route('minigames-selector')" :active="request()->routeIs('minigames-selector')">
                         {{ __('Minigames') }}
                     </x-nav-link>
                     <x-nav-link :href="route('daily-creates')" :active="request()->routeIs('daily-creates')">
-                        {{ __('Daily creates') }}
+                        {{ __('Daily case') }}
                     </x-nav-link>
+                    @if(Auth::user()->role == 2)
+                    <x-nav-link :href="route('administrator')" :active="request()->routeIs('administrator')">
+                        {{ __('Administrator') }}
+                    </x-nav-link>
+                @endif
                 </div>
             </div>
 
