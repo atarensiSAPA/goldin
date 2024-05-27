@@ -7,7 +7,7 @@ const gap = 50;
 const rows = 10;
 const cols = 10;
 
-// Create the pegs
+// Box the pegs
 for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
         const x = gap / 2 + j * gap;

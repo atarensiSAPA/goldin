@@ -94,9 +94,9 @@ return new class extends Migration
             $weaponIds[] = DB::table('weapons')->insertGetId($weapon);
         }
 
-        //creates
+        //boxes
 
-        $creates = [
+        $boxes = [
             [
                 'box_name' => 'The_villain',
                 'cost' => 500,
@@ -108,44 +108,44 @@ return new class extends Migration
                 'box_img' => 'the_heroe.png',
             ],
             [
-                'box_name' => 'Create_level_1',
+                'box_name' => 'Box_level_1',
                 'cost' => 0,
                 'box_img' => 'level_1.png',
                 'daily' => true,
                 'level' => 1,
             ],
             [
-                'box_name' => 'Create_level_2',
+                'box_name' => 'Box_level_2',
                 'cost' => 0,
                 'box_img' => 'level_2.png',
                 'daily' => true,
                 'level' => 2,
             ],
-            // ... other creates ...
+            // ... other boxes ...
         ];
         
-        foreach ($creates as $create) {
-            $create['created_at'] = now();
-            $create['updated_at'] = now();
-            $createIds[] = DB::table('creates')->insertGetId($create);
+        foreach ($boxes as $box) {
+            $box['created_at'] = now();
+            $box['updated_at'] = now();
+            $boxesIds[] = DB::table('boxes')->insertGetId($box);
         }
 
-        // Insert relationships into create_weapon
-        $create_weapon = [
+        // Insert relationships into box_weapons
+        $box_weapons = [
             [
-                'create_id' => $createIds[0], // The_villain box
+                'box_id' => $boxesIds[0], // The_villain box
                 'weapon_ids' => [$weaponIds[0], $weaponIds[1], $weaponIds[2], $weaponIds[3], $weaponIds[4], $weaponIds[5], $weaponIds[6], $weaponIds[7]],
             ],
             [
-                'create_id' => $createIds[1], // The_heroe box
+                'box_id' => $boxesIds[1], // The_heroe box
                 'weapon_ids' => [$weaponIds[2], $weaponIds[3], $weaponIds[4], $weaponIds[5], $weaponIds[6], $weaponIds[7]],
             ],
         ];
 
-        foreach ($create_weapon as $cw) {
+        foreach ($box_weapons as $cw) {
             foreach ($cw['weapon_ids'] as $weaponId) {
-                DB::table('create_weapon')->insert([
-                    'create_id' => $cw['create_id'],
+                DB::table('box_weapons')->insert([
+                    'box_id' => $cw['box_id'],
                     'weapon_id' => $weaponId,
                     'created_at' => now(),
                     'updated_at' => now(),
@@ -161,6 +161,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('weapons');
-        Schema::dropIfExists('creates');
+        Schema::dropIfExists('boxes');
     }
 };

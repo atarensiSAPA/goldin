@@ -3,65 +3,65 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\creates;
+use App\Models\boxes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class dailyCreatesController extends Controller
+class dailyBoxesController extends Controller
 {
     public function show(){
-        $creates = creates::get()->groupBy('box_name')->map->first();
+        $boxes = boxes::get()->groupBy('box_name')->map->first();
     
         //comprobar que la caja sea daily
-        $creates = $creates->filter(function ($create) {
-            return $create->daily == true;
+        $boxes = $boxes->filter(function ($box) {
+            return $box->daily == true;
         });
-        foreach ($creates as $create) {
-            $create->box_name = str_replace('_', ' ', $create->box_name);
+        foreach ($boxes as $box) {
+            $box->box_name = str_replace('_', ' ', $box->box_name);
         }
     
-        return view('creates.dailyCreate', ['creates' => $creates]);
+        return view('boxes.dailyBox', ['boxes' => $boxes]);
     }
 
-    public function openCreate(Request $request){
+    public function openBox(Request $request){
         $user = Auth::user();
         $user->addExperience(0);
         $box_name = $request->route('box_name');
-        $creates = creates::where('box_name', $box_name)->get();
+        $boxes = boxes::where('box_name', $box_name)->get();
     
-        foreach ($creates as $create) {
-            $create->coins = rand(2, 10) * $create->level;
+        foreach ($boxes as $box) {
+            $box->coins = rand(2, 10) * $box->level;
         }
     
-        $firstCreate = $creates->first();
-        if ($firstCreate) {
-            $createTitle = str_replace('_', ' ', $firstCreate->box_name);
+        $firstBox = $boxes->first();
+        if ($firstBox) {
+            $boxTitle = str_replace('_', ' ', $firstBox->box_name);
         } else {
-            $createTitle = 'No creates found';
+            $boxTitle = 'No boxes found';
         }
     
         $canOpenBox = false;
         $timer = null;
-        if ($user->level >= $creates->first()->level && $user->role == 1) {
+        if ($user->level >= $boxes->first()->level && $user->role == 1) {
             // Get the box id based on its name
-            $box_id = DB::table('creates')->where('box_name', $box_name)->value('id');
+            $box_id = DB::table('boxes')->where('box_name', $box_name)->value('id');
         
-            // Get the last time the user opened the specific box from the user_creates table
-            $lastOpened = DB::table('user_creates')
+            // Get the last time the user opened the specific box from the user_boxes table
+            $lastOpened = DB::table('user_boxes')
                 ->where('user_id', $user->id)
-                ->where('create_id', $box_id)
+                ->where('box_id', $box_id)
                 ->orderBy('last_opened_at', 'desc')
                 ->first();
         
             // Check if 24 hours have passed since the user last opened the box
             if (!$lastOpened || $lastOpened->last_opened_at <= Carbon::now()->subDay()) {
                 $canOpenBox = true;
-                // Update the last opened time in the user_creates table
-                DB::table('user_creates')
+                // Update the last opened time in the user_boxes table
+                DB::table('user_boxes')
                     ->where('user_id', $user->id)
-                    ->where('create_id', $box_id)
+                    ->where('box_id', $box_id)
                     ->update(['last_opened_at' => Carbon::now()]);
             } else {
                 // Calculate the time remaining until the user can open the box again
@@ -71,7 +71,7 @@ class dailyCreatesController extends Controller
             }
         }
         
-        return view('creates.openCreate', ['creates' => $creates, 'createTitle' => $createTitle, 'canOpenBox' => $canOpenBox, 'timer' => $timer]);
+        return view('boxes.openBox', ['boxes' => $boxes, 'boxTitle' => $boxTitle, 'canOpenBox' => $canOpenBox, 'timer' => $timer]);
     }
 
     public function ajaxDailyOpenBox(Request $request)
@@ -79,10 +79,10 @@ class dailyCreatesController extends Controller
         // Find the box
         $box = $request->input('box_name');
     
-        $create = Creates::where('box_name', $box)->first();
+        $box = boxes::where('box_name', $box)->first();
     
         // Calculate the number of coins
-        $coinsWon = rand(2, 10) * $create->level;
+        $coinsWon = rand(2, 10) * $box->level;
     
         // Get the current user
         $user = $request->user();
@@ -93,10 +93,10 @@ class dailyCreatesController extends Controller
         // Save the user's new coin total
         $user->save();
     
-        // Store the current date and time in the user_creates table
-        DB::table('user_creates')->insert([
+        // Store the current date and time in the user_boxes table
+        DB::table('user_boxes')->insert([
             'user_id' => $user->id,
-            'create_id' => $create->id,
+            'box_id' => $box->id,
             'last_opened_at' => Carbon::now(),
             'created_at' => now(),
             'updated_at' => now(),

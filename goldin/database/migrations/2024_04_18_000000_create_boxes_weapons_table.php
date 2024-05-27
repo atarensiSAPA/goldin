@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('rarity');
             $table->timestamps();
         });
-        Schema::create('creates', function (Blueprint $table) {
+        Schema::create('boxes', function (Blueprint $table) {
             $table->id();
             $table->string('box_name')->unique();
             $table->integer('cost');
@@ -32,9 +32,9 @@ return new class extends Migration
             $table->timestamps();
         });
         
-        Schema::create('create_weapon', function (Blueprint $table) {
+        Schema::create('box_weapons', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('create_id')->constrained('creates');
+            $table->foreignId('box_id')->constrained('boxes');
             $table->foreignId('weapon_id')->constrained('weapons');
             $table->timestamps();
         });
@@ -46,6 +46,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('weapons');
-        Schema::dropIfExists('creates');
+        Schema::dropIfExists('boxes');
     }
 };

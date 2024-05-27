@@ -5,8 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <!--Show the title of the create-->
-        <title>Daily creates</title>
+        <!--Show the title of the box-->
+        <title>Daily boxes</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -29,7 +29,7 @@
             <!-- Page Heading -->
             <header class="dark:bg-gray-800 text-light shadow-sm">
                 <div class="container py-3 px-3">
-                    <h2 class="font-weight-bold h4">Daily creates</h2>
+                    <h2 class="font-weight-bold h4">Daily boxes</h2>
                 </div>
             </header>
 

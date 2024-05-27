@@ -11,7 +11,7 @@ class weapons extends Model
 
     protected $fillable = ['units'];
 
-    //get the content of the table creates
+    //get the content of the table boxes
     public static function weaponsBD(){
         return weapons::all();
     }
@@ -20,8 +20,8 @@ class weapons extends Model
         return $this->belongsToMany(User::class, 'user_weapon');
     }
 
-    public function creates()
+    public function boxes()
     {
-        return $this->belongsToMany(creates::class, 'create_weapon');
+        return $this->belongsToMany(boxes::class, 'box_weapons');
     }
 }

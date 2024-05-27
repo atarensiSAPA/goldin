@@ -5,8 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <!--Show the title of the create-->
-        <title>{{ $createTitle }}</title>
+        <!--Show the title of the box-->
+        <title>{{ $boxTitle }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -20,14 +20,14 @@
         {{-- <script>
             let imagesPath = "{{ asset('images/skins') }}";
         </script>
-        <script defer type="module" src="{{ asset('js/creates.js') }}"></script> --}}
+        <script defer type="module" src="{{ asset('js/boxes.js') }}"></script> --}}
         
         
         <!-- Bootstrap -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Styles -->
-        <link href="{{ asset('css/creates.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/boxes.css') }}" rel="stylesheet">
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -36,7 +36,7 @@
             <!-- Page Heading -->
             <header class="dark:bg-gray-800 text-light shadow-sm">
                 <div class="container py-3 px-3">
-                    <h2 class="font-weight-bold h4">{{ $createTitle }}</h2>
+                    <h2 class="font-weight-bold h4">{{ $boxTitle }}</h2>
                 </div>
             </header>
 

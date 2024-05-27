@@ -38,10 +38,10 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('user_creates', function (Blueprint $table) {
+        Schema::create('user_boxes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('create_id')->constrained();
+            $table->foreignId('box_id')->constrained();
             $table->timestamp('last_opened_at')->nullable();
             $table->timestamps();
         });

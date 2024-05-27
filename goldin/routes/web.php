@@ -4,10 +4,9 @@ use App\Http\Controllers\blackJackController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\oauthController;
-use App\Http\Controllers\createsController;
-use App\Http\Controllers\dailyCreatesController;
+use App\Http\Controllers\boxesController;
+use App\Http\Controllers\dailyBoxesController;
 use App\Http\Controllers\minigamesController;
-use App\Http\Controllers\shopController;
 use App\Http\Controllers\administratorController;
 
 /*
@@ -25,23 +24,23 @@ Route::get('/', function () {
     return view('/auth/login');
 });
 
-//Rutas de la tabla creates
-Route::get('/dashboard', [createsController::class, 'index'], function () {
+//Rutas de la tabla boxes
+Route::get('/dashboard', [boxesController::class, 'index'], function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::post('/ajaxOpenBox', [createsController::class, 'ajaxOpenBox'])->name('ajaxOpenBox');
+Route::post('/ajaxOpenBox', [boxesController::class, 'ajaxOpenBox'])->name('ajaxOpenBox');
 
-Route::post('/ajaxDailyOpenBox', [dailyCreatesController::class, 'ajaxDailyOpenBox'])->name('ajaxDailyOpenBox');
+Route::post('/ajaxDailyOpenBox', [dailyboxesController::class, 'ajaxDailyOpenBox'])->name('ajaxDailyOpenBox');
 
 //Agafa el id de la ruta i el passa al controlador per saber quin caixa ha de mostrar
-Route::get('/creates/{box_name}', [createsController::class, 'openCreate'])->middleware(['auth', 'verified'])->name('creates.show');
+Route::get('/boxes/{box_name}', [boxesController::class, 'openBox'])->middleware(['auth', 'verified'])->name('boxes.show');
 
-Route::get('/dailyCreates/{box_name}', [dailyCreatesController::class, 'openCreate'])->middleware(['auth', 'verified'])->name('dailyCreates.show');
+Route::get('/dailyboxes/{box_name}', [dailyboxesController::class, 'openBox'])->middleware(['auth', 'verified'])->name('dailyboxes.show');
 
-Route::get('/dailyCreates', [dailyCreatesController::class, 'show'])->middleware(['auth', 'verified'])->name('daily-creates');
+Route::get('/dailyboxes', [dailyboxesController::class, 'show'])->middleware(['auth', 'verified'])->name('daily-boxes');
 
-Route::post('/user-information', [dailyCreatesController::class, 'userInfo']);
+Route::post('/user-information', [dailyboxesController::class, 'userInfo']);
 
 //Rutas de minigames
 Route::get('/minigames', function () {

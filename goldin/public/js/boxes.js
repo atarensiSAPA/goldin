@@ -8,7 +8,7 @@
 //         url: ajaxOpenBoxUrl, // Usar la variable global con la URL generada por Laravel
 //         method: 'POST',
 //         data: {
-//             box_name: '{{ $creates->first()->box_name }}',
+//             box_name: '{{ $boxes->first()->box_name }}',
 //         },
 //         headers: {
 //             'X-CSRF-TOKEN': token
@@ -51,7 +51,7 @@
 //             url: '/ajaxDailyOpenBox',
 //             method: 'POST',
 //             data: {
-//                 box_name: '{{ $creates->first()->box_name }}',
+//                 box_name: '{{ $boxes->first()->box_name }}',
 //                 _token: '{{ csrf_token() }}'
 //             },
 //             dataType: 'json',

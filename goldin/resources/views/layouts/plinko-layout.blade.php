@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <!--Show the title of the create-->
+        <!--Show the title of the box-->
         <title>Plinko</title>
 
         <!-- Fonts -->

@@ -1,66 +1,66 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\creates;
+use App\Models\boxes;
 use Illuminate\Http\Request;
 use App\Models\weapons;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Exception;
 
-class createsController extends Controller
+class boxesController extends Controller
 {
     public function index()
     {
-        $creates = creates::get()->groupBy('box_name')->map->first();
+        $boxes = boxes::get()->groupBy('box_name')->map->first();
 
         //comprobar que la caja sea daily
-        $creates = $creates->filter(function ($create) {
-            return $create->daily == false;
+        $boxes = $boxes->filter(function ($box) {
+            return $box->daily == false;
         });
         
-        foreach ($creates as $create) {
-            $create->box_name = str_replace('_', ' ', $create->box_name);
+        foreach ($boxes as $box) {
+            $box->box_name = str_replace('_', ' ', $box->box_name);
         }
         
-        return view('dashboard', ['creates' => $creates]);
+        return view('dashboard', ['boxes' => $boxes]);
     }
     
-    public function openCreate(Request $request)
+    public function openBox(Request $request)
     {
         $box_name = $request->route('box_name');
-        $creates = creates::where('box_name', $box_name)->with('weapons')->get();
+        $boxes = boxes::where('box_name', $box_name)->with('weapons')->get();
     
         $rarityOrder = ['mitic', 'legendary', 'epic', 'rare', 'commun'];
     
-        $creates = $this->showColors($creates);
+        $boxes = $this->showColors($boxes);
     
-        $firstCreate = $creates->first();
-        if ($firstCreate) {
-            $createTitle = str_replace('_', ' ', $firstCreate->box_name);
+        $firstBox = $boxes->first();
+        if ($firstBox) {
+            $boxTitle = str_replace('_', ' ', $firstBox->box_name);
         } else {
-            $createTitle = 'No creates found';
+            $boxTitle = 'No boxes found';
         }
-        foreach ($creates as $create) {
-            $create->weapons = $create->weapons->sortBy(function ($weapon) use ($rarityOrder) {
+        foreach ($boxes as $box) {
+            $box->weapons = $box->weapons->sortBy(function ($weapon) use ($rarityOrder) {
                 $weapon->appearance_percentage = $this->calculateAppearancePercentage($weapon);
                 return array_search($weapon->rarity, $rarityOrder);
             });
-            $create->weapons = $create->weapons->sortByDesc('price');
+            $box->weapons = $box->weapons->sortByDesc('price');
         }
     
-        return view('creates.openCreate', ['creates' => $creates, 'createTitle' => $createTitle]);
+        return view('boxes.openBox', ['boxes' => $boxes, 'boxTitle' => $boxTitle]);
     }
     
-    public function showColors($creates)
+    public function showColors($boxes)
     {
-        foreach ($creates as $create) {
-            foreach ($create->weapons as $weapon) {
+        foreach ($boxes as $box) {
+            foreach ($box->weapons as $weapon) {
                 $weapon->color = $this->getColorForRarity($weapon->rarity);
             }
         }
 
-        return $creates;
+        return $boxes;
     }
     
     public function getColorForRarity($rarity)
@@ -81,42 +81,6 @@ class createsController extends Controller
 
     public function calculateAppearancePercentage($weapon)
     {
-                // // Define Base Percentages
-        // $basePercentages = [
-        //     'mitic' => 1,
-        //     'legendary' => 5,
-        //     'epic' => 15,
-        //     'rare' => 30,
-        //     'commun' => 49,
-        // ];
-    
-        // // Get the total number of creates
-        // $totalCreates = creates::count();
-    
-        // // Get the number of creates with the same weapon_id
-        // $weaponCreates = creates::where('weapon_id', $weapon->id)->count();
-    
-        // // Get the base percentage for the weapon's rarity
-        // $basePercentage = $basePercentages[$weapon->rarity] ?? 0;
-    
-        // // Get the total number of weapons in the same rarity category
-        // $totalWeaponsInRarity = weapons::where('rarity', $weapon->rarity)->count();
-    
-        // // Calculate the appearance percentage
-        // if ($totalWeaponsInRarity != 0) {
-        //     $appearancePercentage = (($weaponCreates / $totalCreates) * ($basePercentage / $totalWeaponsInRarity)) * 100;
-        // } else {
-        //     $appearancePercentage = 0;
-        // }
-    
-        // // Debugging: Return the calculated values
-        // return [
-        //     'appearancePercentage' => round($appearancePercentage, 4),
-        //     'weaponCreates' => $weaponCreates,
-        //     'totalCreates' => $totalCreates,
-        //     'basePercentage' => $basePercentage,
-        //     'totalWeaponsInRarity' => $totalWeaponsInRarity,
-        // ];
         $basePercentages = [
             'mitic' => 1,
             'legendary' => 5,
@@ -134,20 +98,20 @@ class createsController extends Controller
     {
         $user = Auth::user();
         $box_name = $request->input('box_name');
-        $create = Creates::where('box_name', $box_name)->with('weapons')->first();
+        $box = boxes::where('box_name', $box_name)->with('weapons')->first();
 
-        if (!$create) {
-            return response()->json(['error' => 'No creates found.'], 404);
+        if (!$box) {
+            return response()->json(['error' => 'No boxes found.'], 404);
         }
 
-        if ($user->coins < $create->cost) {
+        if ($user->coins < $box->cost) {
             return response()->json(['error' => 'You do not have enough coins.'], 403);
         }
         
-        $user->coins -= $create->cost;
+        $user->coins -= $box->cost;
         $user->save();
         
-        $weapons = $create->weapons;
+        $weapons = $box->weapons;
         $weapon = $this->getWeaponBasedOnPercentage($weapons);
         
         if (!$weapon) {

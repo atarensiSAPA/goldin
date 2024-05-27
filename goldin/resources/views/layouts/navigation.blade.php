@@ -18,8 +18,8 @@
                     <x-nav-link :href="route('minigames-selector')" :active="request()->routeIs('minigames-selector')">
                         {{ __('Minigames') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('daily-creates')" :active="request()->routeIs('daily-creates')">
-                        {{ __('Daily case') }}
+                    <x-nav-link :href="route('daily-boxes')" :active="request()->routeIs('daily-boxes')">
+                        {{ __('Daily box') }}
                     </x-nav-link>
                     @if(Auth::user()->role == 2)
                     <x-nav-link :href="route('administrator')" :active="request()->routeIs('administrator')">
