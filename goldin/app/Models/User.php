@@ -28,6 +28,7 @@ class User extends Authenticatable
         'coins',
         'level',
         'experience',
+        'connected',
     ];
 
     /**

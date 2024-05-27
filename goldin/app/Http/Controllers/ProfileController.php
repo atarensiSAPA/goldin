@@ -39,6 +39,10 @@ class ProfileController extends Controller
     public function show()
     {
         $user = Auth::user();
+    
+        // Aquí puedes agregar un debug para verificar el rol del usuario
+        Log::info('User Role: ' . $user->role);
+        
         $weapons = $user->weapons()->orderBy('updated_at', 'desc')->get();
 
         // Obtener el filtro seleccionado del localStorage a través del request si existe
@@ -62,14 +66,14 @@ class ProfileController extends Controller
     
         $maxExperience = $user->max_experience; // Use the accessor to get the max_experience
 
-        $user->role = $this->getRoleName($user->role); // What rol is the user
+        $roleName = $this->getRoleName($user->role); // What rol is the user
     
         // Add color and appearance percentage to each weapon
         foreach ($weapons as $weapon) {
             $weapon->color = $this->getColorForRarity($weapon->rarity);
         }
     
-        return view('profile.user-information', ['user' => $user, 'maxExperience' => $maxExperience, 'weapons' => $weapons]);
+        return view('profile.user-information', ['user' => $user, 'maxExperience' => $maxExperience, 'weapons' => $weapons, 'roleName' => $roleName]);
     }
 
     public function applyFilter($weapons, $filter)

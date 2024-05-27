@@ -19,7 +19,7 @@
             Email: {{ $user->email }}
         </p>
         <p class="text-lg font-light text-gray-700 dark:text-gray-200">
-            Role: {{ $user->role }}
+            Role: {{ $roleName }}
         </p>
         <p class="text-lg font-light text-gray-700 dark:text-gray-200">
         @if ($user->role == 'Normal')

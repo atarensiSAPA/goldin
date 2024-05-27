@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\blackJackController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\oauthController;
@@ -8,6 +7,7 @@ use App\Http\Controllers\boxesController;
 use App\Http\Controllers\dailyBoxesController;
 use App\Http\Controllers\minigamesController;
 use App\Http\Controllers\administratorController;
+use App\Http\Controllers\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,16 +31,16 @@ Route::get('/dashboard', [boxesController::class, 'index'], function () {
 
 Route::post('/ajaxOpenBox', [boxesController::class, 'ajaxOpenBox'])->name('ajaxOpenBox');
 
-Route::post('/ajaxDailyOpenBox', [dailyboxesController::class, 'ajaxDailyOpenBox'])->name('ajaxDailyOpenBox');
+Route::post('/ajaxDailyOpenBox', [dailyBoxesController::class, 'ajaxDailyOpenBox'])->name('ajaxDailyOpenBox');
 
 //Agafa el id de la ruta i el passa al controlador per saber quin caixa ha de mostrar
 Route::get('/boxes/{box_name}', [boxesController::class, 'openBox'])->middleware(['auth', 'verified'])->name('boxes.show');
 
-Route::get('/dailyboxes/{box_name}', [dailyboxesController::class, 'openBox'])->middleware(['auth', 'verified'])->name('dailyboxes.show');
+Route::get('/dailyboxes/{box_name}', [dailyBoxesController::class, 'openBox'])->middleware(['auth', 'verified'])->name('dailyboxes.show');
 
-Route::get('/dailyboxes', [dailyboxesController::class, 'show'])->middleware(['auth', 'verified'])->name('daily-boxes');
+Route::get('/dailyboxes', [dailyBoxesController::class, 'show'])->middleware(['auth', 'verified'])->name('daily-boxes');
 
-Route::post('/user-information', [dailyboxesController::class, 'userInfo']);
+Route::post('/user-information', [dailyBoxesController::class, 'userInfo'])->middleware(['auth', 'verified']);
 
 //Rutas de minigames
 Route::get('/minigames', function () {
@@ -62,11 +62,11 @@ Route::post('/update-coins', [minigamesController::class, 'updateCoins']);
 // })->middleware(['auth', 'verified'])->name('plinko');
 
 // Rutas del perfil
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'verified')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('profile');
+    Route::get('/user-profile', [ProfileController::class, 'show'])->name('user-profile');
     Route::get('/edit-profile', [ProfileController::class, 'editProfile'])->name('edit-profile');
     Route::post('/sell-weapon', [ProfileController::class, 'sell']);
     Route::post('/filter-weapons', [ProfileController::class, 'filterWeapons']);
@@ -74,10 +74,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/update-vip', [ProfileController::class, 'updateVip'])->name('update-vip');
 });
 
-
-Route::get('/administrator', [administratorController::class, 'show'])->name('administrator');
-
-Route::get('/administrator', [administratorController::class, 'show'])->name('administrator');
+// Rutas de admin
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
+    Route::get('/administrator', [administratorController::class, 'show'])->name('administrator');
+    Route::get('/admin-users', [administratorController::class, 'showUsers'])->name('admin-users');
+});
 
 //Oauth Google
 Route::get('/login-google', [oauthController::class, 'loginWithGoogle']);

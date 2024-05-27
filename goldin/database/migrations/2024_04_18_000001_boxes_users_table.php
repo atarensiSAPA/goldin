@@ -21,12 +21,13 @@ return new class extends Migration
             $table->integer('level')->default(1);
             $table->integer('experience')->default(0);
             $table->timestamp('vip_expires_at')->nullable();
-        
+            $table->boolean('connected')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->string('avatar')->nullable();
             $table->string('external_id')->nullable();
             $table->string('external_auth')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });

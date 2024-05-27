@@ -37,9 +37,13 @@ class AuthenticatedSessionController extends Controller
         
         if (Auth::attempt($request->only('email', 'password'))) {
             $request->session()->forget('login_attempts');
-
+    
             $user = Auth::user();
             $user->addExperience(0);
+    
+            // Update connected field with current time
+            $user->connected = 1;
+            $user->save();
     
             $request->session()->regenerate();
     
@@ -58,12 +62,28 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $user = Auth::user();
+        if ($user) {
+            $user->connected = 0;
+            $user->save();
+        }
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    public function heartbeat(Request $request)
+    {
+        $user = Auth::user();
+        if ($user) {
+            $user->last_seen = now();
+            $user->save();
+        }
+
+        return response()->json(['status' => 'success']);
     }
 }

@@ -21,11 +21,11 @@
                     <x-nav-link :href="route('daily-boxes')" :active="request()->routeIs('daily-boxes')">
                         {{ __('Daily box') }}
                     </x-nav-link>
-                    @if(Auth::user()->role == 2)
-                    <x-nav-link :href="route('administrator')" :active="request()->routeIs('administrator')">
-                        {{ __('Administrator') }}
-                    </x-nav-link>
-                @endif
+                    @if(Auth::user()->role === 2)
+                        <x-nav-link :href="route('administrator')" :active="request()->routeIs('administrator')">
+                            {{ __('Administrator') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -36,6 +36,10 @@
                 
                 <!-- Show the coins from the user -->
                 <div class="hidden sm:flex sm:items-center sm:ml-6 sm:mr-4 d-flex align-items-center">
+                    <div class="text-success pr-4">
+                        {{ Auth::user()::where('connected', true)->where('role', '!=', 2)->count() }} 👤
+                    </div>
+
                     <div id="coins" class="text-light text-lg font-medium">
                         {{ Auth::user()->coins }}
                     </div>
@@ -58,7 +62,7 @@
                     </x-slot>
                     <x-slot name="content">
                         <div class="bg-dark text-light">
-                            <x-dropdown-link :href="route('profile', ['id' => Auth::id()])">
+                            <x-dropdown-link :href="route('user-profile')">
                                 {{ __('Profile') }}
                             </x-dropdown-link>
                     

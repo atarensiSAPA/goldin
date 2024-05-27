@@ -8,10 +8,10 @@
                 <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <img src="https://via.placeholder.com/1200x400" class="d-block w-100" alt="...">
+                            <img src="{{ asset('images/boxes/the_villain.png') }}" class="d-block w-100" alt="...">
                         </div>
                         <div class="carousel-item">
-                            <img src="https://via.placeholder.com/1200x400" class="d-block w-100" alt="...">
+                            <img src="{{ asset('images/boxes/the_heroe.png') }}" class="d-block w-100" alt="...">
                         </div>
                         <div class="carousel-item">
                             <img src="https://via.placeholder.com/1200x400" class="d-block w-100" alt="...">
@@ -28,7 +28,14 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.carousel').carousel();
+        });
+    </script> --}}
 
     <div class="container">
         <div class="row text-white">
