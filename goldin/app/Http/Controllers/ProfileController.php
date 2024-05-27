@@ -11,6 +11,8 @@ use Illuminate\View\View;
 use App\Models\weapons;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class ProfileController extends Controller
 {
@@ -21,15 +23,46 @@ class ProfileController extends Controller
         return view('profile.partials.edit-profile-form', ['user' => $user]);
     }
 
+    public function getRoleName($role) {
+        switch ($role) {
+            case 0:
+                return 'Normal';
+            case 1:
+                return 'VIP';
+            case 2:
+                return 'Admin';
+            default:
+                return 'Unknown';
+        }
+    }
+
     public function show()
     {
         $user = Auth::user();
         $weapons = $user->weapons()->orderBy('updated_at', 'desc')->get();
+
+        // Obtener el filtro seleccionado del localStorage a través del request si existe
+        $selectedFilter = request()->input('filter', session('selectedFilter', 'obtention'));
+        session(['selectedFilter' => $selectedFilter]);
+    
+        // Aplicar el filtro
+        $weapons = $this->applyFilter($weapons, $selectedFilter);
+
+        // Check if the VIP subscription has expired
+        if ($user->vip_expires_at && Carbon::parse($user->vip_expires_at)->isPast()) {
+            // If the VIP subscription has expired, reset it to 1 month from now
+            $user->vip_expires_at = Carbon::now()->addMonth();
+            $user->save();
+        }
+
+        $user->vip_expires_at ? Carbon::parse($user->vip_expires_at)->diffForHumans() : null;
     
         // Calculate the user's level and experience
         $user->addExperience(0);
     
         $maxExperience = $user->max_experience; // Use the accessor to get the max_experience
+
+        $user->role = $this->getRoleName($user->role); // What rol is the user
     
         // Add color and appearance percentage to each weapon
         foreach ($weapons as $weapon) {
@@ -37,6 +70,43 @@ class ProfileController extends Controller
         }
     
         return view('profile.user-information', ['user' => $user, 'maxExperience' => $maxExperience, 'weapons' => $weapons]);
+    }
+
+    public function applyFilter($weapons, $filter)
+    {
+        switch ($filter) {
+            case 'price':
+                return $weapons->sortByDesc('price')->values();
+            case 'rarity':
+                // Define el orden de las rarezas
+                $rarityOrder = ['commun', 'rare', 'epic', 'legendary', 'mitic'];
+                // Ordena las armas por rareza
+                return $weapons->sortBy(function ($weapon) use ($rarityOrder) {
+                    return array_search($weapon->rarity, $rarityOrder);
+                })->values();
+            case 'obtention':
+            default:
+                return $weapons->sortByDesc('updated_at')->values();
+        }
+    }
+    
+    public function filterWeapons(Request $request)
+    {
+        $filter = $request->input('filter');
+        $user = Auth::user();
+    
+        // Almacenar el filtro seleccionado en la sesión
+        session(['selectedFilter' => $filter]);
+    
+        // Aplicar el filtro
+        $weapons = $this->applyFilter($user->weapons()->get(), $filter);
+    
+        // Añade el color y el porcentaje de apariencia a cada arma
+        foreach ($weapons as $weapon) {
+            $weapon->color = $this->getColorForRarity($weapon->rarity);
+        }
+    
+        return response()->json(['weapons' => $weapons]);
     }
     
     public function getColorForRarity($rarity)
@@ -59,15 +129,15 @@ class ProfileController extends Controller
     {
         $weaponId = $request->input('weapon_id');
     
-        // Busca la arma en la base de datos
+        // Busca el arma en la base de datos
         $weapon = weapons::find($weaponId);
     
         if (!$weapon) {
-            // Si la arma no existe, devuelve un error
+            // Si el arma no existe, devuelve un error
             return response()->json(['error' => 'Weapon not found'], 404);
         }
     
-        // Calcula el precio de venta de la arma
+        // Calcula el precio de venta del arma
         $sellPrice = $weapon->price;
     
         // Añade el precio de venta a la cuenta del usuario
@@ -80,9 +150,9 @@ class ProfileController extends Controller
             ->where('user_id', $user->id)
             ->where('weapon_id', $weaponId)
             ->first();
-
+    
         Log::info('User weapon to be deleted:', ['user_weapon' => $userWeapon]);
-
+    
         if ($userWeapon) {
             DB::table('user_weapon')->where('id', $userWeapon->id)->delete();
             Log::info('User weapon deleted successfully');
@@ -90,53 +160,8 @@ class ProfileController extends Controller
             Log::info('No user weapon found to delete');
         }
     
-        // Devuelve una respuesta de éxito
-        return response()->json(['success' => true]);
-    }
-
-    public function filterWeapons(Request $request)
-    {
-        $filter = $request->input('filter');
-        $user = Auth::user();
-    
-        switch ($filter) {
-            case 'obtention':
-                $weapons = $user->weapons()->orderBy('updated_at', 'desc')->get();
-                break;
-            case 'price':
-                $weapons = $user->weapons()->orderBy('price', 'desc')->get();
-                break;
-            case 'rarity':
-                // Define el orden de las rarezas
-                $rarityOrder = ['commun', 'rare', 'epic', 'legendary', 'mitic'];
-            
-                // Obtiene todas las armas del usuario
-                $weapons = $user->weapons()->get();
-            
-                // Ordena las armas por rareza
-                $weapons = $weapons->sortBy(function ($weapon) use ($rarityOrder) {
-                    return array_search($weapon->rarity, $rarityOrder);
-                });
-            
-                // Dentro de cada grupo de rareza, ordena las armas por updated_at
-                $weapons = $weapons->sortByDesc(function ($weapon) {
-                    return $weapon->updated_at;
-                });
-            
-                // Convierte la colección ordenada en un array simple
-                $weapons = $weapons->values()->all();
-                break;
-            default:
-                $weapons = $user->weapons;
-                break;
-        }
-    
-        // Add color and appearance percentage to each weapon
-        foreach ($weapons as $weapon) {
-            $weapon->color = $this->getColorForRarity($weapon->rarity);
-        }
-    
-        return response()->json(['weapons' => $weapons]);
+        // Devuelve una respuesta de éxito con el nuevo balance de monedas
+        return response()->json(['success' => true, 'newCoinBalance' => $user->coins]);
     }
 
     /**
@@ -184,5 +209,25 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+    
+    public function cancelVip(Request $request)
+    {
+        $request->validate([
+            'password' => 'required',
+        ], [
+            'password.required' => 'Please fill out the password field.',
+        ]);
+    
+        $user = Auth::user();
+    
+        if (Hash::check($request->password, $user->password)) {
+            $user->role = 0;
+            $user->save();
+    
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json(['success' => false, 'error' => 'The provided password is incorrect.']);
+        }
     }
 }

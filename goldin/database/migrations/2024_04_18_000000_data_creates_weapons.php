@@ -107,6 +107,20 @@ return new class extends Migration
                 'cost' => 800,
                 'box_img' => 'the_heroe.png',
             ],
+            [
+                'box_name' => 'Create_level_1',
+                'cost' => 0,
+                'box_img' => 'level_1.png',
+                'daily' => true,
+                'level' => 1,
+            ],
+            [
+                'box_name' => 'Create_level_2',
+                'cost' => 0,
+                'box_img' => 'level_2.png',
+                'daily' => true,
+                'level' => 2,
+            ],
             // ... other creates ...
         ];
         

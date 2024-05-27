@@ -5,10 +5,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\oauthController;
 use App\Http\Controllers\createsController;
-use App\Http\Controllers\dailyCreates;
+use App\Http\Controllers\dailyCreatesController;
 use App\Http\Controllers\minigamesController;
 use App\Http\Controllers\shopController;
-use App\Http\Controllers\dailyCreatesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,9 +29,18 @@ Route::get('/dashboard', [createsController::class, 'index'], function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::post('/ajaxOpenBox', [createsController::class, 'ajaxOpenBox'])->middleware(['auth', 'verified']);
+Route::post('/ajaxOpenBox', [createsController::class, 'ajaxOpenBox'])->name('ajaxOpenBox');
+
+Route::post('/ajaxDailyOpenBox', [dailyCreatesController::class, 'ajaxDailyOpenBox'])->name('ajaxDailyOpenBox');
+
+//Agafa el id de la ruta i el passa al controlador per saber quin caixa ha de mostrar
+Route::get('/creates/{box_name}', [createsController::class, 'openCreate'])->middleware(['auth', 'verified'])->name('creates.show');
+
+Route::get('/dailyCreates/{box_name}', [dailyCreatesController::class, 'openCreate'])->middleware(['auth', 'verified'])->name('dailyCreates.show');
 
 Route::get('/dailyCreates', [dailyCreatesController::class, 'show'])->middleware(['auth', 'verified'])->name('daily-creates');
+
+Route::post('/user-information', [dailyCreatesController::class, 'userInfo']);
 
 //Rutas de minigames
 Route::get('/minigames', function () {
@@ -49,14 +57,9 @@ Route::get('/minigames/3cups-1ball', [minigamesController::class, 'show3cups1bal
 Route::post('/bet', [minigamesController::class, 'placeBet']);
 Route::post('/update-coins', [minigamesController::class, 'updateCoins']);
 
-Route::get('/minigames/plinko', function () {
-    return view('minigames.plinko');
-})->middleware(['auth', 'verified'])->name('plinko');
-
-//Agafa el id de la ruta i el passa al controlador per saber quin caixa ha de mostrar
-Route::get('/creates/{box_name}', [createsController::class, 'openCreate'], function () {
-    return view('creates.openCreate');
-})->middleware(['auth', 'verified'])->name('creates.show');
+// Route::get('/minigames/plinko', function () {
+//     return view('minigames.plinko');
+// })->middleware(['auth', 'verified'])->name('plinko');
 
 // Rutas del perfil
 Route::middleware('auth')->group(function () {
@@ -67,12 +70,13 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/profile/{id}', [ProfileController::class, 'show'])->middleware(['auth', 'verified'])->name('profile');
 
-
 Route::get('/edit-profile', [ProfileController::class, 'editProfile'])->middleware(['auth', 'verified'])->name('edit-profile');
 
-Route::post('/sell-weapon', [ProfileController::class, 'sell'])->middleware(['auth', 'verified'])->name('edit-profile');
+Route::post('/sell-weapon', [ProfileController::class, 'sell'])->middleware(['auth', 'verified']);
 
-Route::post('/filter-weapons', [ProfileController::class, 'filterWeapons'])->middleware(['auth', 'verified'])->name('edit-profile');
+Route::post('/filter-weapons', [ProfileController::class, 'filterWeapons'])->middleware(['auth', 'verified']);
+
+Route::post('/cancel-vip', [ProfileController::class, 'cancelVip'])->name('cancel-vip');
 
 //Oauth Google
 Route::get('/login-google', [oauthController::class, 'loginWithGoogle']);

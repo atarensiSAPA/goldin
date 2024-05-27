@@ -17,10 +17,11 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->integer('role')->default(0); // 0 = user, 1 = VIP, 2 = admin
-            $table->integer('coins')->default(0);
+            $table->integer('coins')->default(200);
             $table->integer('level')->default(1);
             $table->integer('experience')->default(0);
-
+            $table->timestamp('vip_expires_at')->nullable();
+        
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->string('avatar')->nullable();
@@ -34,6 +35,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('weapon_id')->constrained();
+            $table->timestamps();
+        });
+
+        Schema::create('user_creates', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('create_id')->constrained();
+            $table->timestamp('last_opened_at')->nullable();
             $table->timestamps();
         });
 

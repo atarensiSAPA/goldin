@@ -13,11 +13,16 @@ class createsController extends Controller
     public function index()
     {
         $creates = creates::get()->groupBy('box_name')->map->first();
-    
+
+        //comprobar que la caja sea daily
+        $creates = $creates->filter(function ($create) {
+            return $create->daily == false;
+        });
+        
         foreach ($creates as $create) {
             $create->box_name = str_replace('_', ' ', $create->box_name);
         }
-    
+        
         return view('dashboard', ['creates' => $creates]);
     }
     
@@ -41,6 +46,7 @@ class createsController extends Controller
                 $weapon->appearance_percentage = $this->calculateAppearancePercentage($weapon);
                 return array_search($weapon->rarity, $rarityOrder);
             });
+            $create->weapons = $create->weapons->sortByDesc('price');
         }
     
         return view('creates.openCreate', ['creates' => $creates, 'createTitle' => $createTitle]);
@@ -128,12 +134,12 @@ class createsController extends Controller
     {
         $user = Auth::user();
         $box_name = $request->input('box_name');
-        $create = creates::where('box_name', $box_name)->with('weapons')->first();
-    
+        $create = Creates::where('box_name', $box_name)->with('weapons')->first();
+
         if (!$create) {
             return response()->json(['error' => 'No creates found.'], 404);
         }
-    
+
         if ($user->coins < $create->cost) {
             return response()->json(['error' => 'You do not have enough coins.'], 403);
         }
@@ -152,7 +158,7 @@ class createsController extends Controller
 
         // Add 50 exp per box
         $user->addExperience(50);
-    
+
         $color = $this->getColorForRarity($weapon->rarity);
         
         return response()->json(['weapon' => $weapon, 'coins' => $user->coins, 'color' => $color]);

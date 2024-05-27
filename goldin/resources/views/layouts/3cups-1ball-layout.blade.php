@@ -15,42 +15,13 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        {{-- <script src="{{ asset('js/3cups-1ballJs.js') }}" defer></script> --}}
+        <script defer type="module" src="{{ asset('js/minigames_3cups_1ball.js') }}" ></script>
 
         <!-- Bootstrap -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Styles -->
-        <link href="{{ asset('css/dashboardCss.css') }}" rel="stylesheet">
-        <style>
-            .cup {
-                width: 100px;
-                height: 100px;
-                background-color: #f1f1f1;
-                border-radius: 50%;
-                border: 1px solid #ccc;
-                display: inline-block;
-                margin: 10px;
-                position: relative;
-            }
-
-            .ball {
-                width: 20px;
-                height: 20px;
-                background-color: #333;
-                border-radius: 50%;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            }
-
-            #result {
-                margin-top: 20px;
-                font-size: 20px;
-                color: white
-            }
-        </style>
+        <link href="{{ asset('css/minigames_3cups-1ball.css') }}" rel="stylesheet">
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">

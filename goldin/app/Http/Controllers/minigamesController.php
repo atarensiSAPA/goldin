@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class minigamesController extends Controller
 {
@@ -18,6 +19,7 @@ class minigamesController extends Controller
     {
         $user = Auth::user();
         $betAmount = $request->input('bet');
+        $userType = $request->input('userType'); // Añadir esto
     
         // Comprobar si el usuario tiene suficientes monedas
         if ($user->coins < $betAmount) {
@@ -31,24 +33,37 @@ class minigamesController extends Controller
         $user->save();
     
         // Devolver una respuesta al cliente
-        return response()->json(['message' => 'Bet placed successfully', 'coins' => $user->coins]);
+        return response()->json(['message' => 'Bet placed successfully', 'coins' => $user->coins, 'userType' => $userType]); // Añadir userType a la respuesta
     }
-
+    
     public function updateCoins(Request $request)
     {
         $user = Auth::user();
-        $winnings = $request->input('coins');
+        $betAmount = $request->input('bet');
+        $userWon = filter_var($request->input('won'), FILTER_VALIDATE_BOOLEAN); // Convertir a booleano
+        $winnings = 0; // Inicializar las ganancias a 0
     
-        // Sumar las monedas ganadas al total de monedas del usuario
-        $user->coins += $winnings;
+        if ($userWon) {
+            // Calcular las ganancias dependiendo del rol del usuario
+            if ($user->role == 1) { // Si el usuario es VIP
+                $winnings = $betAmount * 1.5;
+                $user->addExperience(100);
+            } else { // Si el usuario es normal o admin
+                $winnings = $betAmount * 1.25;
+                $user->addExperience(50);
+            }
+    
+            // Sumar las monedas ganadas al total de monedas del usuario
+            $user->coins += $winnings;
+        } else {
+            // Si el usuario pierde, las ganancias son 0 y no se suman monedas
+            $winnings = -$betAmount; // Esto refleja la pérdida en el frontend
+        }
     
         // Guardar el nuevo total de monedas en la base de datos
         $user->save();
-
-        //añadirle 50 exp si gana
-        $user->addExperience(50);
     
         // Devolver una respuesta al cliente
-        return response()->json(['message' => 'Coins updated successfully', 'coins' => $user->coins]);
+        return response()->json(['message' => 'Coins updated successfully', 'coins' => $user->coins, 'winnings' => $winnings]);
     }
 }

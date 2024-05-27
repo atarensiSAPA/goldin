@@ -25,8 +25,10 @@ return new class extends Migration
         Schema::create('creates', function (Blueprint $table) {
             $table->id();
             $table->string('box_name')->unique();
-            $table->integer('cost')->nullable();
+            $table->integer('cost');
             $table->string("box_img")->nullable();
+            $table->boolean('daily')->default(0);
+            $table->integer('level')->nullable();
             $table->timestamps();
         });
         

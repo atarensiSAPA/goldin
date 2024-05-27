@@ -1,0 +1,43 @@
+.bigContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.miniContainer {
+    padding: 120px 400px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.inner-container {
+    padding: 120px 400px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.game-link {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.game-card {
+    overflow: hidden;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border-radius: 1rem;
+    width: 500px;
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-title {
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 10px;
+    color: white;
+    text-align: center;
+    border-radius: 1rem;
+    font-size: 24px;
+}
