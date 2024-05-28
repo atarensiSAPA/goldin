@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string("box_img")->nullable();
             $table->boolean('daily')->default(0);
             $table->integer('level')->nullable();
+            $table->boolean('available')->default(1);
             $table->timestamps();
         });
         

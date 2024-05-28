@@ -6,17 +6,24 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\boxes;
 
 class AdministratorController extends Controller
 {
     public function show()
     {
         $user = Auth::user();
-
+    
         // Obtener los usuarios que estan activos
         $connectedUsers = User::where('connected', 1)->where('role', '!=', 2)->count();
+    
+        // Contar todas las cajas normales disponibles
+        $availableBoxes = boxes::where('available', true)->where('daily', false)->count();
 
-        return view('admin.admin-dashboard', ['user' => $user, 'connectedUsers' => $connectedUsers]);
+        // Contar todas las cajas diarias disponibles
+        $availableDailyBoxes = boxes::where('available', true)->where('daily', true)->count();
+    
+        return view('admin.admin-dashboard', ['user' => $user, 'connectedUsers' => $connectedUsers, 'availableBoxes' => $availableBoxes, 'availableDailyBoxes' => $availableDailyBoxes]);
     }
 
     public function showUsers(Request $request)
@@ -101,5 +108,11 @@ class AdministratorController extends Controller
     
         // Redirigir de vuelta a la página de administración de usuarios con un mensaje de éxito
         return redirect()->route('admin-users')->with('status', 'User has been kicked.');
+    }
+
+    public function showBoxes(){
+        $boxes = boxes::all();
+
+        return view('admin.partials.admin-boxes', ['boxes' => $boxes]);
     }
 }

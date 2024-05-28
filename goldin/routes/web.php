@@ -78,6 +78,8 @@ Route::middleware(['auth', 'verified', 'admin', 'CheckIfKicked'])->group(functio
     Route::put('/admin-users/{user}', [administratorController::class, 'update'])->name('users.update');
     Route::delete('/admin-users/{user}', [AdministratorController::class, 'destroy'])->name('admin-users.destroy');
     Route::post('/admin-users/kick/{user}', [AdministratorController::class, 'kick'])->name('users.kick');
+
+    Route::get('/admin-boxes', [administratorController::class, 'showBoxes'])->name('admin-boxes');
 });
 
 //Oauth Google
