@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AdministratorController extends Controller
 {
@@ -34,6 +35,24 @@ class AdministratorController extends Controller
         }
 
         return view('admin.partials.admin-users', ['nonAdminUsers' => $nonAdminUsers]);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => 'required|confirmed|min:8',
+        ]);
+
+        $user = new User;
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->email_verified_at = now();
+        $user->save();
+
+        return redirect()->route('admin-users')->with('success', 'User added successfully');
     }
 
     public function edit($id)
@@ -71,5 +90,16 @@ class AdministratorController extends Controller
         $user->delete();
 
         return redirect()->route('admin-users')->with('success', 'User deleted successfully');
+    }
+
+    public function kick(User $user)
+    {
+        // Marcar al usuario como "expulsado"
+        $user->is_kicked = true;
+        $user->connected = 0;
+        $user->save();
+    
+        // Redirigir de vuelta a la página de administración de usuarios con un mensaje de éxito
+        return redirect()->route('admin-users')->with('status', 'User has been kicked.');
     }
 }

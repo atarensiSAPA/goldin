@@ -43,6 +43,7 @@ class AuthenticatedSessionController extends Controller
     
             // Update connected field with current time
             $user->connected = 1;
+            $user->is_kicked = 0;
             $user->save();
     
             $request->session()->regenerate();
@@ -74,16 +75,5 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
-    }
-
-    public function heartbeat(Request $request)
-    {
-        $user = Auth::user();
-        if ($user) {
-            $user->last_seen = now();
-            $user->save();
-        }
-
-        return response()->json(['status' => 'success']);
     }
 }

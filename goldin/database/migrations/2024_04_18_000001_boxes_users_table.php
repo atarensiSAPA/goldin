@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('experience')->default(0);
             $table->timestamp('vip_expires_at')->nullable();
             $table->boolean('connected')->default(0);
+            $table->boolean('is_kicked')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->string('avatar')->nullable();

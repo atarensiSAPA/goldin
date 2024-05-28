@@ -7,7 +7,6 @@ use App\Http\Controllers\boxesController;
 use App\Http\Controllers\dailyBoxesController;
 use App\Http\Controllers\minigamesController;
 use App\Http\Controllers\administratorController;
-use App\Http\Controllers\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,41 +23,41 @@ Route::get('/', function () {
     return view('/auth/login');
 });
 
-//Rutas de la tabla boxes
-Route::get('/dashboard', [boxesController::class, 'index'], function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'verified', 'CheckIfKicked'])->group(function () {
+    //Rutas de la tabla boxes
+    Route::get('/dashboard', [boxesController::class, 'index'], function () {
+        return view('dashboard');
+    })->name('dashboard');
 
-Route::post('/ajaxOpenBox', [boxesController::class, 'ajaxOpenBox'])->name('ajaxOpenBox');
+    Route::post('/ajaxOpenBox', [boxesController::class, 'ajaxOpenBox'])->name('ajaxOpenBox');
 
-Route::post('/ajaxDailyOpenBox', [dailyBoxesController::class, 'ajaxDailyOpenBox'])->name('ajaxDailyOpenBox');
+    Route::post('/ajaxDailyOpenBox', [dailyBoxesController::class, 'ajaxDailyOpenBox'])->name('ajaxDailyOpenBox');
 
-//Agafa el id de la ruta i el passa al controlador per saber quin caixa ha de mostrar
-Route::get('/boxes/{box_name}', [boxesController::class, 'openBox'])->middleware(['auth', 'verified'])->name('boxes.show');
+    //Agafa el id de la ruta i el passa al controlador per saber quin caixa ha de mostrar
+    Route::get('/boxes/{box_name}', [boxesController::class, 'openBox'])->name('boxes.show');
 
-Route::get('/dailyboxes/{box_name}', [dailyBoxesController::class, 'openBox'])->middleware(['auth', 'verified'])->name('dailyboxes.show');
+    Route::get('/dailyboxes/{box_name}', [dailyBoxesController::class, 'openBox'])->name('dailyboxes.show');
 
-Route::get('/dailyboxes', [dailyBoxesController::class, 'show'])->middleware(['auth', 'verified'])->name('daily-boxes');
+    Route::get('/dailyboxes', [dailyBoxesController::class, 'show'])->name('daily-boxes');
 
-Route::post('/user-information', [dailyBoxesController::class, 'userInfo'])->middleware(['auth', 'verified']);
+    Route::post('/user-information', [dailyBoxesController::class, 'userInfo']);
 
-//Rutas de minigames
-Route::get('/minigames', function () {
-    return view('minigames.minigames-selector');
-})->middleware(['auth', 'verified'])->name('minigames-selector');
+    //Rutas de minigames
+    Route::get('/minigames', function () {
+        return view('minigames.minigames-selector');
+    })->name('minigames-selector');
 
-//Black jack
-Route::get('/minigames/black-jack', [minigamesController::class, 'showBlackJack'])->middleware(['auth', 'verified'])->name('black-jack');
+    //Black jack
+    Route::get('/minigames/black-jack', [minigamesController::class, 'showBlackJack'])->name('black-jack');
 
-//3 cups 1 ball
-Route::get('/minigames/3cups-1ball', [minigamesController::class, 'show3cups1ball'])->middleware(['auth', 'verified'])->name('3cups-1ball');
+    //3 cups 1 ball
+    Route::get('/minigames/3cups-1ball', [minigamesController::class, 'show3cups1ball'])->name('3cups-1ball');
 
-//Bets and update coins
-Route::post('/bet', [minigamesController::class, 'placeBet']);
-Route::post('/update-coins', [minigamesController::class, 'updateCoins']);
+    //Bets and update coins
+    Route::post('/bet', [minigamesController::class, 'placeBet']);
+    Route::post('/update-coins', [minigamesController::class, 'updateCoins']);
 
-// Rutas del perfil
-Route::middleware('auth', 'verified')->group(function () {
+    // Rutas del perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -71,12 +70,14 @@ Route::middleware('auth', 'verified')->group(function () {
 });
 
 // Rutas de admin
-Route::middleware(['auth', 'verified', 'admin'])->group(function () {
+Route::middleware(['auth', 'verified', 'admin', 'CheckIfKicked'])->group(function () {
     Route::get('/administrator', [administratorController::class, 'show'])->name('administrator');
     Route::get('/admin-users', [administratorController::class, 'showUsers'])->name('admin-users');
+    Route::post('/add-user', [administratorController::class, 'store']);
     Route::get('/admin-users/{user}/edit', [administratorController::class, 'edit'])->name('users.edit');
     Route::put('/admin-users/{user}', [administratorController::class, 'update'])->name('users.update');
-    Route::delete('/admin-users/{id}', [AdministratorController::class, 'destroy'])->name('admin-users.destroy');
+    Route::delete('/admin-users/{user}', [AdministratorController::class, 'destroy'])->name('admin-users.destroy');
+    Route::post('/admin-users/kick/{user}', [AdministratorController::class, 'kick'])->name('users.kick');
 });
 
 //Oauth Google
