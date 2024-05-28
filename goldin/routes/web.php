@@ -57,10 +57,6 @@ Route::get('/minigames/3cups-1ball', [minigamesController::class, 'show3cups1bal
 Route::post('/bet', [minigamesController::class, 'placeBet']);
 Route::post('/update-coins', [minigamesController::class, 'updateCoins']);
 
-// Route::get('/minigames/plinko', function () {
-//     return view('minigames.plinko');
-// })->middleware(['auth', 'verified'])->name('plinko');
-
 // Rutas del perfil
 Route::middleware('auth', 'verified')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -78,6 +74,9 @@ Route::middleware('auth', 'verified')->group(function () {
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/administrator', [administratorController::class, 'show'])->name('administrator');
     Route::get('/admin-users', [administratorController::class, 'showUsers'])->name('admin-users');
+    Route::get('/admin-users/{user}/edit', [administratorController::class, 'edit'])->name('users.edit');
+    Route::put('/admin-users/{user}', [administratorController::class, 'update'])->name('users.update');
+    Route::delete('/admin-users/{id}', [AdministratorController::class, 'destroy'])->name('admin-users.destroy');
 });
 
 //Oauth Google
@@ -89,7 +88,5 @@ Route::get('/google-callback', [oauthController::class, 'cbGoogle']);
 Route::get('/login-twitter', [oauthController::class, 'loginWithTwitter']);
 //callback de Twitter
 Route::get('/twitter-callback', [oauthController::class, 'cbTwitter']);
-
-
 
 require __DIR__.'/auth.php';

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
-class administratorController extends Controller
+class AdministratorController extends Controller
 {
-    public function show(){
+    public function show()
+    {
         $user = Auth::user();
 
         // Obtener los usuarios que estan activos
@@ -18,11 +18,58 @@ class administratorController extends Controller
         return view('admin.admin-dashboard', ['user' => $user, 'connectedUsers' => $connectedUsers]);
     }
 
-    public function showUsers(){
-        $users = User::all();
+    public function showUsers(Request $request)
+    {
+        $search = $request->input('search');
 
-        $nonAdminUsers = User::where('role', '!=', 2)->get();
+        if ($search) {
+            $nonAdminUsers = User::where('role', '!=', 2)
+                                ->where(function($query) use ($search) {
+                                    $query->where('name', 'LIKE', "%$search%")
+                                          ->orWhere('email', 'LIKE', "%$search%");
+                                })
+                                ->get();
+        } else {
+            $nonAdminUsers = User::where('role', '!=', 2)->get();
+        }
 
-        return view('admin.partials.admin-users', ['users' => $users, 'nonAdminUsers' => $nonAdminUsers]);
+        return view('admin.partials.admin-users', ['nonAdminUsers' => $nonAdminUsers]);
+    }
+
+    public function edit($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found');
+        }
+
+        return view('admin.partials.edit-user', ['user' => $user]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found');
+        }
+
+        $user->update($request->only(['name', 'email', 'role', 'level', 'coins']));
+
+        return redirect()->route('admin-users')->with('success', 'User updated successfully');
+    }
+
+    public function destroy($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found');
+        }
+
+        $user->delete();
+
+        return redirect()->route('admin-users')->with('success', 'User deleted successfully');
     }
 }

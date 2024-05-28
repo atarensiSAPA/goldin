@@ -22,9 +22,9 @@
             Role: {{ $roleName }}
         </p>
         <p class="text-lg font-light text-gray-700 dark:text-gray-200">
-        @if ($user->role == 'Normal')
+        @if ($user->role == 0)
             <button id="buyVip" class="btn btn-primary">Buy VIP - 4,99€</button>
-        @elseif ($user->role == 'VIP')
+        @elseif ($user->role == 1)
             <!-- Mostrar tiempo que le queda en dias, y cuando queden menos de 1 dia en horas -->
             <p class="text-lg font-light text-gray-700 dark:text-gray-200">
                 VIP Subscription: 
