@@ -43,17 +43,15 @@
                             </div>
                         @else
                             @foreach ($box->weapons as $weapon)
-                                @if ($weapon && $weapon->units > 0)
-                                    <div class="mx-2 mb-3 dark:bg-gray-800 d-flex flex-column justify-content-between text-white weaponborders borderWeapon" style="border: 3px solid {{ $weapon->color }};">
-                                        <img src="{{ asset('images/skins/' . $weapon->weapon_img) }}" alt="{{ $weapon->weapon_name }}" title="{{ $weapon->weapon_name }}" width="235" height="235">
-                                        <div>
-                                            <p>Weapon Name: {{ $weapon->weapon_name }}</p>
-                                            <p>Skin Name: {{ str_replace('_', ' ', $weapon->weapon_skin) }}</p>
-                                            <p class="d-flex align-items-center">Price: {{ $weapon->price }}<img src="{{ asset('images/user_coin.png') }}" alt="coin" width="30" height="30"></p>
-                                            <p>Chance: {{ $weapon->appearance_percentage }}%</p>
-                                        </div>
+                                <div class="mx-2 mb-3 dark:bg-gray-800 d-flex flex-column justify-content-between text-white weaponborders borderWeapon" style="border: 3px solid {{ $weapon->color }};">
+                                    <img src="{{ asset('images/skins/' . $weapon->weapon_img) }}" alt="{{ $weapon->weapon_name }}" title="{{ $weapon->weapon_name }}" width="235" height="235">
+                                    <div>
+                                        <p>Weapon Name: {{ $weapon->weapon_name }}</p>
+                                        <p>Skin Name: {{ str_replace('_', ' ', $weapon->weapon_skin) }}</p>
+                                        <p class="d-flex align-items-center">Price: {{ $weapon->price }}<img src="{{ asset('images/user_coin.png') }}" alt="coin" width="30" height="30"></p>
+                                        <p>Chance: {{ $weapon->appearance_percentage }}%</p>
                                     </div>
-                                @endif
+                                </div>
                             @endforeach
                         @endif
                     </div>

@@ -64,6 +64,7 @@ Route::middleware(['auth', 'verified', 'CheckIfKicked'])->group(function () {
     Route::get('/user-profile', [ProfileController::class, 'show'])->name('user-profile');
     Route::get('/edit-profile', [ProfileController::class, 'editProfile'])->name('edit-profile');
     Route::post('/sell-weapon', [ProfileController::class, 'sell']);
+    Route::post('/withdraw-weapon', [ProfileController::class, 'withdrawWeapon'])->name('withdraw.weapon');
     Route::post('/filter-weapons', [ProfileController::class, 'filterWeapons']);
     Route::post('/cancel-vip', [ProfileController::class, 'cancelVip'])->name('cancel-vip');
     Route::post('/update-vip', [ProfileController::class, 'updateVip'])->name('update-vip');

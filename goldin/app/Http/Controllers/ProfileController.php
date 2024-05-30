@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WeaponWithdrawn;
 
 class ProfileController extends Controller
 {
@@ -150,15 +152,15 @@ class ProfileController extends Controller
         $user->save();
     
         // Encuentra y elimina una sola entrada de la tabla intermedia
-        $userWeapon = DB::table('user_weapon')
+        $userWeapon = DB::table('user_weapons')
             ->where('user_id', $user->id)
             ->where('weapon_id', $weaponId)
             ->first();
     
-        Log::info('User weapon to be deleted:', ['user_weapon' => $userWeapon]);
+        Log::info('User weapon to be deleted:', ['user_weapons' => $userWeapon]);
     
         if ($userWeapon) {
-            DB::table('user_weapon')->where('id', $userWeapon->id)->delete();
+            DB::table('user_weapons')->where('id', $userWeapon->id)->delete();
             Log::info('User weapon deleted successfully');
         } else {
             Log::info('No user weapon found to delete');
@@ -166,6 +168,42 @@ class ProfileController extends Controller
     
         // Devuelve una respuesta de éxito con el nuevo balance de monedas
         return response()->json(['success' => true, 'newCoinBalance' => $user->coins]);
+    }
+
+    public function withdrawWeapon(Request $request)
+    {
+        $weaponId = $request->input('weapon_id');
+        $user = Auth::user();
+        $weapon = weapons::find($weaponId);
+    
+        if (!$weapon) {
+            return response()->json(['message' => 'Weapon not found'], 404);
+        }
+    
+        // Find the user's weapon in the user_weaponss table
+        $userWeapon = DB::table('user_weapons')
+                        ->where('user_id', $user->id)
+                        ->where('weapon_id', $weaponId)
+                        ->first();
+    
+        if (!$userWeapon) {
+            return response()->json(['message' => 'User does not have this weapon'], 400);
+        }
+
+        if ($weapon->units <= 0) {
+            return response()->json(['message' => 'No units available, please try again later'], 400);
+        }
+    
+        // Delete the first instance of the user's weapon
+        DB::table('user_weapons')->where('id', $userWeapon->id)->delete();
+    
+    
+        $weapon->units -= 1;
+        $weapon->save();
+    
+        Mail::to($user->email)->send(new WeaponWithdrawn($user, $weapon));
+    
+        return response()->json(['success' => true]);
     }
 
     /**

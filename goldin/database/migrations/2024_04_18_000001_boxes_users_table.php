@@ -33,7 +33,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('user_weapon', function (Blueprint $table) {
+        Schema::create('user_weapons', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('weapon_id')->constrained();

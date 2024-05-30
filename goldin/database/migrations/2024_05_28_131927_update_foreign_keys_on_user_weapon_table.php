@@ -13,7 +13,7 @@ class UpdateForeignKeysOnUserWeaponTable extends Migration
      */
     public function up()
     {
-        Schema::table('user_weapon', function (Blueprint $table) {
+        Schema::table('user_weapons', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
@@ -37,7 +37,7 @@ class UpdateForeignKeysOnUserWeaponTable extends Migration
      */
     public function down()
     {
-        Schema::table('user_weapon', function (Blueprint $table) {
+        Schema::table('user_weapons', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
             $table->foreign('user_id')->references('id')->on('users');
 

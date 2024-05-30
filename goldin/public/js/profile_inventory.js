@@ -1,4 +1,54 @@
 document.addEventListener('DOMContentLoaded', function() {
+    let weaponIdToWithdraw;
+    let withdrawConfirmModal = new bootstrap.Modal(document.getElementById('withdrawConfirmModal'));
+    let weaponIdToSell;
+    let confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    // Obtener el token CSRF
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    $(document).on('click', '.withdraw-button', function() {
+        weaponIdToWithdraw = $(this).data('weapon-id');
+        withdrawConfirmModal.show();
+    });
+
+    $(document).on('click', '#withdrawConfirmButton', function() {
+        $.ajax({
+            url: '/withdraw-weapon',
+            method: 'POST',
+            data: {
+                weapon_id: weaponIdToWithdraw,
+                _token: token
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log('Response:', response);
+                if (response.success) {
+                    showAlert('Weapon withdrawn successfully. A confirmation email has been sent.');
+                    updateWeaponsList();
+                    withdrawConfirmModal.hide();
+                } else {
+                    // Si hay un error, mostrar el alerta
+                    showAlertUnits(response.error);
+                    withdrawConfirmModal.hide();
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log('AJAX error:', status, error);
+                if (xhr.status === 400) {
+                    showAlertUnits('No units available, please try again later');
+                    withdrawConfirmModal.hide();
+                }
+            }
+        });
+    });
+    
+
+    // Mostrar el alerta si está en el localStorage
+    if (localStorage.getItem('showAlertWeaponUnits') === 'true') {
+        showAlertUnits('No units available, please try again later');
+        localStorage.removeItem('showAlertWeaponUnits');
+    }
+
     // Obtener el filtro seleccionado del localStorage
     let selectedFilter = localStorage.getItem('selectedFilter');
     if (selectedFilter) {
@@ -10,11 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
         showAlert('You sold the weapon');
         localStorage.removeItem('showAlertWeapon');
     }
-
-    // Obtener el token CSRF
-    let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    let weaponIdToSell;
-    let confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
 
     // Manejar el click en el botón de vender
     $(document).on('click', '.sell-button', function() {
@@ -74,6 +119,18 @@ document.addEventListener('DOMContentLoaded', function() {
         var alertDiv = document.getElementById('alertWeapon');
         alertDiv.style.display = 'block';
         document.getElementById('alert-messageWeapon').textContent = message;
+
+        setTimeout(function() {
+            $(alertDiv).fadeOut(1000, function() {
+                $(this).css('display', 'none');
+            });
+        }, 3000);
+    }
+    // Mostrar el alerta de unidades
+    function showAlertUnits(message) {
+        var alertDiv = document.getElementById('alertWeaponUnits');
+        alertDiv.style.display = 'block';
+        document.getElementById('alert-messageWeaponUnits').textContent = message;
 
         setTimeout(function() {
             $(alertDiv).fadeOut(1000, function() {
@@ -146,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
                 let buttons = $('<div>').addClass('d-flex justify-content-center weapon-buttons')
                     .append('<button type="button" class="btn btn-success sell-button me-3" data-weapon-id="' + weapon.id + '">Sell</button>')
-                    .append('<button type="button" class="btn btn-primary">Withdraw</button>');
+                    .append('<button type="button" class="btn btn-primary withdraw-button" data-weapon-id="' + weapon.id + '">Withdraw</button>');
         
                 weaponDiv.append(img, weaponInfo, buttons);
                 weaponsContainer.append(weaponDiv);

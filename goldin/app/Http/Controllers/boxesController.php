@@ -143,7 +143,7 @@ class boxesController extends Controller
         $mostCommonWeaponPercentage = 0;
     
         foreach ($weapons as $weapon) {
-            if (isset($basePercentages[$weapon->rarity]) && $weapon->units > 0) {
+            if (isset($basePercentages[$weapon->rarity])) {
                 $weapon->appearance_percentage = $basePercentages[$weapon->rarity];
                 $totalPercentage += $weapon->appearance_percentage;
     
@@ -161,11 +161,9 @@ class boxesController extends Controller
         $rand = mt_rand(1, 100);
     
         foreach ($weapons as $weapon) {
-            if ($weapon->units > 0) {
-                $rand -= $weapon->appearance_percentage;
-                if ($rand <= 0) {
-                    return $weapon;
-                }
+            $rand -= $weapon->appearance_percentage;
+            if ($rand <= 0) {
+                return $weapon;
             }
         }
     

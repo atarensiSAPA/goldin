@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('units');
             $table->string('weapon_img');
             $table->string('rarity');
+            $table->string('weapon_url');
             $table->timestamps();
         });
         Schema::create('boxes', function (Blueprint $table) {

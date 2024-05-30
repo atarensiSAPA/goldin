@@ -17,7 +17,7 @@ class weapons extends Model
     }
     public function users()
     {
-        return $this->belongsToMany(User::class, 'user_weapon');
+        return $this->belongsToMany(User::class, 'user_weapons');
     }
 
     public function boxes()

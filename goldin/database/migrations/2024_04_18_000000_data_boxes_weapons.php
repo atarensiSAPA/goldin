@@ -21,6 +21,7 @@ return new class extends Migration
                 'units' => 100,
                 'weapon_img' => 'ak47_redline.png',
                 'rarity' => 'epic',
+                'weapon_url' => 'https://csgostash.com/storage/img/skin_sideview/s271.png?id=62393878d06b2520ef13',
             ],
             [
                 'weapon_name' => 'AK-47',
@@ -30,6 +31,7 @@ return new class extends Migration
                 'units' => 96,
                 'weapon_img' => 'ak47_asiimov.png',
                 'rarity' => 'epic',
+                'weapon_url' => 'https://cdn.sanity.io/images/dmtcrhxp/production/b620877c045afe6a54d356187688269b534c4026-1920x791.png?q=30&auto=format',
             ],
             [
                 'weapon_name' => 'AWP',
@@ -39,6 +41,7 @@ return new class extends Migration
                 'units' => 10,
                 'weapon_img' => 'awp_dragonlore.png',
                 'rarity' => 'mitic',
+                'weapon_url' => 'https://csgostash.com/storage/img/skin_sideview/s422.png?id=d0f53fa10778853316e9',
             ],
             [
                 'weapon_name' => 'AWP',
@@ -48,6 +51,7 @@ return new class extends Migration
                 'units' => 66,
                 'weapon_img' => 'awp_wildfire.png',
                 'rarity' => 'epic',
+                'weapon_url' => 'https://csgostash.com/storage/img/skin_sideview/s1113.png?id=558bf0e2c94980e20473',
             ],
             [
                 'weapon_name' => 'Karambit',
@@ -57,6 +61,7 @@ return new class extends Migration
                 'units' => 17,
                 'weapon_img' => 'karambit_case_hardened.png',
                 'rarity' => 'legendary',
+                'weapon_url' => 'https://csgostash.com/storage/img/skin_sideview/s331.png?id=a6eb1982f59b4715d828',
             ],
             [
                 'weapon_name' => 'Karambit',
@@ -66,6 +71,7 @@ return new class extends Migration
                 'units' => 25,
                 'weapon_img' => 'karambit_fade.png',
                 'rarity' => 'legendary',
+                'weapon_url' => 'https://csgostash.com/storage/img/skin_sideview/s333.png?id=a7996f634199d4f900b7',
             ],
             [
                 'weapon_name' => 'Bayonet',
@@ -75,6 +81,7 @@ return new class extends Migration
                 'units' => 23,
                 'weapon_img' => 'bayonet_lore.png',
                 'rarity' => 'legendary',
+                'weapon_url' => 'https://csgostash.com/storage/img/skin_sideview/s769.png?id=9ac78d94dbfbe65e5cd6',
             ],
             [
                 'weapon_name' => 'USP',
@@ -84,6 +91,7 @@ return new class extends Migration
                 'units' => 246,
                 'weapon_img' => 'usp_kill_confirmed.png',
                 'rarity' => 'rare',
+                'weapon_url' => 'https://csgostash.com/storage/img/skin_sideview/s658.png?id=0126e2acae90c966d78b',
             ],
 
         ];
