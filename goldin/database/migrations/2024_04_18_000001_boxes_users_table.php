@@ -51,6 +51,7 @@ return new class extends Migration
         DB::table('users')->insert([
             ['name' => 'admin', 'email' => 'admin@sapalomera.cat', 'password' => bcrypt('admin'), 'email_verified_at' => now(), 'created_at' => now(), 'updated_at' => now(), 'role' => 2, 'coins' => 100, 'experience' => 120, 'avatar' => 'admin.jpg', 'external_id' => '123456', 'external_auth' => 'google'],
             ['name' => 'angel', 'email' => 'a.tarensi2@sapalomera.cat', 'password' => bcrypt('angel'), 'email_verified_at' => now(), 'created_at' => now(), 'updated_at' => now(), 'role' => 0, 'coins' => 800, 'experience' => 220, 'avatar' => null, 'external_id' => null, 'external_auth' => null],
+            ['name' => 'prova', 'email' => 'prova@sapalomera.cat', 'password' => bcrypt('prova'), 'email_verified_at' => now(), 'created_at' => now(), 'updated_at' => now(), 'role' => 0, 'coins' => 1000000, 'experience' => 10000, 'avatar' => null, 'external_id' => null, 'external_auth' => null],
         ]);
     }
 
