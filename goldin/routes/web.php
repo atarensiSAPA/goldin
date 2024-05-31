@@ -24,7 +24,7 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified', 'CheckIfKicked'])->group(function () {
-    //Rutas de la tabla boxes
+    //Routes of the boxes table
     Route::get('/dashboard', [boxesController::class, 'index'], function () {
         return view('dashboard');
     })->name('dashboard');
@@ -33,7 +33,7 @@ Route::middleware(['auth', 'verified', 'CheckIfKicked'])->group(function () {
 
     Route::post('/ajaxDailyOpenBox', [dailyBoxesController::class, 'ajaxDailyOpenBox'])->name('ajaxDailyOpenBox');
 
-    //Agafa el id de la ruta i el passa al controlador per saber quin caixa ha de mostrar
+    //Get the id from the route and pass it to the controller to know which box to show
     Route::get('/boxes/{box_name}', [boxesController::class, 'openBox'])->name('boxes.show');
 
     Route::get('/dailyboxes/{box_name}', [dailyBoxesController::class, 'openBox'])->name('dailyboxes.show');
@@ -42,7 +42,7 @@ Route::middleware(['auth', 'verified', 'CheckIfKicked'])->group(function () {
 
     Route::post('/user-information', [dailyBoxesController::class, 'userInfo']);
 
-    //Rutas de minigames
+    //Minigames routes
     Route::get('/minigames', function () {
         return view('minigames.minigames-selector');
     })->name('minigames-selector');
@@ -57,7 +57,7 @@ Route::middleware(['auth', 'verified', 'CheckIfKicked'])->group(function () {
     Route::post('/bet', [minigamesController::class, 'placeBet']);
     Route::post('/update-coins', [minigamesController::class, 'updateCoins']);
 
-    // Rutas del perfil
+    // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -68,9 +68,19 @@ Route::middleware(['auth', 'verified', 'CheckIfKicked'])->group(function () {
     Route::post('/filter-weapons', [ProfileController::class, 'filterWeapons']);
     Route::post('/cancel-vip', [ProfileController::class, 'cancelVip'])->name('cancel-vip');
     Route::post('/update-vip', [ProfileController::class, 'updateVip'])->name('update-vip');
+
+    //Oauth Google
+    Route::get('/login-google', [oauthController::class, 'loginWithGoogle']);
+    //Google callback
+    Route::get('/google-callback', [oauthController::class, 'cbGoogle']);
+
+    //Oauth Twitter
+    Route::get('/login-twitter', [oauthController::class, 'loginWithTwitter']);
+    //Twitter callback
+    Route::get('/twitter-callback', [oauthController::class, 'cbTwitter']);
 });
 
-// Rutas de admin
+// Admin routes
 Route::middleware(['auth', 'verified', 'admin', 'CheckIfKicked'])->group(function () {
     Route::get('/administrator', [administratorController::class, 'show'])->name('administrator');
     Route::get('/admin-users', [administratorController::class, 'showUsers'])->name('admin-users');
@@ -82,15 +92,5 @@ Route::middleware(['auth', 'verified', 'admin', 'CheckIfKicked'])->group(functio
 
     Route::get('/admin-boxes', [administratorController::class, 'showBoxes'])->name('admin-boxes');
 });
-
-//Oauth Google
-Route::get('/login-google', [oauthController::class, 'loginWithGoogle']);
-//callback de Google
-Route::get('/google-callback', [oauthController::class, 'cbGoogle']);
-
-//Oauth Twitter
-Route::get('/login-twitter', [oauthController::class, 'loginWithTwitter']);
-//callback de Twitter
-Route::get('/twitter-callback', [oauthController::class, 'cbTwitter']);
 
 require __DIR__.'/auth.php';

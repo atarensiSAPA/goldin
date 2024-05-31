@@ -3,14 +3,17 @@ document.addEventListener('DOMContentLoaded', function() {
     let withdrawConfirmModal = new bootstrap.Modal(document.getElementById('withdrawConfirmModal'));
     let weaponIdToSell;
     let confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
-    // Obtener el token CSRF
+
+    // Get the CSRF token
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+    // Handle withdraw button click
     $(document).on('click', '.withdraw-button', function() {
         weaponIdToWithdraw = $(this).data('weapon-id');
         withdrawConfirmModal.show();
     });
 
+    // Handle withdraw confirmation button click
     $(document).on('click', '#withdrawConfirmButton', function() {
         $.ajax({
             url: '/withdraw-weapon',
@@ -27,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateWeaponsList();
                     withdrawConfirmModal.hide();
                 } else {
-                    // Si hay un error, mostrar el alerta
+                    // If there is an error, show the alert
                     showAlertUnits(response.error);
                     withdrawConfirmModal.hide();
                 }
@@ -41,35 +44,34 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
 
-    // Mostrar el alerta si está en el localStorage
+    // Show the alert if it is in localStorage
     if (localStorage.getItem('showAlertWeaponUnits') === 'true') {
         showAlertUnits('No units available, please try again later');
         localStorage.removeItem('showAlertWeaponUnits');
     }
 
-    // Obtener el filtro seleccionado del localStorage
+    // Get the selected filter from localStorage
     let selectedFilter = localStorage.getItem('selectedFilter');
     if (selectedFilter) {
         document.getElementById('filter').value = selectedFilter;
     }
 
-    // Mostrar el alert si está en el localStorage
+    // Show the alert if it is in localStorage
     if (localStorage.getItem('showAlertWeapon') === 'true') {
         showAlert('You sold the weapon');
         localStorage.removeItem('showAlertWeapon');
     }
 
-    // Manejar el click en el botón de vender
+    // Handle sell button click
     $(document).on('click', '.sell-button', function() {
         weaponIdToSell = $(this).data('weapon-id');
         console.log(weaponIdToSell);
-        // Mostrar el modal de confirmación
+        // Show the confirmation modal
         confirmModal.show();
     });
 
-    // Manejar el click en el botón de confirmar venta
+    // Handle sell confirmation button click
     $(document).on('click', '#confirmButton', function() {
         $.ajax({
             url: '/sell-weapon',
@@ -82,24 +84,24 @@ document.addEventListener('DOMContentLoaded', function() {
             success: function(response) {
                 if (response.success) {
                     showAlert('You sold the weapon');
-                    updateWeaponsList();  // Llama a una función para actualizar la lista de armas
-                    updateCoins(response.newCoinBalance);  // Actualiza la cantidad de monedas
-                    confirmModal.hide();  // Ocultar el modal de confirmación
+                    updateWeaponsList();  // Call a function to update the weapon list
+                    updateCoins(response.newCoinBalance);  // Update the coin balance
+                    confirmModal.hide();  // Hide the confirmation modal
                 } else {
-                    alert('Hubo un error al vender el arma. Por favor, inténtalo de nuevo.');
+                    alert('There was an error selling the weapon. Please try again.');
                 }
             }
         });
     });
 
-    // Manejar el cambio en el filtro
+    // Handle filter change
     $('#filter').change(function() {
         let filter = $(this).val();
 
-        // Guardar el filtro seleccionado en el localStorage
+        // Save the selected filter to localStorage
         localStorage.setItem('selectedFilter', filter);
 
-        // Enviar el filtro al servidor y obtener las armas filtradas
+        // Send the filter to the server and get the filtered weapons
         $.ajax({
             url: '/filter-weapons',
             method: 'POST',
@@ -114,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Mostrar el alert
+    // Show the alert
     function showAlert(message) {
         var alertDiv = document.getElementById('alertWeapon');
         alertDiv.style.display = 'block';
@@ -126,7 +128,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }, 3000);
     }
-    // Mostrar el alerta de unidades
+
+    // Show the units alert
     function showAlertUnits(message) {
         var alertDiv = document.getElementById('alertWeaponUnits');
         alertDiv.style.display = 'block';
@@ -139,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
 
-    // Función para actualizar la lista de armas
+    // Function to update the weapons list
     function updateWeaponsList() {
         let filter = $('#filter').val();
         $.ajax({
@@ -156,14 +159,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Función para actualizar la cantidad de monedas
+    // Function to update the coin balance
     function updateCoins(newBalance) {
         $('#coins').text(newBalance);
         let newBalanceText = 'Coins: ' + newBalance + ' <img src="/images/user_coin.png" alt="coin" width="30" height="30">';
         $('#profileCoins').html(newBalanceText);
     }
 
-    // Función para renderizar las armas
+    // Function to render the weapons
     function renderWeapons(weapons) {
         let weaponsContainer = $('.d-flex.justify-content-center.mt-3.flex-wrap');
         weaponsContainer.empty();
@@ -172,12 +175,12 @@ document.addEventListener('DOMContentLoaded', function() {
         let filterLabel = $('label[for="filter"]');
     
         if (weapons.length === 0) {
-            weaponsContainer.append('<p class="text-white">No tienes armas en tu inventario. ¡Abre cajas para conseguir más!</p>');
-            filterElement.hide();  // Ocultar el filtro si no hay armas
-            filterLabel.hide();    // Ocultar el texto del filtro si no hay armas
+            weaponsContainer.append('<p class="text-white">You have no weapons in your inventory. Open boxes to get more!</p>');
+            filterElement.hide();  // Hide the filter if there are no weapons
+            filterLabel.hide();    // Hide the filter label if there are no weapons
         } else {
-            filterElement.show();  // Mostrar el filtro si hay armas
-            filterLabel.show();    // Mostrar el texto del filtro si hay armas
+            filterElement.show();  // Show the filter if there are weapons
+            filterLabel.show();    // Show the filter label if there are weapons
             weapons.forEach(function(weapon) {
                 let weaponDiv = $('<div>').addClass('mx-2 mb-3 dark:bg-gray-800 d-flex flex-column justify-content-between weapon-container')
                     .css({

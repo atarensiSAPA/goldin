@@ -9,67 +9,73 @@ use Illuminate\Support\Facades\Log;
 class minigamesController extends Controller
 {
 
+    // Display the Blackjack mini-game
     public function showBlackJack(){
         return view('minigames.black-jack');
     }
+
+    // Display the 3 Cups 1 Ball mini-game
     public function show3cups1ball(){
         return view('minigames.3cups-1ball');
     }
+
+    // Place a bet in the mini-game
     public function placeBet(Request $request)
     {
         $user = Auth::user();
         $betAmount = $request->input('bet');
-        $userType = $request->input('userType'); // Añadir esto
-    
-        // Comprobar si el usuario tiene suficientes monedas
+        $userType = $request->input('userType'); // Add this
+
+        // Check if the user has enough coins
         if ($user->coins < $betAmount) {
             return response()->json(['message' => 'Insufficient coins', 'coins' => $user->coins], 400);
         }
-    
-        // Restar la cantidad de la apuesta de las monedas del usuario
+
+        // Deduct the bet amount from the user's coins
         $user->coins -= $betAmount;
-    
-        // Guardar el nuevo total de monedas en la base de datos
+
+        // Save the new total coins to the database
         $user->save();
-    
-        // Devolver una respuesta al cliente
-        return response()->json(['message' => 'Bet placed successfully', 'coins' => $user->coins, 'userType' => $userType]); // Añadir userType a la respuesta
+
+        // Return a response to the client
+        return response()->json(['message' => 'Bet placed successfully', 'coins' => $user->coins, 'userType' => $userType]); // Add userType to the response
     }
-    
+
+    // Update user's coins based on the mini-game result
     public function updateCoins(Request $request)
     {
         $user = Auth::user();
         $betAmount = $request->input('bet');
-        $userWon = filter_var($request->input('won'), FILTER_VALIDATE_BOOLEAN); // Convertir a booleano
-        $blackJack = filter_var($request->input('blackJack'), FILTER_VALIDATE_BOOLEAN); // Convertir a booleano
-        $winnings = 0; // Inicializar las ganancias a 0
-    
+        $userWon = filter_var($request->input('won'), FILTER_VALIDATE_BOOLEAN); // Convert to boolean
+        $blackJack = filter_var($request->input('blackJack'), FILTER_VALIDATE_BOOLEAN); // Convert to boolean
+        $winnings = 0; // Initialize winnings to 0
+
         if ($userWon) {
-            // Calcular las ganancias dependiendo del rol del usuario
-            if ($user->role == 1) { // Si el usuario es VIP
+            // Calculate winnings based on user's role
+            if ($user->role == 1) { // If user is VIP
                 $winnings = $betAmount * 1.5;
                 $user->addExperience(100);
-            } else { // Si el usuario es normal o admin
+            } else { // If user is normal or admin
                 $winnings = $betAmount * 1.25;
                 $user->addExperience(50);
             }
-    
-            // Si el usuario tiene Black Jack, multiplicar las ganancias por 1.2
+
+            // If user has a Black Jack, multiply winnings by 1.2
             if ($blackJack) {
                 $winnings *= 1.2;
             }
-    
-            // Sumar las monedas ganadas al total de monedas del usuario
+
+            // Add the won coins to the user's total coins
             $user->coins += $winnings;
         } else {
-            // Si el usuario pierde, las ganancias son 0 y no se suman monedas
-            $winnings = -$betAmount; // Esto refleja la pérdida en el frontend
+            // If user loses, winnings are 0 and no coins are added
+            $winnings = -$betAmount; // This reflects the loss in the frontend
         }
-    
-        // Guardar el nuevo total de monedas en la base de datos
+
+        // Save the new total coins to the database
         $user->save();
-    
-        // Devolver una respuesta al cliente
+
+        // Return a response to the client
         return response()->json(['message' => 'Coins updated successfully', 'coins' => $user->coins, 'winnings' => $winnings]);
     }
 }

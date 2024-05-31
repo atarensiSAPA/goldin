@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Exception;
 use Laravel\Socialite\Facades\Socialite;
@@ -10,34 +11,37 @@ use Illuminate\Support\Facades\Auth;
 class oauthController extends Controller
 {
 
+    // Redirect to Google login page
     public function loginWithGoogle(){
         return Socialite::driver('google')->redirect();
     }
 
+    // Redirect to Twitter login page
     public function loginWithTwitter(){
         return Socialite::driver('twitter')->redirect();
     }
 
+    // Callback function after Google login
     public function cbGoogle(){
         try{
     
-            //Obtenemos el usuario
+            // Get the user details from Google
             $user = Socialite::driver('google')->user();
     
-            //Obtenemos la parte del email antes del @
+            // Extract the email prefix before '@'
             $emailParts = explode('@', $user->email);
             $emailPrefix = $emailParts[0];
     
-            //Comprobamos si el usuario ya existe por external_id o email
+            // Check if the user already exists by external_id or email
             $userExists = User::where('external_id', $user->id)
                               ->orWhere('email', 'like', $emailPrefix . '%')
                               ->first();
     
-            //Si existe, lo logueamos
+            // If the user exists, log them in
             if($userExists){
                 Auth::login($userExists);
             }else{
-                //Si no existe, lo creamos y logueamos
+                // If the user doesn't exist, create and log them in
                 $newUser = User::create([
                     'name' => $user->name,
                     'email' => $user->email,
@@ -48,7 +52,7 @@ class oauthController extends Controller
                 Auth::login($newUser);
             }
     
-            //Redirigimos a la home
+            // Redirect to the dashboard
             return redirect('/dashboard');
     
         } catch (Exception $e) {
@@ -56,26 +60,27 @@ class oauthController extends Controller
         }
     }
 
+    // Callback function after Twitter login
     public function cbTwitter(){
         try{
     
-            //Obtenemos el usuario
+            // Get the user details from Twitter
             $user = Socialite::driver('twitter')->user();
     
-            //Obtenemos la parte del email antes del @
+            // Extract the email prefix before '@'
             $emailParts = explode('@', $user->nickname);
             $emailPrefix = $emailParts[0];
     
-            //Comprobamos si el usuario ya existe por external_id o email
+            // Check if the user already exists by external_id or email
             $userExists = User::where('external_id', $user->id)
                               ->orWhere('email', 'like', $emailPrefix . '%')
                               ->first();
     
-            //Si existe, lo logueamos
+            // If the user exists, log them in
             if($userExists){
                 Auth::login($userExists);
             }else{
-                //Si no existe, lo creamos y logueamos
+                // If the user doesn't exist, create and log them in
                 $newUser = User::create([
                     'name' => $user->name,
                     'email' => $user->nickname,
@@ -86,7 +91,7 @@ class oauthController extends Controller
                 Auth::login($newUser);
             }
     
-            //Redirigimos a la home
+            // Redirect to the dashboard
             return redirect('/dashboard');
     
         } catch (Exception $e) {

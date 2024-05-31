@@ -10,22 +10,24 @@ use App\Models\boxes;
 
 class AdministratorController extends Controller
 {
+    // Show the administrator dashboard
     public function show()
     {
         $user = Auth::user();
     
-        // Obtener los usuarios que estan activos
+        // Get the number of connected users
         $connectedUsers = User::where('connected', 1)->where('role', '!=', 2)->count();
     
-        // Contar todas las cajas normales disponibles
+        // Count all available normal boxes
         $availableBoxes = boxes::where('available', true)->where('daily', false)->count();
 
-        // Contar todas las cajas diarias disponibles
+        // Count all available daily boxes
         $availableDailyBoxes = boxes::where('available', true)->where('daily', true)->count();
     
         return view('admin.admin-dashboard', ['user' => $user, 'connectedUsers' => $connectedUsers, 'availableBoxes' => $availableBoxes, 'availableDailyBoxes' => $availableDailyBoxes]);
     }
 
+    // Show non-administrator users with search functionality
     public function showUsers(Request $request)
     {
         $search = $request->input('search');
@@ -44,6 +46,7 @@ class AdministratorController extends Controller
         return view('admin.partials.admin-users', ['nonAdminUsers' => $nonAdminUsers]);
     }
 
+    // Store a new user
     public function store(Request $request)
     {
         $request->validate([
@@ -62,6 +65,7 @@ class AdministratorController extends Controller
         return redirect()->route('admin-users')->with('success', 'User added successfully');
     }
 
+    // Show user edit form
     public function edit($id)
     {
         $user = User::find($id);
@@ -73,6 +77,7 @@ class AdministratorController extends Controller
         return view('admin.partials.edit-user', ['user' => $user]);
     }
 
+    // Update user details
     public function update(Request $request, $id)
     {
         $user = User::find($id);
@@ -86,6 +91,7 @@ class AdministratorController extends Controller
         return redirect()->route('admin-users')->with('success', 'User updated successfully');
     }
 
+    // Delete a user
     public function destroy($id)
     {
         $user = User::find($id);
@@ -99,18 +105,21 @@ class AdministratorController extends Controller
         return redirect()->route('admin-users')->with('success', 'User deleted successfully');
     }
 
+    // Kick a user from the system
     public function kick(User $user)
     {
-        // Marcar al usuario como "expulsado"
+        // Mark the user as "kicked"
         $user->is_kicked = true;
         $user->connected = 0;
         $user->save();
     
-        // Redirigir de vuelta a la página de administración de usuarios con un mensaje de éxito
-        return redirect()->route('admin-users')->with('status', 'User has been kicked.');
+        // Redirect back to the user administration page with a success message
+        return redirect()->route('admin-users')->with('success', 'User has been kicked.');
     }
 
-    public function showBoxes(){
+    // Show all boxes
+    public function showBoxes()
+    {
         $boxes = boxes::all();
 
         return view('admin.partials.admin-boxes', ['boxes' => $boxes]);

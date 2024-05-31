@@ -1,35 +1,41 @@
+// Get the cancel VIP button element and the CSRF token from the meta tag
 let btnCancelVip = document.getElementById('cancelVip');
 let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+// Toggle card details visibility when the 'buyVip' button is clicked
 $('#buyVip').click(function() {
     $('#cardDetails').toggle();
 });
 
-// Automatically move focus to the next input field after 4 digits
+// Automatically move focus to the next input field after 4 digits in card number inputs
 $('#cardNumber1, #cardNumber2, #cardNumber3, #cardNumber4').keyup(function() {
     if (this.value.length == this.maxLength) {
         $(this).nextAll('.form-control').first().focus();
     }
 });
 
+// Handle form submission for payment
 $('#submitPayment').click(function(e) {
-    e.preventDefault();
+    e.preventDefault(); // Prevent the default form submission
 
-    // Validar los campos
+    // Validate input fields
     let cardNumber = $('#cardNumber1').val() + $('#cardNumber2').val() + $('#cardNumber3').val() + $('#cardNumber4').val();
     let cardName = $('#cardName').val();
     let expiryDate = $('#expiryDate').val();
     let cvv = $('#cvv').val();
     let errorMessage = '';
 
+    // Validate card number
     if (!/^\d{16}$/.test(cardNumber)) {
         errorMessage += 'Please enter a valid 16 digit card number.<br>';
     }
     
+    // Validate card name
     if (!/^[a-zA-Z\s]+$/.test(cardName)) {
         errorMessage += 'Please enter a valid card name.<br>';
     }
     
+    // Validate expiry date
     if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate)) {
         errorMessage += 'Please enter a valid expiry date in the format MM/YY.<br>';
     } else {
@@ -44,15 +50,18 @@ $('#submitPayment').click(function(e) {
         }
     }
     
+    // Validate CVV
     if (!/^\d{3}$/.test(cvv)) {
         errorMessage += 'Please enter a valid 3 digit CVV.<br>';
     }
     
+    // If there are validation errors, display them and stop the submission
     if (errorMessage) {
         document.getElementById('errorMessage').innerHTML = errorMessage;
         return;
     }
 
+    // Prepare card information for submission
     let cardInfo = {
         cardNumber: cardNumber,
         cardName: cardName,
@@ -60,7 +69,7 @@ $('#submitPayment').click(function(e) {
         cvv: cvv
     };
 
-    // Si la validación es exitosa, enviar la petición AJAX
+    // If validation is successful, send an AJAX request to update VIP status
     $.ajax({
         url: '/update-vip',
         method: 'POST',
@@ -70,7 +79,7 @@ $('#submitPayment').click(function(e) {
         },
         success: function(data) {
             if (data.success) {
-                localStorage.setItem('showAlertUpdateVip', 'true'); // Guardar en el localstorage
+                localStorage.setItem('showAlertUpdateVip', 'true'); // Save a flag in local storage
                 location.reload();
             } else {
                 alert('There was an error updating the user.');
@@ -83,16 +92,19 @@ $('#submitPayment').click(function(e) {
     });
 });
 
+// Handle cancel VIP button click and show password modal
 if(btnCancelVip){
     btnCancelVip.addEventListener('click', function() {
         $('#passwordModal').modal('show');
     });
 
+    // Handle password form submission for canceling VIP
     document.getElementById('passwordForm').addEventListener('submit', function(event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent default form submission
 
         let password = document.getElementById('password').value;
 
+        // Send an AJAX request to cancel VIP status
         $.ajax({
             url: '/cancel-vip',
             type: 'POST',
@@ -102,7 +114,7 @@ if(btnCancelVip){
             },
             success: function(response) {
                 if (response.success) {
-                    localStorage.setItem('showAlertCancelVip', 'true'); //guardar en el localstorage
+                    localStorage.setItem('showAlertCancelVip', 'true'); // Save a flag in local storage
                     location.reload();
                 } else {
                     document.getElementById('passwordError').innerText = response.error;
@@ -115,6 +127,7 @@ if(btnCancelVip){
     });
 }
 
+// Show alerts if needed when the page loads
 window.onload = function() {
     if (localStorage.getItem('showAlertCancelVip') === 'true') {
         let alertDiv = document.getElementById('alertCancelVip');
@@ -127,7 +140,7 @@ window.onload = function() {
             });
         }, 3000);
 
-        localStorage.removeItem('showAlertCancelVip'); // Corrected key
+        localStorage.removeItem('showAlertCancelVip'); // Remove the flag from local storage
     }
     if (localStorage.getItem('showAlertUpdateVip') === 'true') {
         let alertDiv = document.getElementById('alertUpdateVip');
@@ -140,6 +153,6 @@ window.onload = function() {
             });
         }, 3000);
 
-        localStorage.removeItem('showAlertUpdateVip'); // Corrected key
+        localStorage.removeItem('showAlertUpdateVip'); // Remove the flag from local storage
     }
 }

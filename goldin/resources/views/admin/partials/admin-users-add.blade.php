@@ -9,6 +9,19 @@
         </p>
     </header>
 
+    <!-- Alert Messages -->
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <form method="post" action="/add-user" class="mt-6 space-y-6">
         @csrf
 

@@ -1,11 +1,14 @@
 let betAmount = 0;
 let betButton = document.getElementById('bet');
 
+// Event listener for the bet button
 betButton.addEventListener('click', function() {
     let betInput = document.getElementById('bet-input').value;
     betAmount = parseInt(betInput);
+
+    // Validate the bet input
     if (betInput == betAmount && betAmount >= 100) {
-        // Enviar la petición AJAX
+        // Send AJAX request to place the bet
         $.ajax({
             url: '/bet',
             method: 'POST',
@@ -15,29 +18,31 @@ betButton.addEventListener('click', function() {
             },
             success: function(data) {
                 document.getElementById('bet-display').innerText = "User's bet: " + betAmount;
-                // Mostrar las monedas actuales del usuario
+                // Display the user's current coins
                 document.getElementById('coins').innerText = data.coins;
 
                 document.getElementById('message').innerHTML = "";
                 document.getElementById('winnings').innerHTML = "";
 
+                // Disable the bet button once a bet is placed
                 betButton.disabled = true;
 
-                // Reiniciar el juego
+                // Reset the game
                 resetGame();
 
-                // Iniciar el juego cuando el servidor devuelva la respuesta
+                // Start the game when the server returns the response
                 cupsMinigame();
-
             },
             error: function(error) {
                 console.error('Error:', error);
-            
+
+                // Show the alert
                 let alertDiv = document.getElementById('alertCoins');
-                alertDiv.classList.remove('hideCard'); // Mostrar el alert
-                alertDiv.classList.add('show'); // Asegurarse de que el alert tenga la clase show
+                alertDiv.classList.remove('hideCard'); // Show the alert
+                alertDiv.classList.add('show'); // Ensure the alert has the 'show' class
                 document.getElementById('alert-messageCoins').textContent = error.responseJSON.message;
-            
+
+                // Hide the alert after 3 seconds
                 setTimeout(function() {
                     $(alertDiv).fadeOut(1000, function() {
                         $(this).css('display', 'none');
@@ -46,15 +51,15 @@ betButton.addEventListener('click', function() {
             }
         });
     } else {
-        // Asigna el mensaje de error al elemento #alert-messageCoins
+        // Set the error message to the #alert-messageCoins element
         document.getElementById('alert-messageCoins').innerText = "The bet needs to be an integer and at least 100 or higher";
-    
-        // Muestra el alerta
+
+        // Show the alert
         let alertDiv = document.getElementById('alertCoins');
         alertDiv.classList.remove('hideCard');
         alertDiv.classList.add('show');
-    
-        // Configura un temporizador para ocultar el alerta después de 3 segundos
+
+        // Set a timer to hide the alert after 3 seconds
         setTimeout(function() {
             alertDiv.classList.remove('show');
             alertDiv.classList.add('hideCard');
@@ -62,14 +67,15 @@ betButton.addEventListener('click', function() {
     }
 });
 
+// Function to reset the game
 function resetGame() {
     const cups = document.querySelectorAll('.cup');
-    // Eliminar la bola de la vista anterior
+    // Remove the ball from the previous view
     cups.forEach(cup => {
         if (cup.firstChild) {
             cup.firstChild.remove();
         }
-        // Permitir que los vasos sean clicables de nuevo
+        // Make the cups clickable again
         cup.style.pointerEvents = 'auto';
     });
 }
@@ -80,7 +86,7 @@ const messageDiv = document.getElementById('message');
 
 cups.forEach((cup, index) => {
     cup.addEventListener('click', () => {
-        // Generar la bola cuando se hace clic en un vaso
+        // Generate the ball when a cup is clicked
         cups[ballPosition].appendChild(document.createElement('div')).className = 'ball';
 
         let userWon = false;
@@ -91,12 +97,12 @@ cups.forEach((cup, index) => {
             messageDiv.textContent = 'Incorrect!';
         }
 
-        // Deshabilitar los vasos después de hacer una elección
+        // Disable the cups after a choice is made
         cups.forEach(cup => {
             cup.style.pointerEvents = 'none';
         });
 
-        // Enviar la petición AJAX para actualizar las monedas del usuario
+        // Send the AJAX request to update the user's coins
         $.ajax({
             url: '/update-coins',
             method: 'POST',
@@ -115,6 +121,7 @@ cups.forEach((cup, index) => {
                 winningsElement.innerText = userWon ? "You have won " + Math.round(winnersMoney) + " coins!" : "You lost your bet!";
                 winningsElement.style.color = userWon ? 'green' : 'red';
 
+                // Re-enable the bet button
                 betButton.disabled = false;
             },
             error: function(error) {
@@ -125,9 +132,10 @@ cups.forEach((cup, index) => {
     });
 });
 
+// Function to start the cups minigame
 function cupsMinigame() {
-    ballPosition = Math.floor(Math.random() * 3); // Posición de la bola se genera al inicio del juego
+    ballPosition = Math.floor(Math.random() * 3); // Ball position is generated at the start of the game
 
-    // Mostrar mensaje para que el usuario elija un vaso
+    // Display a message for the user to choose a cup
     messageDiv.textContent = 'Choose a cup!';
 }

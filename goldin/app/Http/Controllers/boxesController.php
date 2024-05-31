@@ -10,11 +10,12 @@ use Illuminate\Support\Facades\Exception;
 
 class boxesController extends Controller
 {
+    // Display all available boxes
     public function index()
     {
         $boxes = boxes::get()->groupBy('box_name')->map->first();
 
-        //comprobar que la caja sea daily
+        // Filter out non-daily boxes
         $boxes = $boxes->filter(function ($box) {
             return $box->daily == false;
         });
@@ -26,6 +27,7 @@ class boxesController extends Controller
         return view('dashboard', ['boxes' => $boxes]);
     }
     
+    // Open a box and display its contents
     public function openBox(Request $request)
     {
         $box_name = $request->route('box_name');
@@ -52,6 +54,7 @@ class boxesController extends Controller
         return view('boxes.openBox', ['boxes' => $boxes, 'boxTitle' => $boxTitle]);
     }
     
+    // Assign colors to weapons based on rarity
     public function showColors($boxes)
     {
         foreach ($boxes as $box) {
@@ -63,6 +66,7 @@ class boxesController extends Controller
         return $boxes;
     }
     
+    // Get color code based on rarity
     public function getColorForRarity($rarity)
     {
         switch ($rarity) {
@@ -79,6 +83,7 @@ class boxesController extends Controller
         }
     }
 
+    // Calculate appearance percentage for each weapon
     public function calculateAppearancePercentage($weapon)
     {
         $basePercentages = [
@@ -92,8 +97,7 @@ class boxesController extends Controller
         return $basePercentages[$weapon->rarity] ?? 'N/A';
     }
 
-
-
+    // AJAX request to open a box and receive a weapon
     public function ajaxOpenBox(Request $request)
     {
         $user = Auth::user();
@@ -128,6 +132,7 @@ class boxesController extends Controller
         return response()->json(['weapon' => $weapon, 'coins' => $user->coins, 'color' => $color]);
     }
     
+    // Get a weapon based on appearance percentage
     private function getWeaponBasedOnPercentage($weapons)
     {
         $basePercentages = [

@@ -11,10 +11,11 @@ use Carbon\Carbon;
 
 class dailyBoxesController extends Controller
 {
+    // Display the daily boxes available to the user
     public function show(){
         $boxes = boxes::get()->groupBy('box_name')->map->first();
     
-        //comprobar que la caja sea daily
+        // Filter out non-daily boxes
         $boxes = $boxes->filter(function ($box) {
             return $box->daily == true;
         });
@@ -25,6 +26,7 @@ class dailyBoxesController extends Controller
         return view('boxes.dailyBox', ['boxes' => $boxes]);
     }
 
+    // Open a daily box
     public function openBox(Request $request){
         $user = Auth::user();
         $user->addExperience(0);
@@ -74,6 +76,7 @@ class dailyBoxesController extends Controller
         return view('boxes.openBox', ['boxes' => $boxes, 'boxTitle' => $boxTitle, 'canOpenBox' => $canOpenBox, 'timer' => $timer]);
     }
 
+    // AJAX request to open a daily box and receive coins
     public function ajaxDailyOpenBox(Request $request)
     {
         // Find the box
