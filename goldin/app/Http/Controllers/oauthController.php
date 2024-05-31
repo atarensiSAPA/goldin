@@ -7,12 +7,14 @@ use Exception;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class oauthController extends Controller
 {
 
     // Redirect to Google login page
-    public function loginWithGoogle(){
+    public function loginWithGoogle()
+    {
         return Socialite::driver('google')->redirect();
     }
 

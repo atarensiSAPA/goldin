@@ -1,6 +1,6 @@
 <section class="space-y-6 text-white">
     <header>
-        Usuarios
+        Users
     </header>
     <div>
         <ul>

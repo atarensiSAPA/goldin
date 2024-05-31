@@ -66,16 +66,6 @@ Route::middleware(['auth', 'verified', 'CheckIfKicked'])->group(function () {
     Route::post('/filter-weapons', [ProfileController::class, 'filterWeapons']);
     Route::post('/cancel-vip', [ProfileController::class, 'cancelVip'])->name('cancel-vip');
     Route::post('/update-vip', [ProfileController::class, 'updateVip'])->name('update-vip');
-
-    // OAuth Google
-    Route::get('/login-google', [oauthController::class, 'loginWithGoogle']);
-    // Google callback
-    Route::get('/google-callback', [oauthController::class, 'cbGoogle']);
-
-    // OAuth Twitter
-    Route::get('/login-twitter', [oauthController::class, 'loginWithTwitter']);
-    // Twitter callback
-    Route::get('/twitter-callback', [oauthController::class, 'cbTwitter']);
 });
 
 // Admin routes
@@ -91,5 +81,15 @@ Route::middleware(['auth', 'verified', 'admin', 'CheckIfKicked'])->group(functio
     Route::get('/admin-boxes', [AdministratorController::class, 'showBoxes'])->name('admin-boxes');
     Route::post('/admin/boxes', [AdministratorController::class, 'storeBox'])->name('boxes.store');
 });
+
+// OAuth Google
+Route::get('/login-google', [oauthController::class, 'loginWithGoogle'])->name('login-google');
+// Google callback
+Route::get('/google-callback', [oauthController::class, 'cbGoogle']);
+
+// OAuth Twitter
+Route::get('/login-twitter', [oauthController::class, 'loginWithTwitter'])->name('login-twitter');;
+// Twitter callback
+Route::get('/twitter-callback', [oauthController::class, 'cbTwitter']);
 
 require __DIR__.'/auth.php';

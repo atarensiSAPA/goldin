@@ -1,7 +1,5 @@
-# Cosas importantes que hacer con el tiempo
+Usuaris:
+    admin = admin@sapalomera.cat pass: admin
+    user = prova@sapalomera.cat pass: prova
 
-Ultimo dia: 
-            4th Terminar cajas
-            5th Subir al hosting el proyecto final
-            6th Verificar que todo funcione correctamente en el hosting
-            7th Entregar el proyecto finalizado
+Si l'oauth no funciona es posible que estigui posat al domini hosting, no en el local

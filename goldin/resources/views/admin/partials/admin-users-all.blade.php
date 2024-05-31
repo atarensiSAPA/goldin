@@ -28,7 +28,7 @@
                         {{ $user->name }} ({{ $user->email }})
                         <div>
                             <button type="button" class="btn btn-primary mr-2" data-bs-toggle="modal" data-bs-target="#editModal" data-userid="{{ $user->id }}" data-username="{{ $user->name }}" data-useremail="{{ $user->email }}" data-userrole="{{ $user->role }}" data-userlevel="{{ $user->level }}" data-usercoins="{{ $user->coins }}">Modify</button>
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal" data-userid="{{ $user->id }}">Eliminar</button>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmModal" data-userid="{{ $user->id }}">Delete</button>
                             @if($user->connected)
                                 <form action="{{ route('users.kick', $user) }}" method="POST" class="d-inline">
                                     @csrf
