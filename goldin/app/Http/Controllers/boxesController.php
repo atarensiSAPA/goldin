@@ -33,7 +33,7 @@ class boxesController extends Controller
         $box_name = $request->route('box_name');
         $boxes = boxes::where('box_name', $box_name)->with('weapons')->get();
     
-        $rarityOrder = ['mitic', 'legendary', 'epic', 'rare', 'commun'];
+        $rarityOrder = ['mitic', 'legendary', 'epic', 'rare', 'common'];
     
         $boxes = $this->showColors($boxes);
     
@@ -78,7 +78,7 @@ class boxesController extends Controller
                 return 'rgba(128,0,128,0.8)';
             case 'rare':
                 return 'rgba(0,0,255,0.8)';
-            case 'commun':
+            case 'common':
                 return 'rgba(0,128,0,0.8)';
         }
     }
@@ -91,7 +91,7 @@ class boxesController extends Controller
             'legendary' => 5,
             'epic' => 15,
             'rare' => 30,
-            'commun' => 49,
+            'common' => 49,
         ];
     
         return $basePercentages[$weapon->rarity] ?? 'N/A';
@@ -140,7 +140,7 @@ class boxesController extends Controller
             'legendary' => 5,
             'epic' => 15,
             'rare' => 30,
-            'commun' => 49,
+            'common' => 49,
         ];
     
         $totalPercentage = 0;

@@ -93,6 +93,76 @@ return new class extends Migration
                 'rarity' => 'rare',
                 'weapon_url' => 'https://csgostash.com/storage/img/skin_sideview/s658.png?id=0126e2acae90c966d78b',
             ],
+            [
+                'weapon_name' => 'Falchion',
+                'weapon_skin' => 'Gamma_doppler',
+                'description' => 'The Falchion is a unique and deadly knife that is favored by many players. It features a curved blade that is capable of inflicting serious damage on enemies. The Gamma Doppler skin is a rare and valuable option that is highly sought after by many players. It features a detailed green and black design that is both stylish and intimidating.',
+                'price' => 320,
+                'units' => 26,
+                'weapon_img' => 'falchion_esmerald.png',
+                'rarity' => 'legendary',
+                'weapon_url' => 'https://steamcdn-a.akamaihd.net/apps/730/icons/econ/default_generated/weapon_knife_falchion_am_emerald_marbleized_light_large.86b54169ca00cfa482715e49b558e9e74776a669.png',
+            ],
+            [
+                'weapon_name' => 'Famas',
+                'weapon_skin' => 'Rapid_eye_movement',
+                'description' => 'The Famas is a reliable and accurate rifle that is favored by many players. It is a high-impact weapon that is capable of taking down enemies with a single shot to the head. The Rapid Eye Movement skin is a rare and valuable option that is highly sought after by many players. It features a detailed blue and black design that is both stylish and intimidating.',
+                'price' => 7,
+                'units' => 312,
+                'weapon_img' => 'famas_rapideyemovement.png',
+                'rarity' => 'common',
+                'weapon_url' => 'https://csgostash.com/storage/img/skin_sideview/s1513.png?id=6c4a57756120130550b0e891d2b46fc0',
+            ],
+            [
+                'weapon_name' => 'M4A1-S',
+                'weapon_skin' => 'Hyper_beast',
+                'description' => 'The M4A1-S is a reliable and accurate rifle that is favored by many players. It is a high-impact weapon that is capable of taking down enemies with a single shot to the head. The Hyper Beast skin is a rare and valuable option that is highly sought after by many players. It features a detailed blue and black design that is both stylish and intimidating.',
+                'price' => 79,
+                'units' => 142,
+                'weapon_img' => 'm4a1s_hyperbeast.png',
+                'rarity' => 'epic',
+                'weapon_url' => 'https://csgostash.com/storage/img/skin_sideview/s554.png?id=9ad73873030cddcc7ca66196a326da2f',
+            ],
+            [
+                'weapon_name' => 'M4A1-S',
+                'weapon_skin' => 'Welcome_to_the_jungle',
+                'description' => 'The M4A1-S is a reliable and accurate rifle that is favored by many players. It is a high-impact weapon that is capable of taking down enemies with a single shot to the head. The Hyper Beast skin is a rare and valuable option that is highly sought after by many players. It features a detailed blue and black design that is both stylish and intimidating.',
+                'price' => 93,
+                'units' => 175,
+                'weapon_img' => 'm4a1s_welcomejungle.png',
+                'rarity' => 'epic',
+                'weapon_url' => 'https://csgostash.com/storage/img/skin_sideview/s1359.png?id=f4f298f276ecec817e99ae4f9c76b8bd',
+            ],
+            [
+                'weapon_name' => 'M9-Bayonet',
+                'weapon_skin' => 'Marble_fade',
+                'description' => 'The M9-Bayonet is a versatile and deadly knife that is favored by many players. It features a sharp blade that is capable of inflicting serious damage on enemies. The Marble Fade skin is a rare and valuable option that is highly sought after by many players. It features a detailed rainbow design that is both stylish and intimidating.',
+                'price' => 374,
+                'units' => 42,
+                'weapon_img' => 'm9bayonet_marblefade.png',
+                'rarity' => 'legendary',
+                'weapon_url' => 'https://csgostash.com/storage/img/skin_sideview/s543.png?id=b34588cbd323b908046180ed6ebd0e9f',
+            ],
+            [
+                'weapon_name' => 'Ssg-08',
+                'weapon_skin' => 'Blood_in_the_water',
+                'description' => 'The SSG-08 is a reliable and accurate sniper rifle that is favored by many players. It is a high-impact weapon that is capable of taking down enemies with a single shot to the head. The Blood in the Water skin is a rare and valuable option that is highly sought after by many players. It features a detailed red and black design that is both stylish and intimidating.',
+                'price' => 212,
+                'units' => 84,
+                'weapon_img' => 'ssg_bloodwater.png',
+                'rarity' => 'epic',
+                'weapon_url' => 'https://csgostash.com/storage/img/skin_sideview/s124.png?id=29b9c7c0cd3f1a4053a4608938985058',
+            ],
+            [
+                'weapon_name' => 'Ssg-08',
+                'weapon_skin' => 'Dragon_fire',
+                'description' => 'The SSG-08 is a reliable and accurate sniper rifle that is favored by many players. It is a high-impact weapon that is capable of taking down enemies with a single shot to the head. The Blood in the Water skin is a rare and valuable option that is highly sought after by many players. It features a detailed red and black design that is both stylish and intimidating.',
+                'price' => 64,
+                'units' => 241,
+                'weapon_img' => 'ssg_dragonfire.png',
+                'rarity' => 'rare',
+                'weapon_url' => 'https://csgostash.com/storage/img/skin_sideview/s831.png?id=a0d3af1da934651872b051b46aba8ef0',
+            ],
 
         ];
         
@@ -116,6 +186,31 @@ return new class extends Migration
                 'box_img' => 'the_heroe.png',
             ],
             [
+                'box_name' => 'Batman_who_laughs',
+                'cost' => 1000,
+                'box_img' => 'batman_who_laughs.png',
+            ],
+            [
+                'box_name' => 'Green_lantern',
+                'cost' => 400,
+                'box_img' => 'green_lantern.png',
+            ],
+            [
+                'box_name' => 'Harley_queen',
+                'cost' => 600,
+                'box_img' => 'harley_quinn.png',
+            ],
+            [
+                'box_name' => 'Superman',
+                'cost' => 700,
+                'box_img' => 'superman.png',
+            ],
+            [
+                'box_name' => 'Wonderwoman',
+                'cost' => 300,
+                'box_img' => 'wonderwoman.png',
+            ],
+            [
                 'box_name' => 'Box_level_1',
                 'cost' => 0,
                 'box_img' => 'level_1.png',
@@ -129,7 +224,41 @@ return new class extends Migration
                 'daily' => true,
                 'level' => 2,
             ],
-            // ... other boxes ...
+            [
+                'box_name' => 'Box_level_3',
+                'cost' => 0,
+                'box_img' => 'level_3.png',
+                'daily' => true,
+                'level' => 3,
+            ],
+            [
+                'box_name' => 'Box_level_4',
+                'cost' => 0,
+                'box_img' => 'level_4.png',
+                'daily' => true,
+                'level' => 4,
+            ],
+            [
+                'box_name' => 'Box_level_5',
+                'cost' => 0,
+                'box_img' => 'level_5.png',
+                'daily' => true,
+                'level' => 5,
+            ],
+            [
+                'box_name' => 'Box_level_6',
+                'cost' => 0,
+                'box_img' => 'level_6.png',
+                'daily' => true,
+                'level' => 6,
+            ],
+            [
+                'box_name' => 'Box_level_7',
+                'cost' => 0,
+                'box_img' => 'level_7.png',
+                'daily' => true,
+                'level' => 7,
+            ],
         ];
         
         foreach ($boxes as $box) {
@@ -147,6 +276,26 @@ return new class extends Migration
             [
                 'box_id' => $boxesIds[1], // The_heroe box
                 'weapon_ids' => [$weaponIds[2], $weaponIds[3], $weaponIds[4], $weaponIds[5], $weaponIds[6], $weaponIds[7]],
+            ],
+            [
+                'box_id' => $boxesIds[2], // Batman_who_laughs box
+                'weapon_ids' => [$weaponIds[7], $weaponIds[8], $weaponIds[9], $weaponIds[10], $weaponIds[11], $weaponIds[12]],
+            ],
+            [
+                'box_id' => $boxesIds[3], // Green_lantern box
+                'weapon_ids' => [$weaponIds[2], $weaponIds[14], $weaponIds[12], $weaponIds[13], $weaponIds[7], $weaponIds[4]],
+            ],
+            [
+                'box_id' => $boxesIds[4], // Harley_queen box
+                'weapon_ids' => [$weaponIds[1], $weaponIds[3], $weaponIds[5], $weaponIds[7], $weaponIds[9], $weaponIds[11]],
+            ],
+            [
+                'box_id' => $boxesIds[5], // Superman box
+                'weapon_ids' => [$weaponIds[5], $weaponIds[2], $weaponIds[3], $weaponIds[6], $weaponIds[11], $weaponIds[10]],
+            ],
+            [
+                'box_id' => $boxesIds[6], // Wonderwoman box
+                'weapon_ids' => [$weaponIds[7], $weaponIds[8], $weaponIds[10], $weaponIds[11], $weaponIds[14], $weaponIds[4], $weaponIds[2], $weaponIds[1]],
             ],
         ];
 

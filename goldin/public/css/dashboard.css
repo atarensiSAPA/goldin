@@ -16,3 +16,15 @@
 .start-0 {
     left: 20px !important;
 }
+
+.img-fixed-size {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.img-fixed-size-daily {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}

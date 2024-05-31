@@ -51,7 +51,12 @@ class oauthController extends Controller
                 ]);
                 Auth::login($newUser);
             }
-    
+
+            $user = Auth::user();    
+            // Update connected field with current time
+            $user->connected = 1;
+            $user->is_kicked = 0;
+            $user->save();
             // Redirect to the dashboard
             return redirect('/dashboard');
     
@@ -90,7 +95,12 @@ class oauthController extends Controller
                 ]);
                 Auth::login($newUser);
             }
-    
+
+            $user = Auth::user();    
+            // Update connected field with current time
+            $user->connected = 1;
+            $user->is_kicked = 0;
+            $user->save();
             // Redirect to the dashboard
             return redirect('/dashboard');
     
