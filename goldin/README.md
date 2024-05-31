@@ -3,8 +3,6 @@
 !!IMPORTANTE: VERIFICAR PERFIL, verificar todo lo que conlleva OAUTH, recuperar contrasenya, cambiar contrasenya
 
 Ultimo dia: 
-            2nd Comentar todo,(ingles-castellano)
-            3rd Verificar que el perfil sea correcto
             4th Terminar cajas
             5th Subir al hosting el proyecto final
             6th Verificar que todo funcione correctamente en el hosting

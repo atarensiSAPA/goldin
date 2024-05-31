@@ -44,9 +44,6 @@ class ProfileController extends Controller
     public function show()
     {
         $user = Auth::user();
-    
-        // Log the user role for debugging
-        Log::info('User Role: ' . $user->role);
         
         // Get the user's weapons ordered by the last update time
         $weapons = $user->weapons()->orderBy('updated_at', 'desc')->get();
@@ -245,11 +242,14 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
-
         $user = $request->user();
+
+        // Si el usuario ha iniciado sesión a través de OAuth, no es necesario verificar la contraseña
+        if (!$user->external_auth) {
+            $request->validateWithBag('userDeletion', [
+                'password' => ['required', 'current_password'],
+            ]);
+        }
 
         Auth::logout();
 
