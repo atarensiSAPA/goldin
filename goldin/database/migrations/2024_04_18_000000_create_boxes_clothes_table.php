@@ -11,33 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('weapons', function (Blueprint $table) {
+        Schema::create('clothes', function (Blueprint $table) {
             $table->id();
-            $table->string('weapon_name');
-            $table->string('weapon_skin');
-            $table->text('description');
+            $table->string('name');
+            $table->string('type');
             $table->integer('price');
             $table->integer('units');
-            $table->string('weapon_img');
-            $table->string('rarity');
-            $table->string('weapon_url');
+            $table->string('clothes_img');
+            $table->string('clothes_url');
             $table->timestamps();
         });
-        Schema::create('boxes', function (Blueprint $table) {
+        Schema::create('daily_boxes', function (Blueprint $table) {
             $table->id();
             $table->string('box_name')->unique();
             $table->integer('cost');
             $table->string("box_img")->nullable();
-            $table->boolean('daily')->default(0);
             $table->integer('level')->nullable();
             $table->boolean('available')->default(1);
-            $table->timestamps();
-        });
-        
-        Schema::create('box_weapons', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('box_id')->constrained('boxes');
-            $table->foreignId('weapon_id')->constrained('weapons');
             $table->timestamps();
         });
     }
@@ -47,7 +37,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('weapons');
-        Schema::dropIfExists('boxes');
+        Schema::dropIfExists('clothes');
+        Schema::dropIfExists('daily_boxes');
     }
 };

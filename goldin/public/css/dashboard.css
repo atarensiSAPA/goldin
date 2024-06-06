@@ -28,3 +28,16 @@
     height: 250px;
     object-fit: cover;
 }
+
+.borderClothes{
+    border: 3px solid white;
+}
+
+.displayNone{
+    display: none;
+}
+
+.modal-body,
+.modal-footer {
+    border: none;
+}

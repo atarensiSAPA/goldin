@@ -13,20 +13,13 @@ class UpdateForeignKeysOnUserWeaponTable extends Migration
      */
     public function up()
     {
-        Schema::table('user_weapons', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-
-            $table->dropForeign(['weapon_id']);
-            $table->foreign('weapon_id')->references('id')->on('weapons')->onDelete('cascade');
-        });
 
         Schema::table('user_boxes', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
 
             $table->dropForeign(['box_id']);
-            $table->foreign('box_id')->references('id')->on('boxes')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('box_id')->references('id')->on('daily_boxes')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
@@ -37,20 +30,13 @@ class UpdateForeignKeysOnUserWeaponTable extends Migration
      */
     public function down()
     {
-        Schema::table('user_weapons', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->foreign('user_id')->references('id')->on('users');
-
-            $table->dropForeign(['weapon_id']);
-            $table->foreign('weapon_id')->references('id')->on('weapons');
-        });
 
         Schema::table('user_boxes', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
             $table->foreign('user_id')->references('id')->on('users');
 
             $table->dropForeign(['box_id']);
-            $table->foreign('box_id')->references('id')->on('boxes');
+            $table->foreign('box_id')->references('id')->on('daily_boxes');
         });
     }
 }

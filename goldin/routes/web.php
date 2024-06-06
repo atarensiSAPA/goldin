@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\oauthController;
-use App\Http\Controllers\boxesController;
+use App\Http\Controllers\clothesController;
 use App\Http\Controllers\dailyBoxesController;
 use App\Http\Controllers\minigamesController;
 use App\Http\Controllers\AdministratorController;
@@ -25,14 +25,9 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified', 'CheckIfKicked'])->group(function () {
     // Routes of the boxes table
-    Route::get('/dashboard', [boxesController::class, 'index'])->name('dashboard');
-
-    Route::post('/ajaxOpenBox', [boxesController::class, 'ajaxOpenBox'])->name('ajaxOpenBox');
+    Route::get('/dashboard', [clothesController::class, 'index'])->name('dashboard');
 
     Route::post('/ajaxDailyOpenBox', [dailyBoxesController::class, 'ajaxDailyOpenBox'])->name('ajaxDailyOpenBox');
-
-    // Get the id from the route and pass it to the controller to know which box to show
-    Route::get('/boxes/{box_name}', [boxesController::class, 'openBox'])->name('boxes.show');
 
     Route::get('/dailyboxes/{box_name}', [dailyBoxesController::class, 'openBox'])->name('dailyboxes.show');
 
@@ -61,8 +56,6 @@ Route::middleware(['auth', 'verified', 'CheckIfKicked'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/user-profile', [ProfileController::class, 'show'])->name('user-profile');
     Route::get('/edit-profile', [ProfileController::class, 'editProfile'])->name('edit-profile');
-    Route::post('/sell-weapon', [ProfileController::class, 'sell']);
-    Route::post('/withdraw-weapon', [ProfileController::class, 'withdrawWeapon'])->name('withdraw.weapon');
     Route::post('/filter-weapons', [ProfileController::class, 'filterWeapons']);
     Route::post('/cancel-vip', [ProfileController::class, 'cancelVip'])->name('cancel-vip');
     Route::post('/update-vip', [ProfileController::class, 'updateVip'])->name('update-vip');

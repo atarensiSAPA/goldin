@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\boxes;
+use App\Models\daily_boxes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -13,12 +13,8 @@ class dailyBoxesController extends Controller
 {
     // Display the daily boxes available to the user
     public function show(){
-        $boxes = boxes::get()->groupBy('box_name')->map->first();
+        $boxes = daily_boxes::get()->groupBy('box_name')->map->first();
     
-        // Filter out non-daily boxes
-        $boxes = $boxes->filter(function ($box) {
-            return $box->daily == true;
-        });
         foreach ($boxes as $box) {
             $box->box_name = str_replace('_', ' ', $box->box_name);
         }
@@ -31,7 +27,7 @@ class dailyBoxesController extends Controller
         $user = Auth::user();
         $user->addExperience(0);
         $box_name = $request->route('box_name');
-        $boxes = boxes::where('box_name', $box_name)->get();
+        $boxes = daily_boxes::where('box_name', $box_name)->get();
     
         foreach ($boxes as $box) {
             $box->coins = rand(2, 10) * $box->level;
@@ -48,7 +44,7 @@ class dailyBoxesController extends Controller
         $timer = null;
         if ($user->level >= $boxes->first()->level && $user->role == 1) {
             // Get the box id based on its name
-            $box_id = DB::table('boxes')->where('box_name', $box_name)->value('id');
+            $box_id = DB::table('daily_boxes')->where('box_name', $box_name)->value('id');
         
             // Get the last time the user opened the specific box from the user_boxes table
             $lastOpened = DB::table('user_boxes')
@@ -82,7 +78,7 @@ class dailyBoxesController extends Controller
         // Find the box
         $box = $request->input('box_name');
     
-        $box = boxes::where('box_name', $box)->first();
+        $box = daily_boxes::where('box_name', $box)->first();
     
         // Calculate the number of coins
         $coinsWon = rand(2, 10) * $box->level;

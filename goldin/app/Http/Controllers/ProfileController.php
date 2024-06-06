@@ -8,13 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-use App\Models\weapons;
+use App\Models\clothes;
+use App\Models\purchase_history;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\WeaponWithdrawn;
+use App\Mail\clothesBuy;
 
 class ProfileController extends Controller
 {
@@ -44,16 +45,10 @@ class ProfileController extends Controller
     public function show()
     {
         $user = Auth::user();
-        
-        // Get the user's weapons ordered by the last update time
-        $weapons = $user->weapons()->orderBy('updated_at', 'desc')->get();
 
         // Get the selected filter from localStorage or request, default to 'obtention'
         $selectedFilter = request()->input('filter', session('selectedFilter', 'obtention'));
         session(['selectedFilter' => $selectedFilter]);
-    
-        // Apply the selected filter
-        $weapons = $this->applyFilter($weapons, $selectedFilter);
 
         // Check if the VIP subscription has expired
         if ($user->vip_expires_at && Carbon::parse($user->vip_expires_at)->isPast()) {
@@ -70,13 +65,10 @@ class ProfileController extends Controller
         $maxExperience = $user->max_experience; // Use the accessor to get the max_experience
 
         $roleName = $this->getRoleName($user->role); // Get the role name
+
+        $purchaseHistory = purchase_history::where('user_id', $user->id)->get();
     
-        // Add color and appearance percentage to each weapon
-        foreach ($weapons as $weapon) {
-            $weapon->color = $this->getColorForRarity($weapon->rarity);
-        }
-    
-        return view('profile.user-information', ['user' => $user, 'maxExperience' => $maxExperience, 'weapons' => $weapons, 'roleName' => $roleName]);
+        return view('profile.user-information', ['user' => $user, 'maxExperience' => $maxExperience, 'roleName' => $roleName, 'purchaseHistory' => $purchaseHistory]);
     }
 
     // Function to apply filter to weapons
@@ -85,53 +77,9 @@ class ProfileController extends Controller
         switch ($filter) {
             case 'price':
                 return $weapons->sortByDesc('price')->values();
-            case 'rarity':
-                // Define the rarity order
-                $rarityOrder = ['commun', 'rare', 'epic', 'legendary', 'mitic'];
-                // Sort weapons by rarity
-                return $weapons->sortBy(function ($weapon) use ($rarityOrder) {
-                    return array_search($weapon->rarity, $rarityOrder);
-                })->values();
             case 'obtention':
             default:
                 return $weapons->sortByDesc('updated_at')->values();
-        }
-    }
-    
-    // Function to filter weapons based on the selected filter
-    public function filterWeapons(Request $request)
-    {
-        $filter = $request->input('filter');
-        $user = Auth::user();
-    
-        // Store the selected filter in the session
-        session(['selectedFilter' => $filter]);
-    
-        // Apply the filter
-        $weapons = $this->applyFilter($user->weapons()->get(), $filter);
-    
-        // Add color and appearance percentage to each weapon
-        foreach ($weapons as $weapon) {
-            $weapon->color = $this->getColorForRarity($weapon->rarity);
-        }
-    
-        return response()->json(['weapons' => $weapons]);
-    }
-    
-    // Function to get color for weapon rarity
-    public function getColorForRarity($rarity)
-    {
-        switch ($rarity) {
-            case 'mitic':
-                return 'rgba(255,0,0,0.8)';
-            case 'legendary':
-                return 'rgba(255,165,0,0.8)';
-            case 'epic':
-                return 'rgba(128,0,128,0.8)';
-            case 'rare':
-                return 'rgba(0,0,255,0.8)';
-            case 'commun':
-                return 'rgba(0,128,0,0.8)';
         }
     }
 
@@ -141,7 +89,7 @@ class ProfileController extends Controller
         $weaponId = $request->input('weapon_id');
     
         // Find the weapon in the database
-        $weapon = weapons::find($weaponId);
+        $weapon = clothes::find($weaponId);
     
         if (!$weapon) {
             // If the weapon doesn't exist, return an error
@@ -180,7 +128,7 @@ class ProfileController extends Controller
     {
         $weaponId = $request->input('weapon_id');
         $user = Auth::user();
-        $weapon = weapons::find($weaponId);
+        $weapon = clothes::find($weaponId);
     
         if (!$weapon) {
             return response()->json(['message' => 'Weapon not found'], 404);
@@ -208,7 +156,7 @@ class ProfileController extends Controller
         $weapon->save();
     
         // Send an email to the user about the weapon withdrawal
-        Mail::to($user->email)->send(new WeaponWithdrawn($user, $weapon));
+        Mail::to($user->email)->send(new clothesBuy($user, $weapon));
     
         return response()->json(['success' => true]);
     }

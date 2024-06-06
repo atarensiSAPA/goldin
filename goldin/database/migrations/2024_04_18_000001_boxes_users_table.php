@@ -33,18 +33,20 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('user_weapons', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('weapon_id')->constrained();
-            $table->timestamps();
-        });
-
         Schema::create('user_boxes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('box_id')->constrained();
+            $table->foreignId('box_id')->constrained('daily_boxes');
             $table->timestamp('last_opened_at')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('purchase_history', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('clothes_id')->constrained();
+            $table->timestamp('purchase_date');
+            $table->decimal('price', 8, 2);
             $table->timestamps();
         });
 
