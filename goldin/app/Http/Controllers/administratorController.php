@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\boxes;
+use App\Models\daily_boxes;
 use App\Models\weapons;
 
 class AdministratorController extends Controller
@@ -18,14 +18,11 @@ class AdministratorController extends Controller
     
         // Get the number of connected users
         $connectedUsers = User::where('connected', 1)->where('role', '!=', 2)->count();
-    
-        // Count all available normal boxes
-        $availableBoxes = boxes::where('available', true)->where('daily', false)->count();
 
         // Count all available daily boxes
-        $availableDailyBoxes = boxes::where('available', true)->where('daily', true)->count();
+        $availableDailyBoxes = daily_boxes::where('available', true)->count();
     
-        return view('admin.admin-dashboard', ['user' => $user, 'connectedUsers' => $connectedUsers, 'availableBoxes' => $availableBoxes, 'availableDailyBoxes' => $availableDailyBoxes]);
+        return view('admin.admin-dashboard', ['user' => $user, 'connectedUsers' => $connectedUsers, 'availableDailyBoxes' => $availableDailyBoxes]);
     }
 
     // Show non-administrator users with search functionality

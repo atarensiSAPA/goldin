@@ -18,6 +18,7 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script defer type="module" src="{{ asset('js/profile_inventory.js') }}"></script>
         <script defer type="module" src="{{ asset('js/profile.js') }}"></script>
+        <script defer type="module" src="{{ asset('js/nav.js') }}"></script>
 
 
         <!-- Bootstrap -->
