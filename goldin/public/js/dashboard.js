@@ -18,7 +18,7 @@ $(document).ready(function() {
         let clothesUnits = $(this).data('clothes-units');
         let clothesImg = $(this).data('clothes-img');
         let clothesId = $(this).data('clothes-id');
-
+    
         // Insertar la información en el modal
         $('#clothesDescription').html(`
             <img src="images/clothes/${clothesImg}" alt="" class="img-fluid rounded-0">
@@ -26,11 +26,26 @@ $(document).ready(function() {
             <p>Type: ${clothesType}</p>
             <p class="d-flex align-items-center">Price: ${clothesPrice}<img src="images/user_coin.png" alt="coin" width="30" height="30" class="ms-0"></p>
             <p>Units: ${clothesUnits}</p>
+            ${clothesUnits == 0 ? '<p class="text-danger text-center fs-4">Sold Out</p>' : ''}
         `);
-
+    
         // Cambiar el ID del botón existente en el modal
         $('.btnCart').attr('id', `addToCartButton-${clothesId}`);
-
+        $('.btnCart').attr('data-clothes-id', clothesId);
+        $('.btnCart').attr('data-clothes-name', clothesName);
+        $('.btnCart').attr('data-clothes-type', clothesType);
+        $('.btnCart').attr('data-clothes-price', clothesPrice);
+        $('.btnCart').attr('data-clothes-img', clothesImg);
+    
+        // Comprobar si las unidades están en 0
+        if (clothesUnits == 0) {
+            // Si las unidades están en 0, deshabilitar el botón
+            $('.btnCart').prop('disabled', true);
+        } else {
+            // Si las unidades no están en 0, habilitar el botón
+            $('.btnCart').prop('disabled', false);
+        }
+    
         // Abrir el modal
         let myModal = new bootstrap.Modal(document.getElementById('clothesModal'));
         myModal.show();
@@ -39,27 +54,49 @@ $(document).ready(function() {
     // Esta función maneja el evento de clic en el botón "Añadir al carrito"
     $(document).on('click', '.add-to-cart-button', function(event) {
         event.stopPropagation(); // Evitar la propagación del evento para que el modal no se cierre automáticamente
-        let clothesDiv = $(this).parent().find('.clothesDiv');
-        let clothesName = $(clothesDiv).data('clothes-name');
-        let clothesType = $(clothesDiv).data('clothes-type');
-        let clothesPrice = $(clothesDiv).data('clothes-price');
-        let clothesUnits = $(clothesDiv).data('clothes-units');
-        let clothesImg = $(clothesDiv).data('clothes-img');
-        let clothesId = $(clothesDiv).data('clothes-id');
+        let clothesName = $(this).data('clothes-name');
+        let clothesType = $(this).data('clothes-type');
+        let clothesPrice = $(this).data('clothes-price');
+        let clothesUnits = $(this).data('clothes-units');
+        let clothesImg = $(this).data('clothes-img');
+        let clothesId = $(this).data('clothes-id');
         
         let item = {
             id: clothesId,
             name: clothesName,
+            type: clothesType,
             price: clothesPrice,
+            units: clothesUnits,
             clothes_img: clothesImg
         };
         
-        addToCart(item); // Añadir el artículo al carrito llamando a la funcion del archivo nav.js
+        addToCart(userId, item);
         alert('Item added to cart successfully!');
+        location.reload();
     });
 
-    // Esta función obtiene los elementos del carrito del sessionStorage
-    function getCartItems() {
-        return JSON.parse(sessionStorage.getItem('cartItems')) || [];
+    // Esta función obtiene los elementos del carrito de las cookies
+    function getCartItems(userId) {
+        return JSON.parse(getCookie(`cartItems-${userId}`)) || [];
+    }
+    
+    // Carga inicial del carrito
+    function loadCartItems() {
+        let cartItems = getCartItems(userId);
+        updateCartDisplay(cartItems);
+    }
+
+    loadCartItems();
+
+    function addToCart(userId, item) {
+        let cartItems = getCartItems(userId);
+        let existingItem = cartItems.find(cartItem => cartItem.id === item.id);
+        if (existingItem) {
+            existingItem.quantity++;
+        } else {
+            item.quantity = 1;
+            cartItems.push(item);
+        }
+        saveCartItems(userId, cartItems);
     }
 });
