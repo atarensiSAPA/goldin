@@ -33,7 +33,6 @@
                             <p class="d-flex align-items-center">Price: {{ $c->price }}<img src="{{ asset('images/user_coin.png') }}" alt="coin" width="30" height="30"></p>
                         </div>
                         <div class="d-flex justify-content-center clothes-buttons">
-                            <button type="button" class="btn btn-success sell-button me-3" data-clothes-id="{{ $c->id }}">Sell</button>
                             <button type="button" class="btn btn-primary withdraw-button" data-clothes-id="{{ $c->id }}">Withdraw</button>
                         </div>
                     </div>
@@ -43,30 +42,7 @@
             @endforelse
         </div>
     </div>
-{{-- 
-<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content bg-gray-800 text-white">
-            <div class="p-6 bg-gray-800">
-                <h2 class="text-lg font-medium text-white" id="confirmModalLabel">
-                    Confirmation
-                </h2>
-                
-                <p class="mt-1 text-sm text-gray-400">
-                    Are you sure you want to sell this clothes?
-                </p>
 
-                <div class="mt-6 flex justify-end">
-                    <x-secondary-button x-on:click="$dispatch('close')" class="bg-gray-700 text-black" data-dismiss="modal">{{ __('Cancel') }}</x-secondary-button>
-
-                    <button type="button" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 ms-3 bg-red-700 text-white" id="confirmButton">
-                        Confirm
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="modal fade" id="withdrawConfirmModal" tabindex="-1" role="dialog" aria-labelledby="withdrawConfirmModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content bg-gray-800 text-white">

@@ -84,11 +84,11 @@
                     <label for="cardNumber" class="col-sm-2 col-form-label text-white ">Card Number</label>
                     <div class="col-sm-10 mb-3">
                         <div class="d-flex align-items-center text-white">
-                            <input type="text" class="form-control mr-2" id="cardNumber1" placeholder="####" maxlength="4" style="width: 20%;">
+                            <input type="text" class="form-control mr-2" id="cardNumber1" placeholder="####" maxlength="4" style="width: 20%;" required>
                             <span>-</span>
-                            <input type="text" class="form-control mr-2" id="cardNumber2" placeholder="####" maxlength="4" style="width: 20%;">
+                            <input type="text" class="form-control mr-2" id="cardNumber2" placeholder="####" maxlength="4" style="width: 20%;" required>
                             <span>-</span>
-                            <input type="text" class="form-control mr-2" id="cardNumber3" placeholder="####" maxlength="4" style="width: 20%;">
+                            <input type="text" class="form-control mr-2" id="cardNumber3" placeholder="####" maxlength="4" style="width: 20%;" required>
                             <span>-</span>
                             <input type="text" class="form-control" id="cardNumber4" placeholder="####" maxlength="4" style="width: 20%;">
                         </div>
@@ -97,19 +97,19 @@
                 <div class="form-group row">
                     <label for="cardName" class="col-sm-2 col-form-label text-white">Name on Card</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control mb-3" id="cardName" placeholder="Name on Card">
+                        <input type="text" class="form-control mb-3" id="cardName" placeholder="Name on Card" required>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="expiryDate" class="col-sm-2 col-form-label text-white">Expiry Date</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control mb-3" id="expiryDate" placeholder="MM/YY">
+                        <input type="text" class="form-control mb-3" id="expiryDate" placeholder="MM/YY" required>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="cvv" class="col-sm-2 col-form-label text-white">CVV</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control mb-3" id="cvv" placeholder="CVV" maxlength="3">
+                        <input type="text" class="form-control mb-3" id="cvv" placeholder="CVV" maxlength="3" required>
                     </div>
                 </div>
                 <div class="mt-2 text-sm text-red-600" id="errorMessage"></div>

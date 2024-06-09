@@ -1,3 +1,4 @@
+import * as Cart from './cart.js';
 $(document).ready(function() {
     // Esta función muestra u oculta el botón de "Añadir al carrito" cuando el mouse entra o sale de una tarjeta
     $('.card').hover(
@@ -83,7 +84,7 @@ $(document).ready(function() {
     // Carga inicial del carrito
     function loadCartItems() {
         let cartItems = getCartItems(userId);
-        updateCartDisplay(cartItems);
+        Cart.updateCartDisplay(cartItems);
     }
 
     loadCartItems();
@@ -97,6 +98,6 @@ $(document).ready(function() {
             item.quantity = 1;
             cartItems.push(item);
         }
-        saveCartItems(userId, cartItems);
+        Cart.saveCartItems(userId, cartItems);
     }
 });

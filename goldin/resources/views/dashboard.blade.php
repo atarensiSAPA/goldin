@@ -27,7 +27,7 @@
                             </div>
                         </div>
                         <!-- Add to cart button -->
-                        <button class="btn btn-primary add-to-cart-button position-absolute top-0 end-0 me-3 mt-1 displayNone" id="add-to-cart-{{ $c->id }}" data-clothes-id="{{ $c->id }}" data-clothes-name="{{ $c->name }}" data-clothes-type="{{ $c->type }}" data-clothes-price="{{ $c->price }}" data-clothes-img="{{ $c->clothes_img }}" {{ $c->units == 0 ? 'disabled' : '' }}>
+                        <button class="btn btn-primary add-to-cart-button position-absolute top-0 end-0 me-3 mt-1 displayNone" id="add-to-cart-{{ $c->id }}" data-clothes-id="{{ $c->id }}" data-clothes-name="{{ $c->name }}" data-clothes-type="{{ $c->type }}" data-clothes-price="{{ $c->price }}" data-clothes-img="{{ $c->clothes_img }}" data-clothes-units="{{ $c->units }}" {{ $c->units == 0 ? 'disabled' : '' }}>
                             🛒
                         </button>
                     </div>

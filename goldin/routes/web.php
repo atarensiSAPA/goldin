@@ -6,6 +6,7 @@ use App\Http\Controllers\clothesController;
 use App\Http\Controllers\dailyBoxesController;
 use App\Http\Controllers\minigamesController;
 use App\Http\Controllers\AdministratorController;
+use App\Http\Controllers\cartController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -59,6 +60,10 @@ Route::middleware(['auth', 'verified', 'CheckIfKicked'])->group(function () {
     Route::post('/filter-weapons', [ProfileController::class, 'filterWeapons']);
     Route::post('/cancel-vip', [ProfileController::class, 'cancelVip'])->name('cancel-vip');
     Route::post('/update-vip', [ProfileController::class, 'updateVip'])->name('update-vip');
+
+    //Cart
+    Route::get('/showBuyCart', [cartController::class, 'show'])->name('showBuyCart');
+    Route::post('/buyCart', [cartController::class, 'buyCart'])->name('buyCart');
 });
 
 // Admin routes

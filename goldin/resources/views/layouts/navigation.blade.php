@@ -162,7 +162,7 @@
             </div>
             <div class="modal-footer bg-gray-100 dark:bg-gray-900 flex justify-end">
                 <x-secondary-button x-on:click="$dispatch('close')" class="bg-gray-700 text-black" data-dismiss="modal">{{ __('Cancel') }}</x-secondary-button>
-                <button type="button" class="btn btn-primary" id="addToCartButton">Buy</button>
+                <button type="button" class="btn btn-primary" id="buyCart" onclick="window.location='{{ route('showBuyCart') }}'">Buy</button>
             </div>
         </div>
     </div>

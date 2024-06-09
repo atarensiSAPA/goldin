@@ -14,14 +14,9 @@ class clothesController extends Controller
     public function index()
     {
         $clothes = clothes::get()->groupBy('name')->map->first();
-
-        // Filter out non-daily boxes
-        $clothes = $clothes->filter(function ($c) {
-            return $c->daily == false;
-        });
         
         foreach ($clothes as $c) {
-            $c->box_name = str_replace('_', ' ', $c->name);
+            $c->name = str_replace('_', ' ', $c->name);
         }
         
         return view('dashboard', ['clothes' => $clothes]);
