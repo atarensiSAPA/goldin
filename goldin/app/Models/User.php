@@ -70,8 +70,8 @@ class User extends Authenticatable
         $this->save();
     }
 
-    public function weapons()
+    public function clothes()
     {
-        return $this->belongsToMany(weapons::class, 'user_weapons', 'user_id', 'weapon_id');
+        return $this->belongsToMany(clothes::class, 'purchase_history', 'user_id', 'clothes_id');
     }
 }

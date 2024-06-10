@@ -3,65 +3,76 @@ let betButton = document.getElementById('bet');
 
 // Event listener for the bet button
 betButton.addEventListener('click', function() {
-    let betInput = document.getElementById('bet-input').value;
-    betAmount = parseInt(betInput);
-    
-    // Validate the bet input
-    if (betInput == betAmount && betAmount >= 100) {
-        // Send AJAX request to place the bet
-        $.ajax({
-            url: '/bet',
-            method: 'POST',
-            data: { bet: betAmount },
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(data) {
-                document.getElementById('bet-display').innerText = "User's bet: " + betAmount;
-                // Update the user's coin display
-                document.getElementById('coins').innerText = data.coins;
-
-                // Enable the "hit" and "stand" buttons
-                document.getElementById('hit').disabled = false;
-                document.getElementById('stand').disabled = false;
-                document.getElementById('winnings').innerHTML = "";
-                document.getElementById('message').innerHTML = "Click hit or stand to play the game";
-                // Disable the bet button once a bet is placed
-                betButton.disabled = true;
-
-                // Start the blackjack game
-                blackJackMinigame();
-            },
-            error: function(error) {
-                console.error('Error:', error);
-
-                // Display error message in alert
-                let alertDiv = document.getElementById('alertCoins');
-                alertDiv.classList.remove('hideCard');
-                alertDiv.classList.add('show');
-                document.getElementById('alert-messageCoins').textContent = error.responseJSON.message;
-
-                // Hide alert after 3 seconds
-                setTimeout(function() {
-                    alertDiv.classList.remove('show');
-                    alertDiv.classList.add('hideCard');
-                }, 3000);
-            }
-        });
-    } else {
-        // Display validation error in alert
-        document.getElementById('alert-messageCoins').innerText = "The bet needs to be an integer and at least 100 or higher";
-        let alertDiv = document.getElementById('alertCoins');
-        alertDiv.classList.remove('hideCard');
-        alertDiv.classList.add('show');
-
-        // Hide alert after 3 seconds
-        setTimeout(function() {
-            alertDiv.classList.remove('show');
-            alertDiv.classList.add('hideCard');
-        }, 3000);
+    try {
+        placeBet();
+    } catch (error) {
+        handleBetError(error);
     }
 });
+
+function placeBet() {
+    let betInput = document.getElementById('bet-input').value;
+    betAmount = parseInt(betInput);
+
+    // Validate the bet input
+    if (!isValidBetInput(betInput)) {
+        displayBetInputError();
+        return;
+    }
+
+    // Send AJAX request to place the bet
+    $.ajax({
+        url: '/bet',
+        method: 'POST',
+        data: { bet: betAmount },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            handleBetSuccess(data);
+        },
+        error: function(error) {
+            displayAlert('alertCoins', 'alert-messageCoins', error.responseJSON.message);
+            throw new Error(error.responseJSON.message);
+        }
+    });
+}
+
+function isValidBetInput(betInput) {
+    return betInput == betAmount && betAmount >= 100;
+}
+
+function displayBetInputError() {
+    displayAlert('alertCoins', 'alert-messageCoins', 'The bet needs to be an integer and at least 100 or higher');
+}
+
+function handleBetSuccess(data) {
+    document.getElementById('bet-display').innerText = "User's bet: " + betAmount;
+    document.getElementById('coins').innerText = data.coins;
+    document.getElementById('hit').disabled = false;
+    document.getElementById('stand').disabled = false;
+    document.getElementById('winnings').innerHTML = "";
+    document.getElementById('message').innerHTML = "Click hit or stand to play the game";
+    betButton.disabled = true;
+    blackJackMinigame();
+}
+
+function handleBetError(error) {
+    console.error('Error:', error);
+    displayAlert('alertCoins', 'alert-messageCoins', error.message);
+}
+
+function displayAlert(alertId, messageId, message) {
+    let alertDiv = document.getElementById(alertId);
+    alertDiv.classList.remove('hideCard');
+    alertDiv.classList.add('show');
+    document.getElementById(messageId).textContent = message;
+
+    setTimeout(function() {
+        alertDiv.classList.remove('show');
+        alertDiv.classList.add('hideCard');
+    }, 3000);
+}
 
 function blackJackMinigame() {
     let deck = [];

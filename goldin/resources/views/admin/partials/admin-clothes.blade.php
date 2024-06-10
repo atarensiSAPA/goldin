@@ -7,14 +7,14 @@
             <!-- Sección para agregar usuarios -->
             <div class="p-4 sm:p-8 dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="max-w-5xl">
-                    @include('admin.partials.admin-boxes-add')
+                    @include('admin.partials.admin-clothes-add')
                 </div>
             </div>
 
             <!-- Sección para mostrar usuarios con sus botones -->
             <div class="p-4 sm:p-8 dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="max-w-5xl">
-                    @include('admin.partials.admin-boxes-all')
+                    @include('admin.partials.admin-clothes-all')
                 </div>
             </div>
         </div>

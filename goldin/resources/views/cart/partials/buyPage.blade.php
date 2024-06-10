@@ -1,11 +1,13 @@
 <section>
-    <header>Pay</header>
-    <button type="button" id="credit_cardBtn" class="btn">
+    <header>
+        <h1>Pay</h1>
+    </header>
+    <button type="button" id="credit_cardBtn" class="btn" aria-label="Pay with credit card">
         <img src="{{ asset('images/credit_card.png')}}" alt="credit_card" width="100" height="100">
     </button>
-    <form id="cardDetails" class="mt-4 hideCard">
+    <form id="cardDetails" class="mt-4 hideCard" aria-label="Credit card details form">
         <div class="form-group row">
-            <label for="cardNumber" class="col-sm-2 col-form-label text-white ">Card Number</label>
+            <label for="cardNumber" class="col-sm-2 col-form-label text-white">Card Number</label>
             <div class="col-sm-10 mb-3">
                 <div class="d-flex align-items-center text-white">
                     <input type="text" class="form-control mr-2" id="cardNumber1" placeholder="####" maxlength="4" style="width: 20%;" required>
@@ -37,6 +39,7 @@
             </div>
         </div>
         <div class="mt-2 text-sm text-red-600" id="errorMessage"></div>
-        <br><button type="button" id="submitPayment" class="btn btn-primary">Submit Payment</buttont>
+        <br>
+        <button type="button" id="submitPayment" class="btn btn-primary">Submit Payment</button>
     </form>
 </section>

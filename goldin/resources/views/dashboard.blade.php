@@ -1,8 +1,8 @@
 <x-app-layout>
     <div class="container">
-        <div class="mt-2">
+        <div class="container">
             <label for="filter" class="block text-sm font-medium text-gray-700 text-white">Filter by:</label>
-            <select id="filter" name="filter" class="inline-flex items-center px-3 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-sm text-black dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 mt-1 block w-60">
+            <select id="filter" name="filter" aria-label="Filter by" class="inline-flex items-center px-3 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-sm text-black dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 mt-1 block w-60">
                 <option value="price">Price</option>
                 <option value="rarity">Rarity</option>
             </select>
@@ -11,9 +11,9 @@
             @forelse ($clothes as $c)
                 <div class="col-md-3 mt-4 d-flex">
                     <div class="card bg-transparent text-white d-flex flex-column align-items-center" id="card-{{ $c->name }}">
-                        <div class="clothesDiv card-body position-relative rounded-lg dark:bg-gray-800 d-flex flex-column align-items-center borderClothes" data-bs-toggle="modal" data-bs-target="#clothesModal" data-clothes-name="{{ $c->name }}" data-clothes-type="{{ $c->type }}" data-clothes-price="{{ $c->price }}" data-clothes-units="{{$c->units}}" data-clothes-img="{{ $c->clothes_img }}" data-clothes-id="{{ $c->id }}">
+                        <div tabindex="0" class="clothesDiv card-body position-relative rounded-lg dark:bg-gray-800 d-flex flex-column align-items-center borderClothes" data-bs-toggle="modal" data-bs-target="#clothesModal" data-clothes-name="{{ $c->name }}" data-clothes-type="{{ $c->type }}" data-clothes-price="{{ $c->price }}" data-clothes-units="{{$c->units}}" data-clothes-img="{{ $c->clothes_img }}" data-clothes-id="{{ $c->id }}">
                             <div class="d-flex justify-content-center align-items-center" style="flex-grow: 1;">
-                                <img src="{{ asset('images/clothes/' . $c->clothes_img) }}" alt="" class="img-fluid rounded-0">
+                                <img src="{{ asset('images/clothes/' . $c->clothes_img) }}" alt="Image of {{ $c->name }}" class="img-fluid rounded-0">
                             </div>
                             <div class="overlay position-absolute top-0 start-0 pt-2 pl-2 radius-0 h-auto d-flex align-items-center">
                                 <b class="fs-5 fw-bold">{{ $c->price }}</b>
@@ -28,7 +28,8 @@
                         </div>
                         <!-- Add to cart button -->
                         <button class="btn btn-primary add-to-cart-button position-absolute top-0 end-0 me-3 mt-1 displayNone" id="add-to-cart-{{ $c->id }}" data-clothes-id="{{ $c->id }}" data-clothes-name="{{ $c->name }}" data-clothes-type="{{ $c->type }}" data-clothes-price="{{ $c->price }}" data-clothes-img="{{ $c->clothes_img }}" data-clothes-units="{{ $c->units }}" {{ $c->units == 0 ? 'disabled' : '' }}>
-                            🛒
+                            <span aria-hidden="true">🛒</span>
+                            <span class="sr-only">Add to cart</span>
                         </button>
                     </div>
                 </div>

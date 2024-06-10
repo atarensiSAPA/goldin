@@ -13,6 +13,7 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <script defer type="module" src="{{ asset('js/guest.js') }}"></script>
 
         <!--Recaptcha-->
         {!! NoCaptcha::renderJs() !!}

@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\daily_boxes;
-use App\Models\weapons;
+use App\Models\clothes;
 
 class AdministratorController extends Controller
 {
@@ -18,11 +18,8 @@ class AdministratorController extends Controller
     
         // Get the number of connected users
         $connectedUsers = User::where('connected', 1)->where('role', '!=', 2)->count();
-
-        // Count all available daily boxes
-        $availableDailyBoxes = daily_boxes::where('available', true)->count();
     
-        return view('admin.admin-dashboard', ['user' => $user, 'connectedUsers' => $connectedUsers, 'availableDailyBoxes' => $availableDailyBoxes]);
+        return view('admin.admin-dashboard', ['user' => $user, 'connectedUsers' => $connectedUsers]);
     }
 
     // Show non-administrator users with search functionality
@@ -115,43 +112,8 @@ class AdministratorController extends Controller
         return redirect()->route('admin-users')->with('success', 'User has been kicked.');
     }
 
-    // Show all boxes and available weapons
-    public function showBoxes()
-    {
-        $boxes = boxes::all();
-        $weapons = weapons::all();
-
-        return view('admin.partials.admin-boxes', ['boxes' => $boxes, 'weapons' => $weapons]);
-    }
-
-    // Store a new box
-    public function storeBox(Request $request)
-    {
-        $request->validate([
-            'box_name' => 'required|max:255',
-            'box_img' => 'required|image',
-            'cost' => 'required|integer',
-            'daily' => 'boolean',
-            'weapons' => 'array',
-        ]);
-
-        $box = new boxes;
-        $box->box_name = $request->box_name;
-
-        if ($request->hasFile('box_img')) {
-            $imageName = time().'.'.$request->box_img->extension();
-            $request->box_img->move(public_path('images/boxes'), $imageName);
-            $box->box_img = $imageName;
-        }
-
-        $box->cost = $request->cost;
-        $box->daily = $request->daily ? true : false;
-        $box->save();
-
-        if (!$box->daily && $request->has('weapons')) {
-            $box->weapons()->sync($request->weapons);
-        }
-
-        return redirect()->route('admin-boxes')->with('success', 'Box added successfully');
+    public function showClothes(){
+        $clothes = clothes::all();
+        return view('admin.partials.admin-clothes', ['clothes' => $clothes]);
     }
 }

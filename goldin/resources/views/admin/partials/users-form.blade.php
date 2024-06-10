@@ -1,4 +1,4 @@
-<section class="space-y-6 text-white">
+<section class="space-y-6 text-white" aria-label="Users Section">
     <header>
         Users
     </header>
