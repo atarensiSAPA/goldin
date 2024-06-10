@@ -1,24 +1,29 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\boxes;
+
+use App\Models\Boxes;
+use App\Models\Clothes;
 use Illuminate\Http\Request;
-use App\Models\clothes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Exception;
 
-class clothesController extends Controller
+class ClothesController extends Controller
 {
-    // Display all available boxes
+    // Display all available clothes
     public function index()
     {
-        $clothes = clothes::get()->groupBy('name')->map->first();
-        
-        foreach ($clothes as $c) {
-            $c->name = str_replace('_', ' ', $c->name);
+        try {
+            $clothes = Clothes::get()->groupBy('name')->map->first();
+            
+            foreach ($clothes as $c) {
+                $c->name = str_replace('_', ' ', $c->name);
+            }
+            
+            return view('dashboard', ['clothes' => $clothes]);
+        } catch (\Exception $e) {
+            Log::error('Error displaying clothes: ' . $e->getMessage());
+            return response()->view('errors.general', ['message' => 'Failed to load clothes, please try again.'], 500);
         }
-        
-        return view('dashboard', ['clothes' => $clothes]);
     }
 }

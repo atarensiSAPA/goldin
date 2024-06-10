@@ -6,42 +6,54 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\daily_boxes;
-use App\Models\clothes;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use App\Models\DailyBoxes;
+use App\Models\Clothes;
 
 class AdministratorController extends Controller
 {
-    // Show the administrator dashboard
+    // Mostrar el panel de administración
     public function show()
     {
-        $user = Auth::user();
-    
-        // Get the number of connected users
-        $connectedUsers = User::where('connected', 1)->where('role', '!=', 2)->count();
-    
-        return view('admin.admin-dashboard', ['user' => $user, 'connectedUsers' => $connectedUsers]);
+        try {
+            $user = Auth::user();
+        
+            // Obtener el número de usuarios conectados
+            $connectedUsers = User::where('connected', 1)->where('role', '!=', 2)->count();
+        
+            return view('admin.admin-dashboard', ['user' => $user, 'connectedUsers' => $connectedUsers]);
+        } catch (\Exception $e) {
+            Log::error('Error displaying admin dashboard: ' . $e->getMessage());
+            return response()->view('errors.general', ['message' => 'Failed to load admin dashboard, please try again.'], 500);
+        }
     }
 
-    // Show non-administrator users with search functionality
+    // Mostrar usuarios no administradores con funcionalidad de búsqueda
     public function showUsers(Request $request)
     {
-        $search = $request->input('search');
+        try {
+            $search = $request->input('search');
 
-        if ($search) {
-            $nonAdminUsers = User::where('role', '!=', 2)
-                                ->where(function($query) use ($search) {
-                                    $query->where('name', 'LIKE', "%$search%")
-                                          ->orWhere('email', 'LIKE', "%$search%");
-                                })
-                                ->get();
-        } else {
-            $nonAdminUsers = User::where('role', '!=', 2)->get();
+            if ($search) {
+                $nonAdminUsers = User::where('role', '!=', 2)
+                                    ->where(function($query) use ($search) {
+                                        $query->where('name', 'LIKE', "%$search%")
+                                              ->orWhere('email', 'LIKE', "%$search%");
+                                    })
+                                    ->get();
+            } else {
+                $nonAdminUsers = User::where('role', '!=', 2)->get();
+            }
+
+            return view('admin.partials.admin-users', ['nonAdminUsers' => $nonAdminUsers]);
+        } catch (\Exception $e) {
+            Log::error('Error displaying users: ' . $e->getMessage());
+            return response()->view('errors.general', ['message' => 'Failed to load users, please try again.'], 500);
         }
-
-        return view('admin.partials.admin-users', ['nonAdminUsers' => $nonAdminUsers]);
     }
 
-    // Store a new user
+    // Almacenar un nuevo usuario
     public function store(Request $request)
     {
         $request->validate([
@@ -50,70 +62,88 @@ class AdministratorController extends Controller
             'password' => 'required|confirmed|min:8',
         ]);
 
-        $user = new User;
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->email_verified_at = now();
-        $user->save();
+        try {
+            $user = new User;
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+            $user->email_verified_at = now();
+            $user->save();
 
-        return redirect()->route('admin-users')->with('success', 'User added successfully');
+            return redirect()->route('admin-users')->with('success', 'User added successfully');
+        } catch (\Exception $e) {
+            Log::error('Error storing new user: ' . $e->getMessage());
+            return redirect()->route('admin-users')->with('error', 'Failed to add user, please try again.');
+        }
     }
 
-    // Show user edit form
+    // Mostrar formulario de edición de usuario
     public function edit($id)
     {
-        $user = User::find($id);
+        try {
+            $user = User::findOrFail($id);
 
-        if (!$user) {
+            return view('admin.partials.edit-user', ['user' => $user]);
+        } catch (\Exception $e) {
+            Log::error('Error displaying user edit form: ' . $e->getMessage());
             return redirect()->back()->with('error', 'User not found');
         }
-
-        return view('admin.partials.edit-user', ['user' => $user]);
     }
 
-    // Update user details
+    // Actualizar detalles del usuario
     public function update(Request $request, $id)
     {
-        $user = User::find($id);
+        try {
+            $user = User::findOrFail($id);
 
-        if (!$user) {
-            return redirect()->back()->with('error', 'User not found');
+            $user->update($request->only(['name', 'email', 'role', 'level', 'coins']));
+
+            return redirect()->route('admin-users')->with('success', 'User updated successfully');
+        } catch (\Exception $e) {
+            Log::error('Error updating user: ' . $e->getMessage());
+            return redirect()->route('admin-users')->with('error', 'Failed to update user, please try again.');
         }
-
-        $user->update($request->only(['name', 'email', 'role', 'level', 'coins']));
-
-        return redirect()->route('admin-users')->with('success', 'User updated successfully');
     }
 
-    // Delete a user
+    // Eliminar un usuario
     public function destroy($id)
     {
-        $user = User::find($id);
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
 
-        if (!$user) {
-            return redirect()->back()->with('error', 'User not found');
+            return redirect()->route('admin-users')->with('success', 'User deleted successfully');
+        } catch (\Exception $e) {
+            Log::error('Error deleting user: ' . $e->getMessage());
+            return redirect()->route('admin-users')->with('error', 'Failed to delete user, please try again.');
         }
-
-        $user->delete();
-
-        return redirect()->route('admin-users')->with('success', 'User deleted successfully');
     }
 
-    // Kick a user from the system
+    // Expulsar a un usuario del sistema
     public function kick(User $user)
     {
-        // Mark the user as "kicked"
-        $user->is_kicked = true;
-        $user->connected = 0;
-        $user->save();
-    
-        // Redirect back to the user administration page with a success message
-        return redirect()->route('admin-users')->with('success', 'User has been kicked.');
+        try {
+            // Marcar al usuario como "expulsado"
+            $user->is_kicked = true;
+            $user->connected = 0;
+            $user->save();
+        
+            return redirect()->route('admin-users')->with('success', 'User has been kicked.');
+        } catch (\Exception $e) {
+            Log::error('Error kicking user: ' . $e->getMessage());
+            return redirect()->route('admin-users')->with('error', 'Failed to kick user, please try again.');
+        }
     }
 
-    public function showClothes(){
-        $clothes = clothes::all();
-        return view('admin.partials.admin-clothes', ['clothes' => $clothes]);
+    // Mostrar todas las prendas
+    public function showClothes()
+    {
+        try {
+            $clothes = Clothes::all();
+            return view('admin.partials.admin-clothes', ['clothes' => $clothes]);
+        } catch (\Exception $e) {
+            Log::error('Error displaying clothes: ' . $e->getMessage());
+            return response()->view('errors.general', ['message' => 'Failed to load clothes, please try again.'], 500);
+        }
     }
 }

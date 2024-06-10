@@ -8,118 +8,105 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-use App\Models\clothes;
+use App\Models\Clothes;
 use App\Models\purchase_history;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\clothesBuy;
+use App\Mail\ClothesBuy;
 
 class ProfileController extends Controller
 {
-
     // Function to edit the profile
-    public function editProfile()
+    public function editProfile(): View
     {
         $user = Auth::user();
         return view('profile.partials.edit-profile-form', ['user' => $user]);
     }
 
     // Function to get the role name based on role ID
-    public function getRoleName($role) {
-        switch ($role) {
-            case 0:
-                return 'Normal';
-            case 1:
-                return 'VIP';
-            case 2:
-                return 'Admin';
-            default:
-                return 'Unknown';
-        }
+    public function getRoleName(int $role): string
+    {
+        return match ($role) {
+            0 => 'Normal',
+            1 => 'VIP',
+            2 => 'Admin',
+            default => 'Unknown',
+        };
     }
 
     // Function to show the user profile
-    public function show()
+    public function show(): View
     {
         $user = Auth::user();
 
-        // Get the selected filter from localStorage or request, default to 'obtention'
+        // Get the selected filter from session or request, default to 'obtention'
         $selectedFilter = request()->input('filter', session('selectedFilter', 'obtention'));
         session(['selectedFilter' => $selectedFilter]);
 
         // Check if the VIP subscription has expired
         if ($user->vip_expires_at && Carbon::parse($user->vip_expires_at)->isPast()) {
-            // If expired, reset it to 1 month from now
             $user->vip_expires_at = Carbon::now()->addMonth();
             $user->save();
         }
 
-        $user->vip_expires_at ? Carbon::parse($user->vip_expires_at)->diffForHumans() : null;
-    
-        // Calculate the user's level and experience
         $user->addExperience(0);
-    
-        $maxExperience = $user->max_experience; // Use the accessor to get the max_experience
-
-        $roleName = $this->getRoleName($user->role); // Get the role name
+        $maxExperience = $user->max_experience;
+        $roleName = $this->getRoleName($user->role);
 
         $purchaseHistory = purchase_history::where('user_id', $user->id)->get();
-    
-        return view('profile.user-information', ['user' => $user, 'maxExperience' => $maxExperience, 'roleName' => $roleName, 'purchaseHistory' => $purchaseHistory]);
+
+        return view('profile.user-information', [
+            'user' => $user,
+            'maxExperience' => $maxExperience,
+            'roleName' => $roleName,
+            'purchaseHistory' => $purchaseHistory,
+        ]);
     }
 
     // Function to apply filter to weapons
-    public function applyFilter($weapons, $filter)
+    public function applyFilter($weapons, string $filter)
     {
-        switch ($filter) {
-            case 'price':
-                return $weapons->sortByDesc('price')->values();
-            case 'obtention':
-            default:
-                return $weapons->sortByDesc('updated_at')->values();
-        }
+        return match ($filter) {
+            'price' => $weapons->sortByDesc('price')->values(),
+            default => $weapons->sortByDesc('updated_at')->values(),
+        };
     }
 
     // Function to sell a weapon
     public function sell(Request $request)
     {
         $weaponId = $request->input('weapon_id');
-    
+
         // Find the weapon in the database
-        $weapon = clothes::find($weaponId);
-    
+        $weapon = Clothes::find($weaponId);
+
         if (!$weapon) {
-            // If the weapon doesn't exist, return an error
             return response()->json(['error' => 'Weapon not found'], 404);
         }
-    
-        // Calculate the selling price of the weapon
-        $sellPrice = $weapon->price;
-    
-        // Add the selling price to the user's account
+
         $user = Auth::user();
+        $sellPrice = $weapon->price;
         $user->coins += $sellPrice;
         $user->save();
-    
+
         // Find and delete a single entry from the pivot table
         $userWeapon = DB::table('user_weapons')
             ->where('user_id', $user->id)
             ->where('weapon_id', $weaponId)
             ->first();
-    
+
         Log::info('User weapon to be deleted:', ['user_weapons' => $userWeapon]);
-    
+
         if ($userWeapon) {
             DB::table('user_weapons')->where('id', $userWeapon->id)->delete();
             Log::info('User weapon deleted successfully');
         } else {
             Log::info('No user weapon found to delete');
         }
-    
-        // Return a success response with the new coin balance
+
         return response()->json(['success' => true, 'newCoinBalance' => $user->coins]);
     }
 
@@ -128,18 +115,17 @@ class ProfileController extends Controller
     {
         $weaponId = $request->input('weapon_id');
         $user = Auth::user();
-        $weapon = clothes::find($weaponId);
-    
+        $weapon = Clothes::find($weaponId);
+
         if (!$weapon) {
             return response()->json(['message' => 'Weapon not found'], 404);
         }
-    
-        // Find the user's weapon in the user_weapons table
+
         $userWeapon = DB::table('user_weapons')
-                        ->where('user_id', $user->id)
-                        ->where('weapon_id', $weaponId)
-                        ->first();
-    
+            ->where('user_id', $user->id)
+            ->where('weapon_id', $weaponId)
+            ->first();
+
         if (!$userWeapon) {
             return response()->json(['message' => 'User does not have this weapon'], 400);
         }
@@ -147,52 +133,42 @@ class ProfileController extends Controller
         if ($weapon->units <= 0) {
             return response()->json(['message' => 'No units available, please try again later'], 400);
         }
-    
-        // Delete the first instance of the user's weapon
+
         DB::table('user_weapons')->where('id', $userWeapon->id)->delete();
-    
-        // Decrease the weapon's units by 1 and save
         $weapon->units -= 1;
         $weapon->save();
-    
-        // Send an email to the user about the weapon withdrawal
-        Mail::to($user->email)->send(new clothesBuy($user, $weapon));
-    
+
+        Mail::to($user->email)->send(new ClothesBuy($user, $weapon));
+
         return response()->json(['success' => true]);
     }
 
-    /**
-     * Display the user's profile form.
-     */
-    public function edit(Request $request)
+    // Display the user's profile form.
+    public function edit(Request $request): RedirectResponse
     {
         return redirect()->route('user-profile');
     }
 
-    /**
-     * Update the user's profile information.
-     */
+    // Update the user's profile information.
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $user->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
-    /**
-     * Delete the user's account.
-     */
+    // Delete the user's account.
     public function destroy(Request $request): RedirectResponse
     {
         $user = $request->user();
 
-        // Si el usuario ha iniciado sesión a través de OAuth, no es necesario verificar la contraseña
         if (!$user->external_auth) {
             $request->validateWithBag('userDeletion', [
                 'password' => ['required', 'current_password'],
@@ -200,7 +176,6 @@ class ProfileController extends Controller
         }
 
         Auth::logout();
-
         $user->delete();
 
         $request->session()->invalidate();
@@ -208,7 +183,7 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
-    
+
     // Function to cancel the VIP subscription
     public function cancelVip(Request $request)
     {
@@ -217,14 +192,13 @@ class ProfileController extends Controller
         ], [
             'password.required' => 'Please fill out the password field.',
         ]);
-    
+
         $user = Auth::user();
-    
-        // Check if the provided password matches the user's password
+
         if (Hash::check($request->password, $user->password)) {
             $user->role = 0;
             $user->save();
-    
+
             return response()->json(['success' => true]);
         } else {
             return response()->json(['success' => false, 'error' => 'The provided password is incorrect.']);
@@ -238,7 +212,7 @@ class ProfileController extends Controller
         $user->role = 1;
         $user->vip_expires_at = Carbon::now()->addMonth();
         $user->save();
-    
+
         return response()->json(['success' => true]);
     }
 }

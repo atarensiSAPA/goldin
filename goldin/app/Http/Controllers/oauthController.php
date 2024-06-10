@@ -9,9 +9,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class oauthController extends Controller
+class OauthController extends Controller
 {
-
     // Redirect to Google login page
     public function loginWithGoogle()
     {
@@ -19,95 +18,94 @@ class oauthController extends Controller
     }
 
     // Redirect to Twitter login page
-    public function loginWithTwitter(){
+    public function loginWithTwitter()
+    {
         return Socialite::driver('twitter')->redirect();
     }
 
     // Callback function after Google login
-    public function cbGoogle(){
-        try{
-    
+    public function cbGoogle()
+    {
+        try {
             // Get the user details from Google
-            $user = Socialite::driver('google')->user();
-    
+            $googleUser = Socialite::driver('google')->user();
+
             // Extract the email prefix before '@'
-            $emailParts = explode('@', $user->email);
-            $emailPrefix = $emailParts[0];
-    
+            $emailPrefix = strstr($googleUser->email, '@', true);
+
             // Check if the user already exists by external_id or email
-            $userExists = User::where('external_id', $user->id)
-                              ->orWhere('email', 'like', $emailPrefix . '%')
-                              ->first();
-    
-            // If the user exists, log them in
-            if($userExists){
-                Auth::login($userExists);
-            }else{
+            $user = User::where('external_id', $googleUser->id)
+                        ->orWhere('email', 'like', $emailPrefix . '%')
+                        ->first();
+
+            if ($user) {
+                Auth::login($user);
+            } else {
                 // If the user doesn't exist, create and log them in
-                $newUser = User::create([
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'avatar' => $user->avatar,
-                    'external_id' => $user->id,
+                $user = User::create([
+                    'name' => $googleUser->name,
+                    'email' => $googleUser->email,
+                    'avatar' => $googleUser->avatar,
+                    'external_id' => $googleUser->id,
                     'external_auth' => 'google',
                 ]);
-                Auth::login($newUser);
+                Auth::login($user);
             }
 
-            $user = Auth::user();    
             // Update connected field with current time
-            $user->connected = 1;
-            $user->is_kicked = 0;
-            $user->save();
+            $user->update([
+                'connected' => 1,
+                'is_kicked' => 0,
+            ]);
+
             // Redirect to the dashboard
             return redirect('/dashboard');
-    
         } catch (Exception $e) {
-            dd($e->getMessage());
+            Log::error('Error during Google login callback: ' . $e->getMessage());
+            return redirect('/login')->with('error', 'Failed to login with Google, please try again.');
         }
     }
 
     // Callback function after Twitter login
-    public function cbTwitter(){
-        try{
-    
+    public function cbTwitter()
+    {
+        try {
             // Get the user details from Twitter
-            $user = Socialite::driver('twitter')->user();
-    
+            $twitterUser = Socialite::driver('twitter')->user();
+
             // Extract the email prefix before '@'
-            $emailParts = explode('@', $user->nickname);
-            $emailPrefix = $emailParts[0];
-    
+            $emailPrefix = strstr($twitterUser->nickname, '@', true);
+
             // Check if the user already exists by external_id or email
-            $userExists = User::where('external_id', $user->id)
-                              ->orWhere('email', 'like', $emailPrefix . '%')
-                              ->first();
-    
-            // If the user exists, log them in
-            if($userExists){
-                Auth::login($userExists);
-            }else{
+            $user = User::where('external_id', $twitterUser->id)
+                        ->orWhere('email', 'like', $emailPrefix . '%')
+                        ->first();
+
+            if ($user) {
+                Auth::login($user);
+            } else {
                 // If the user doesn't exist, create and log them in
-                $newUser = User::create([
-                    'name' => $user->name,
-                    'email' => $user->nickname,
-                    'avatar' => $user->avatar,
-                    'external_id' => $user->id,
+                $user = User::create([
+                    'name' => $twitterUser->name,
+                    'email' => $twitterUser->nickname,
+                    'avatar' => $twitterUser->avatar,
+                    'external_id' => $twitterUser->id,
                     'external_auth' => 'twitter',
                 ]);
-                Auth::login($newUser);
+                Auth::login($user);
             }
 
-            $user = Auth::user();    
             // Update connected field with current time
-            $user->connected = 1;
-            $user->is_kicked = 0;
-            $user->save();
+            $user->update([
+                'connected' => 1,
+                'is_kicked' => 0,
+            ]);
+
             // Redirect to the dashboard
             return redirect('/dashboard');
-    
         } catch (Exception $e) {
-            dd($e->getMessage());
+            Log::error('Error during Twitter login callback: ' . $e->getMessage());
+            return redirect('/login')->with('error', 'Failed to login with Twitter, please try again.');
         }
     }
 }
