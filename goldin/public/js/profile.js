@@ -22,7 +22,7 @@ export function openCard(btn) {
 openCard("buyVip");
 
 // Handle form submission for payment
-$('#submitPayment1').click(function(e) {
+$('#submitPaymentVip').click(function(e) {
     e.preventDefault(); // Prevent the default form submission
 
     const cardInfo = payForm();
