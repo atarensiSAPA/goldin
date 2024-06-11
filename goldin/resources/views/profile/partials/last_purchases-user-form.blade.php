@@ -31,8 +31,8 @@
                                 <img class="img-fluid rounded-0" src="{{ asset('images/clothes/' . $purchase->clothes->clothes_img) }}" alt="{{ $purchase->clothes->name }}" title="{{ $purchase->clothes->name }}" style="width: 200px; height: 200px; object-fit: contain;">
                             </div>
                             <div class="mt-auto ">
-                                <p>clothes Name: {{ $purchase->clothes->name }}</p>
-                                <p>Skin Name: {{ str_replace('_', ' ', $purchase->clothes->type) }}</p>
+                                <p>Name: {{ $purchase->clothes->name }}</p>
+                                <p>Type: {{ str_replace('_', ' ', $purchase->clothes->type) }}</p>
                                 <p>Quantity: {{ $purchase->quantity }}</p>
                                 <p class="inline-flex d-flex align-items-center img-fluid rounded-0">Total Spent: {{ $purchase->price * $purchase->quantity }}<img src="{{ asset('images/user_coin.png') }}" alt="coin" width="30" height="30"></p>
                                 <p class="time-purchased" data-timestamp="{{ $purchase->formatted_created_at }}">Purchased: {{ $purchase->created_at->diffForHumans() }}</p>
