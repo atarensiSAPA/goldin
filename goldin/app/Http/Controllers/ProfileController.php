@@ -8,14 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-use App\Models\Clothes;
+use App\Models\clothes;
 use App\Models\purchase_history;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ClothesBuy;
+use App\Mail\clothesBuy;
 
 class ProfileController extends Controller
 {

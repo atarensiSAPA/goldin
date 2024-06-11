@@ -13,7 +13,7 @@
 
             <!-- Sección para modificar/crear/eliminar cajas -->
             <div class="p-4 sm:p-8 dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-5xl" aria-label="Clothes Management Section">
+                <div class="max-w-5xl" aria-label="clothes Management Section">
                     @include('admin.partials.clothes-form')
                 </div>
             </div>

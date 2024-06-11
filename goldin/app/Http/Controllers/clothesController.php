@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Boxes;
-use App\Models\Clothes;
+use App\Models\clothes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class ClothesController extends Controller
+class clothesController extends Controller
 {
     // Display all available clothes
     public function index()
     {
         try {
-            $clothes = Clothes::get()->groupBy('name')->map->first();
+            $clothes = clothes::get()->groupBy('name')->map->first();
             
             foreach ($clothes as $c) {
                 $c->name = str_replace('_', ' ', $c->name);

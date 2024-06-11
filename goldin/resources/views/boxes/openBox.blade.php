@@ -8,7 +8,7 @@
                     <span id="alert-messageCoins"></span>
                 </div>
                 <div class="d-flex justify-content-center mt-3">
-                    <div id="weapon-container" class="d-flex justify-content-center align-items-center showClothes" aria-label="Weapon container">
+                    <div id="weapon-container" class="d-flex justify-content-center align-items-center showclothes" aria-label="Weapon container">
                         <img class="weapon-image animate__animated" src="{{ asset('images/random_weapon.png') }}" alt="weapon" width="175" height="175">
                     </div>
                 </div>

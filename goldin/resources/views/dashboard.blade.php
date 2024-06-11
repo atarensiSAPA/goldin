@@ -13,7 +13,7 @@
             <div class="flex items-center gap-4">
                 <x-third-button>{{ __('Search') }}</x-third-button>
                 <a href="/dashboard" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
-                    {{ __('Search all Clothes') }}
+                    {{ __('Search all clothes') }}
                 </a>
             </div>
         </form>
@@ -25,7 +25,7 @@
             @if (!$searchTerm || stripos($c->name, $searchTerm) !== false)
                 <div class="col-md-3 mt-4 d-flex" id="card-{{ $c->name }}">
                     <div class="card bg-transparent text-white d-flex flex-column align-items-center" id="card-{{ $c->name }}">
-                        <div tabindex="0" class="clothesDiv card-body position-relative rounded-lg dark:bg-gray-800 d-flex flex-column align-items-center borderClothes" data-bs-toggle="modal" data-bs-target="#clothesModal" data-clothes-name="{{ $c->name }}" data-clothes-type="{{ $c->type }}" data-clothes-price="{{ $c->price }}" data-clothes-units="{{$c->units}}" data-clothes-img="{{ $c->clothes_img }}" data-clothes-id="{{ $c->id }}">
+                        <div tabindex="0" class="clothesDiv card-body position-relative rounded-lg dark:bg-gray-800 d-flex flex-column align-items-center borderclothes" data-bs-toggle="modal" data-bs-target="#clothesModal" data-clothes-name="{{ $c->name }}" data-clothes-type="{{ $c->type }}" data-clothes-price="{{ $c->price }}" data-clothes-units="{{$c->units}}" data-clothes-img="{{ $c->clothes_img }}" data-clothes-id="{{ $c->id }}">
                             <div class="d-flex justify-content-center align-items-center" style="flex-grow: 1;">
                                 <img src="{{ asset('images/clothes/' . $c->clothes_img) }}" alt="Image of {{ $c->name }}" class="img-fluid rounded-0">
                             </div>
@@ -59,7 +59,7 @@
         <div class="modal-dialog text-light">
             <div class="modal-content">
                 <div class="modal-header dark:bg-gray-800">
-                    <h5 class="modal-title" id="clothesModalLabel">Clothes Description</h5>
+                    <h5 class="modal-title" id="clothesModalLabel">clothes Description</h5>
                 </div>
                 <div class="modal-body bg-gray-100 dark:bg-gray-900" id="clothesDescription"></div>
                 <div class="modal-footer modal-body bg-gray-100 dark:bg-gray-900">

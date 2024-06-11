@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Purchased Clothes</title>
+    <title>Purchased clothes</title>
 </head>
 <body>
     <p>Dear {{ $userName }},</p>

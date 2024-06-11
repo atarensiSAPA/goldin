@@ -76,7 +76,7 @@ Route::middleware(['auth', 'verified', 'admin', 'CheckIfKicked'])->group(functio
     Route::delete('/admin-users/{user}', [AdministratorController::class, 'destroy'])->name('admin-users.destroy');
     Route::post('/admin-users/kick/{user}', [AdministratorController::class, 'kick'])->name('users.kick');
 
-    Route::get('/admin-clothes', [AdministratorController::class, 'showClothes'])->name('admin-clothes');
+    Route::get('/admin-clothes', [AdministratorController::class, 'showclothes'])->name('admin-clothes');
     Route::post('/admin/boxes', [AdministratorController::class, 'storeBox'])->name('boxes.store');
 });
 

@@ -1,7 +1,7 @@
 <section class="space-y-6 text-white">
     <div class="max-w-5xl">
         <header>
-            Clothes:
+            clothes:
         </header>
         <div>
             <ul>

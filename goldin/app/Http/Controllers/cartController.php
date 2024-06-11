@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Clothes;
+use App\Models\clothes;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ClothesBuy;
+use App\Mail\clothesBuy;
 
 class CartController extends Controller
 {
@@ -15,7 +15,7 @@ class CartController extends Controller
     public function show()
     {
         try {
-            $clothes = Clothes::get()->groupBy('name')->map->first();
+            $clothes = clothes::get()->groupBy('name')->map->first();
 
             foreach ($clothes as $c) {
                 $c->name = str_replace('_', ' ', $c->name);
@@ -41,7 +41,7 @@ class CartController extends Controller
             // Calcular el total del carrito
             $total = 0;
             foreach ($cartItems as $item) {
-                $clothes = Clothes::findOrFail($item['id']);
+                $clothes = clothes::findOrFail($item['id']);
                 $total += $clothes->price * $item['quantity'];
             }
 
@@ -55,7 +55,7 @@ class CartController extends Controller
 
             // Verificar si hay suficientes unidades de cada artículo
             foreach ($cartItems as $item) {
-                $clothes = Clothes::findOrFail($item['id']);
+                $clothes = clothes::findOrFail($item['id']);
                 if ($clothes->units < $item['quantity']) {
                     return response()->json([
                         'success' => false,
@@ -66,7 +66,7 @@ class CartController extends Controller
 
             // Procesar la compra: restar la cantidad comprada de las unidades disponibles de cada artículo
             foreach ($cartItems as $item) {
-                $clothes = Clothes::findOrFail($item['id']);
+                $clothes = clothes::findOrFail($item['id']);
                 $clothes->units -= $item['quantity'];
                 $clothes->save();
 
@@ -110,7 +110,7 @@ class CartController extends Controller
         $items = [];
         $total = 0;
         foreach ($cartItems as $item) {
-            $clothes = Clothes::findOrFail($item['id']);
+            $clothes = clothes::findOrFail($item['id']);
             // Calcular el total del artículo y sumarlo al total general
             $totalItem = $clothes->price * $item['quantity'];
             $total += $totalItem;
@@ -123,6 +123,6 @@ class CartController extends Controller
             ];
         }
         // Envío de correo electrónico
-        Mail::to($user->email)->send(new ClothesBuy($user, $items, $total));
+        Mail::to($user->email)->send(new clothesBuy($user, $items, $total));
     }
 }

@@ -21,6 +21,6 @@ class purchase_history extends Model
 
     public function clothes()
     {
-        return $this->belongsTo(Clothes::class);
+        return $this->belongsTo(clothes::class);
     }
 }

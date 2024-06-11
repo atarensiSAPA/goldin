@@ -1,6 +1,6 @@
-<section class="space-y-6 text-white" aria-label="Clothes Section">
+<section class="space-y-6 text-white" aria-label="clothes Section">
     <header>
-        Clothes
+        clothes
     </header>
     <div>
         <ul>

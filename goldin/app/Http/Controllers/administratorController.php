@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\DailyBoxes;
-use App\Models\Clothes;
+use App\Models\clothes;
 
 class AdministratorController extends Controller
 {
@@ -136,10 +136,10 @@ class AdministratorController extends Controller
     }
 
     // Mostrar todas las prendas
-    public function showClothes()
+    public function showclothes()
     {
         try {
-            $clothes = Clothes::all();
+            $clothes = clothes::all();
             return view('admin.partials.admin-clothes', ['clothes' => $clothes]);
         } catch (\Exception $e) {
             Log::error('Error displaying clothes: ' . $e->getMessage());
