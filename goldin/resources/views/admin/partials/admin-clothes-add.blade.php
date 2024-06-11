@@ -10,6 +10,6 @@
     
     <!-- Button to open the modal -->
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addclothesModal">
-        Add New clothes
+        Add New Clothes
     </button>
 </section>
