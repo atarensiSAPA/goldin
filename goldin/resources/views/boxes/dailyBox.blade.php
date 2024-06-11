@@ -1,4 +1,4 @@
-@extends('layouts.dailyboxes-layout')
+@extends('layouts.dailyBoxes-layout')
 
 @section('content')
     <div class="container">

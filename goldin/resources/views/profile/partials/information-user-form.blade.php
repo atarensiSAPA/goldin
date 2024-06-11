@@ -73,7 +73,7 @@
                 </div>
             </div>
             <div class="mt-2 text-sm text-red-600" id="errorMessage"></div>
-            <br><button type="submit" id="submitPayment" class="btn btn-primary mb-3" aria-label="Submit Payment">Submit Payment</button>
+            <br><button type="submit" id="submitPayment1" class="btn btn-primary mb-3" aria-label="Submit Payment">Submit Payment</button>
         </form>
         <!-- Modal cancel VIP-->
         <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true">

@@ -22,7 +22,7 @@ export function openCard(btn) {
 openCard("buyVip");
 
 // Handle form submission for payment
-$('#submitPayment').click(function(e) {
+$('#submitPayment1').click(function(e) {
     e.preventDefault(); // Prevent the default form submission
 
     const cardInfo = payForm();
@@ -62,24 +62,20 @@ export function payForm() {
         const expiryDate = $('#expiryDate').val();
         const cvv = $('#cvv').val();
         let errorMessage = '';
-        let isValid = true;
 
         // Validate card number
         if (!/^\d{16}$/.test(cardNumber)) {
             errorMessage += 'Please enter a valid 16 digit card number.<br>';
-            isValid = false;
         }
 
         // Validate card name
         if (!/^[a-zA-Z\s]+$/.test(cardName)) {
             errorMessage += 'Please enter a valid card name.<br>';
-            isValid = false;
         }
 
         // Validate expiry date
         if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate)) {
             errorMessage += 'Please enter a valid expiry date in the format MM/YY.<br>';
-            isValid = false;
         } else {
             const today = new Date();
             const currentYear = today.getFullYear().toString().substr(-2);
@@ -89,14 +85,12 @@ export function payForm() {
 
             if (expiryYear < currentYear || (expiryYear === currentYear && expiryMonth < currentMonth)) {
                 errorMessage += 'Expiry date cannot be in the past.<br>';
-                isValid = false;
             }
         }
 
         // Validate CVV
         if (!/^\d{3}$/.test(cvv)) {
             errorMessage += 'Please enter a valid 3 digit CVV.<br>';
-            isValid = false;
         }
 
         // If there are validation errors, display them and stop the submission
