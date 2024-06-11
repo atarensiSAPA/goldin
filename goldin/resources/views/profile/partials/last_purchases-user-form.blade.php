@@ -1,64 +1,48 @@
 <section>
-    <div id="alertclothes" class="alert alert-success alert-dismissible fade show m-3 position-relative hideCard" role="alert">
-        <span id="alert-messageclothes"></span>
-    </div>
-    <div id="alertclothesUnits" class="alert alert-danger alert-dismissible fade show m-3 position-relative hideCard" role="alert">
-        <span id="alert-messageclothesUnits"></span>
-    </div>
     <header>
         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
             Last purchases
         </h2>
-        @unless ($purchaseHistory->isEmpty())
-            <div class="mt-2">
-                <label for="filter" class="block text-sm font-medium text-gray-700 text-white">Filter by:</label>
-                <select id="filter" name="filter" aria-label="Filter by" class="inline-flex items-center px-3 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-sm text-black dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 mt-1 block w-60">
-                    <option value="obtention">Order of Obtention</option>
-                    <option value="price">Price</option>
-                    <option value="rarity">Rarity</option>
-                </select>
-            </div>
-        @endunless
     </header>
-
+    <form action="/user-profile" method="GET" class="mt-6 space-y-6">
+        <div>
+            <x-input-label for="search" :value="__('Search')" />
+            <x-text-input id="search" name="search" type="text" class="mt-1 block w-full" required autofocus autocomplete="name" />
+            <x-input-error class="mt-2" :messages="$errors->get('search')" />
+        </div>
+    
+        <div class="flex items-center gap-4">
+            <x-third-button>{{ __('Search') }}</x-third-button>
+            <a href="/user-profile" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                {{ __('Search all Clothes') }}
+            </a>
+        </div>
+    </form>
+    @php
+        $searchTerm = request()->query('search'); // Obtain search form URL
+    @endphp
     <div class="mt-4">
         <div class="d-flex justify-content-center mt-3 flex-wrap">
             @forelse ($purchaseHistory as $purchase)
-                <div class="d-flex justify-content-center mt-3 flex-wrap">
-                    <div id="clothes-container-{{ $purchase->id }}" class="mx-2 mb-3 dark:bg-gray-800 d-flex flex-column justify-content-between clothes-container" style="border-color: {{ $purchase->color }};">
-                        <img src="{{ asset('images/skins/' . $purchase->clothes_img) }}" alt="{{ $purchase->name }}" title="{{ $purchase->name }}" width="235" height="235">
-                        <div class="mt-auto">
-                            <p>Clothes Name: {{ $purchase->name }}</p>
-                            <p>Skin Name: {{ str_replace('_', ' ', $purchase->type) }}</p>
-                            <p class="d-flex align-items-center">Price: {{ $purchase->price }}<img src="{{ asset('images/user_coin.png') }}" alt="coin" width="30" height="30"></p>
-                        </div>
-                        <div class="d-flex justify-content-center clothes-buttons">
-                            <button type="button" class="btn btn-primary withdraw-button" data-clothes-id="{{ $purchase->id }}">Withdraw</button>
+                @if (!$searchTerm || stripos($purchase->clothes->name, $searchTerm) !== false)
+                    <div class="d-flex justify-content-center mt-3 flex-wrap text-white">
+                        <div id="clothes-container-{{ $purchase->id }}" class="rounded-lg borderClothes mx-2 mb-3 dark:bg-gray-800 d-flex flex-column justify-content-between clothes-container" style="padding: 20px;">
+                            <div class="d-flex justify-content-center align-items-center mb-2 mt-2">
+                                <img class="img-fluid rounded-0" src="{{ asset('images/clothes/' . $purchase->clothes->clothes_img) }}" alt="{{ $purchase->clothes->name }}" title="{{ $purchase->clothes->name }}" style="width: 200px; height: 200px; object-fit: contain;">
+                            </div>
+                            <div class="mt-auto ">
+                                <p>Clothes Name: {{ $purchase->clothes->name }}</p>
+                                <p>Skin Name: {{ str_replace('_', ' ', $purchase->clothes->type) }}</p>
+                                <p>Quantity: {{ $purchase->quantity }}</p>
+                                <p class="inline-flex d-flex align-items-center img-fluid rounded-0">Total Spent: {{ $purchase->price * $purchase->quantity }}<img src="{{ asset('images/user_coin.png') }}" alt="coin" width="30" height="30"></p>
+                                <p class="time-purchased" data-timestamp="{{ $purchase->formatted_created_at }}">Purchased: {{ $purchase->created_at->diffForHumans() }}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endif
             @empty
                 <p class="text-white">You didn't buy any clothes</p>
             @endforelse
         </div>
     </div>
-
-<div class="modal fade" id="withdrawConfirmModal" tabindex="-1" role="dialog" aria-labelledby="withdrawConfirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content bg-gray-800 text-white">
-            <div class="p-6 bg-gray-800">
-                <h2 class="text-lg font-medium text-white" id="withdrawConfirmModalLabel">
-                    Withdraw Confirmation
-                </h2>
-                <p class="mt-1 text-sm text-gray-400">
-                    Are you sure you want to withdraw this clothes?
-                </p>
-                <div class="mt-6 flex justify-end">
-                    <x-secondary-button x-on:click="$dispatch('close')" class="bg-gray-700 text-black" data-dismiss="modal">Cancel</x-secondary-button>
-                    <button type="button" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 ms-3 bg-red-700 text-white" id="withdrawConfirmButton">Confirm</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 </section>

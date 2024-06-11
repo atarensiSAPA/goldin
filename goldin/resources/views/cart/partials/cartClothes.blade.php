@@ -1,4 +1,7 @@
 <section>
+    <div id="alertBuyCart" class="alert alert-success alert-dismissible fade show m-3 position-relative hideCard" role="alert">
+        <span id="alert-messageBuyCart"></span>
+    </div>
     <header>
         <h1>Cart</h1>
     </header>

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Clothes;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ClothesBuy;
 
 class CartController extends Controller
 {
@@ -29,9 +31,6 @@ class CartController extends Controller
     // Procesar la compra de los artículos del carrito
     public function buyCart(Request $request)
     {
-        // Iniciar una transacción de base de datos para asegurar atomicidad
-        DB::beginTransaction();
-
         try {
             // Obtén el usuario actual
             $user = $request->user();
@@ -70,16 +69,22 @@ class CartController extends Controller
                 $clothes = Clothes::findOrFail($item['id']);
                 $clothes->units -= $item['quantity'];
                 $clothes->save();
+
+                // Guardar el historial de compra
+                DB::table('purchase_history')->insert([
+                    'user_id' => $user->id,
+                    'clothes_id' => $clothes->id,
+                    'quantity' => $item['quantity'],
+                    'price' => $clothes->price,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
             }
 
             // Restar las monedas del usuario
             $user->coins -= $total;
             $user->save();
 
-            // Confirmar la transacción
-            DB::commit();
-
-            Log::info('Purchase processed successfully for user ID: ' . $user->id);
             return response()->json([
                 'success' => true,
                 'message' => 'Compra procesada con éxito'
@@ -93,5 +98,31 @@ class CartController extends Controller
                 'message' => 'Error al procesar la compra, por favor intenta nuevamente.'
             ], 500);
         }
+    }
+
+    public function sendBuyMail(Request $request){
+        // Obtén el usuario actual
+        $user = $request->user();
+
+        // Obtén los items del carrito desde la petición
+        $cartItems = $request->input('cartItems');
+
+        $items = [];
+        $total = 0;
+        foreach ($cartItems as $item) {
+            $clothes = Clothes::findOrFail($item['id']);
+            // Calcular el total del artículo y sumarlo al total general
+            $totalItem = $clothes->price * $item['quantity'];
+            $total += $totalItem;
+
+            // Agregar el artículo al array de artículos
+            $items[] = [
+                'clothes' => $clothes,
+                'quantity' => $item['quantity'],
+                'totalItem' => $totalItem,
+            ];
+        }
+        // Envío de correo electrónico
+        Mail::to($user->email)->send(new ClothesBuy($user, $items, $total));
     }
 }

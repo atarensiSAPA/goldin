@@ -45,8 +45,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('clothes_id')->constrained();
-            $table->timestamp('purchase_date');
-            $table->decimal('price', 8, 2);
+            $table->integer('quantity');
+            $table->integer('price');
             $table->timestamps();
         });
 

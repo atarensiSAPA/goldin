@@ -166,3 +166,21 @@
         </div>
     </div>
 </div>
+
+<!-- Confirm Modal Remove -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog text-white">
+        <div class="modal-content border-4 border-danger">
+            <div class="modal-header dark:bg-gray-800">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+            </div>
+            <div class="modal-body bg-gray-100 dark:bg-gray-900 p-4">
+                Are you sure you want to remove this item from the cart?
+            </div>
+            <div class="modal-footer bg-gray-100 dark:bg-gray-900 flex justify-end">
+                <x-secondary-button x-on:click="$dispatch('close')" class="bg-gray-700 text-black" data-dismiss="modal">{{ __('Cancel') }}</x-secondary-button>
+                <button type="button" class="btn btn-primary" id="confirmRemoveButton">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>

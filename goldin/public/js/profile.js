@@ -156,7 +156,7 @@ if (btnCancelVip) {
 }
 
 // Function to set item in local storage
-function setLocalStorageItem(key, value) {
+export function setLocalStorageItem(key, value) {
     try {
         localStorage.setItem(key, value);
     } catch (error) {
@@ -165,7 +165,7 @@ function setLocalStorageItem(key, value) {
 }
 
 // Function to remove item from local storage
-function removeLocalStorageItem(key) {
+export function removeLocalStorageItem(key) {
     try {
         localStorage.removeItem(key);
     } catch (error) {
@@ -196,7 +196,7 @@ window.onload = function() {
 }
 
 // Function to display alert messages
-function displayAlert(alertId, messageId, message) {
+export function displayAlert(alertId, messageId, message) {
     try {
         const alertDiv = document.getElementById(alertId);
         alertDiv.style.display = 'block';

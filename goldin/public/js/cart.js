@@ -55,18 +55,26 @@ function decreaseQuantity(userId, index, div) {
     }
 }
 
-// Remove an item from the cart
+// Remove an item from the cart with confirmation
 function removeFromCart(userId, index, div) {
     try {
-        let cartItems = getCartItems(userId);
-        cartItems.splice(index, 1);
-        saveCartItems(userId, cartItems);
-        updateCartDisplay(cartItems, div);
+        // Mostrar modal de confirmación
+        $('#confirmationModal').modal('show');
+
+        // Agregar un event listener al botón de confirmación del modal
+        $('#confirmationModal').on('click', '#confirmRemoveButton', function() {
+            let cartItems = getCartItems(userId);
+            cartItems.splice(index, 1);
+            saveCartItems(userId, cartItems);
+            updateCartDisplay(cartItems, div);
+            $('#confirmationModal').modal('hide'); // Ocultar el modal de confirmación
+        });
     } catch (error) {
         console.error('Error removing from cart:', error);
         alert('An error occurred while removing from cart.');
     }
 }
+
 
 // Clear the cart
 export function clearCart() {
@@ -94,7 +102,7 @@ export function updateCartDisplay(cartItems, div) {
                     <div class="mb-4 bg-gray-100 dark:bg-gray-900 rounded">
                         <div class="flex justify-between items-center">
                             <div class="flex items-center">
-                                <img src="images/clothes/${item.clothes_img}" alt="${item.name}" class="w-25 h-auto object-contain">
+                                <img src="images/clothes/${item.clothes_img}" alt="${item.name}" class="w-25 h-auto object-contain mt-2 ml-3">
                                 <div class="ml-4">
                                     <h3 class="font-medium textModal">${item.name}</h3>
                                     <p class="d-flex textModal">${item.price} <img src="images/user_coin.png" alt="coin" width="25" height="25" class="ms-1"></p>

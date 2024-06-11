@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Weapon Withdrawn</title>
+    <title>Purchased Clothes</title>
 </head>
 <body>
-    {{-- <p>Dear {{ $userName }},</p>
-    <p>Your weapon "{{ str_replace('_', ' ', $weapon->weapon_name) }}" with the skin "{{ str_replace('_', ' ', $weapon->weapon_skin) }}" has been successfully withdrawn.</p>
-    <img src="{{ $weapon->weapon_url }}" alt="{{ $weapon->weapon_name }}" width="300">
-    <p>The price: {{ $weapon->price }}€.</p>
-    <p>Thank you!</p> --}}
+    <p>Dear {{ $userName }},</p>
+    <p>You have purchased the following items:</p>
+    <ul>
+        @foreach ($items as $item)
+            <li>
+                <p>Name: {{ str_replace('_', ' ', $item['clothes']->name) }}</p>
+                <img src="{{ $item['clothes']->clothes_url }}" alt="{{ $item['clothes']->name }}" width="300">
+                <p>Price: {{ $item['clothes']->price }}</p>
+                <p>Quantity: {{ $item['quantity'] }}</p>
+                <p>Item Total: {{ $item['totalItem'] }}</p>
+            </li>
+        @endforeach
+    </ul>
+    <p>Total Purchase: {{ $total }}</p>
+    <p>Thank you for your purchase!</p>
 </body>
 </html>

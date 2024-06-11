@@ -40,6 +40,6 @@
         </div>
         <div class="mt-2 text-sm text-red-600" id="errorMessage"></div>
         <br>
-        <button type="button" id="submitPayment" class="btn btn-primary">Submit Payment</button>
+        <button type="submit" id="submitPayment" class="btn btn-primary">Submit Payment</button>
     </form>
 </section>

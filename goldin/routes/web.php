@@ -57,13 +57,13 @@ Route::middleware(['auth', 'verified', 'CheckIfKicked'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/user-profile', [ProfileController::class, 'show'])->name('user-profile');
     Route::get('/edit-profile', [ProfileController::class, 'editProfile'])->name('edit-profile');
-    Route::post('/filter-weapons', [ProfileController::class, 'filterWeapons']);
     Route::post('/cancel-vip', [ProfileController::class, 'cancelVip'])->name('cancel-vip');
     Route::post('/update-vip', [ProfileController::class, 'updateVip'])->name('update-vip');
 
     //Cart
     Route::get('/showBuyCart', [cartController::class, 'show'])->name('showBuyCart');
     Route::post('/buyCart', [cartController::class, 'buyCart'])->name('buyCart');
+    Route::post('/sendBuyMail', [cartController::class, 'sendBuyMail'])->name('sendBuyMail');
 });
 
 // Admin routes

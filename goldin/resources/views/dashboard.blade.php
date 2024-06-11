@@ -1,15 +1,29 @@
 <x-app-layout>
     <div class="container">
-        <div class="container">
-            <label for="filter" class="block text-sm font-medium text-gray-700 text-white">Filter by:</label>
-            <select id="filter" name="filter" aria-label="Filter by" class="inline-flex items-center px-3 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-sm text-black dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 mt-1 block w-60">
-                <option value="price">Price</option>
-                <option value="rarity">Rarity</option>
-            </select>
+        <div id="alertUpdateCart" class="alert alert-success alert-dismissible fade show m-3 position-relative hideCard" role="alert">
+            <span id="alert-messageUpdateCart"></span>
         </div>
-        <div class="row text-white">
-            @forelse ($clothes as $c)
-                <div class="col-md-3 mt-4 d-flex">
+        <form action="/dashboard" method="GET" class="mt-6 space-y-6">
+            <div>
+                <x-input-label for="search" :value="__('Search')" />
+                <x-text-input id="search" name="search" type="text" class="mt-1 block w-full" required autofocus autocomplete="name" />
+                <x-input-error class="mt-2" :messages="$errors->get('search')" />
+            </div>
+        
+            <div class="flex items-center gap-4">
+                <x-third-button>{{ __('Search') }}</x-third-button>
+                <a href="/dashboard" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                    {{ __('Search all Clothes') }}
+                </a>
+            </div>
+        </form>
+        @php
+            $searchTerm = request()->query('search'); // Obtain search form URL
+        @endphp
+    <div class="row text-white">
+        @forelse ($clothes as $c)
+            @if (!$searchTerm || stripos($c->name, $searchTerm) !== false)
+                <div class="col-md-3 mt-4 d-flex" id="card-{{ $c->name }}">
                     <div class="card bg-transparent text-white d-flex flex-column align-items-center" id="card-{{ $c->name }}">
                         <div tabindex="0" class="clothesDiv card-body position-relative rounded-lg dark:bg-gray-800 d-flex flex-column align-items-center borderClothes" data-bs-toggle="modal" data-bs-target="#clothesModal" data-clothes-name="{{ $c->name }}" data-clothes-type="{{ $c->type }}" data-clothes-price="{{ $c->price }}" data-clothes-units="{{$c->units}}" data-clothes-img="{{ $c->clothes_img }}" data-clothes-id="{{ $c->id }}">
                             <div class="d-flex justify-content-center align-items-center" style="flex-grow: 1;">
@@ -33,9 +47,10 @@
                         </button>
                     </div>
                 </div>
-            @empty
-                <p>No clothes found.</p>
-            @endforelse
+            @endif
+        @empty
+            <p>No clothes found.</p>
+        @endforelse
         </div>
     </div>
 

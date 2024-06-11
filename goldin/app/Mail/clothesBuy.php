@@ -3,30 +3,33 @@
 namespace App\Mail;
 
 use App\Models\User;
-use App\Models\clothes;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class clothesBuy extends Mailable
+class ClothesBuy extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $user;
-    public $weapon;
+    public $items;
+    public $total;
 
-    public function __construct(User $user, clothes $weapon)
+    public function __construct(User $user, array $items, $total)
     {
         $this->user = $user;
-        $this->weapon = $weapon;
+        $this->items = $items;
+        $this->total = $total;
     }
+    
 
     public function build()
     {
-        return $this->view('emails.weapon_withdrawn')
-                    ->subject('Weapon Withdrawn')
+        return $this->view('emails.clothes_withdrawn')
                     ->with([
                         'userName' => $this->user->name,
+                        'items' => $this->items,
+                        'total' => $this->total,
                     ]);
     }
 }

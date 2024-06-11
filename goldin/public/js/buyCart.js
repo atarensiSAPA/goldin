@@ -1,72 +1,94 @@
-// Import necessary functions from modules
-import { payForm, openCard } from './profile.js';
+// Importa las funciones necesarias
+import { payForm, openCard, displayAlert, setLocalStorageItem, removeLocalStorageItem } from './profile.js';
 import * as Cart from './cart.js';
 
-// Get cart items from the cart module
-let cartItems = Cart.getCartItems(userId);
-
+// Espera a que el DOM esté completamente cargado
 $(document).ready(function() {
     try {
-        // Add event listeners to buttons in the clothes cart modal
+        // Obtiene los elementos del carrito
+        let cartItems = Cart.getCartItems(userId);
+
+        // Agrega event listeners a los botones en el modal del carrito de ropa
         Cart.addEventListenerBtn('#clothesCart');
 
-        // Update the cart display in the clothes cart modal
+        // Actualiza la visualización del carrito en el modal del carrito de ropa
         Cart.updateCartDisplay(cartItems, '#clothesCart');
-    } catch (error) {
-        console.error('Error on document ready:', error);
-        alert('An error occurred while initializing the document.');
-    }
-});
 
-// Open the payment card form when clicking the credit card button
-openCard("credit_cardBtn");
+        // Abre el formulario de tarjeta de pago cuando se hace clic en el botón de tarjeta de crédito
+        openCard("credit_cardBtn");
 
-// Event listener for the payment submission
-$('#submitPayment').click(function(e) {
-    if (cartItems.length === 0) {
-        alert('Your cart is empty. Please add items before proceeding to payment.');
-        return;
-    }
-    try {
-        e.preventDefault(); // Prevent the default form submission
+        // Maneja el evento de envío del pago
+        $('#submitPayment').click(function(e) {
+            e.preventDefault(); // Previene la sumisión del formulario por defecto
 
-        // Get card information from the payForm function
-        let cardInfo = payForm();
-        if (!cardInfo) {
-            return;
-        }
+            // Valida el formulario de pago y obtiene la información de la tarjeta
+            const cardInfo = payForm();
+            if (!cardInfo) {
+                return;
+            }
 
-        // Get updated cart items after potential changes
-        let cartItems = Cart.getCartItems(userId);
-        console.log("Cart Items:", cartItems); // Log cart items
+            // Obtiene los elementos del carrito actualizados después de posibles cambios
+            let cartItems = Cart.getCartItems(userId);
 
-        // Get CSRF token from meta tag
-        let csrfToken = $('meta[name="csrf-token"]').attr('content');
-        console.log("CSRF Token:", csrfToken); // Log CSRF token
+            // Obtiene el token CSRF del meta tag
+            let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-        // Send payment request via AJAX
-        $.ajax({
-            url: '/buyCart',
-            method: 'POST',
-            data: {
-                cardInfo: cardInfo,
-                cartItems: cartItems,
-                _token: csrfToken, // Correctly get CSRF token
-            },
-            success: function(data) {
-                console.log("AJAX Success:", data);
-                Cart.clearCart(userId); // Clear the cart after successful purchase
-                location.reload(); // Reload the page to reflect changes
-                alert('Purchase completed successfully!'); // Show success message
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('Error details:', textStatus, errorThrown, jqXHR.responseText);
-                let serverResponse = JSON.parse(jqXHR.responseText);
-                alert(serverResponse.message); // Show error message from the server
+            // Envía la solicitud de pago a través de AJAX
+            $.ajax({
+                url: '/buyCart',
+                method: 'POST',
+                data: {
+                    cardInfo: cardInfo,
+                    cartItems: cartItems,
+                    _token: csrfToken,
+                },
+                success: function(data) {
+                    console.log("AJAX Success:", data);
+                    Cart.clearCart(userId); // Limpia el carrito después de una compra exitosa
+                    setLocalStorageItem('showalertBuyCart', 'true');
+                    sendBuyMail(); // Envía un correo electrónico de confirmación de compra
+                    location.reload(); // Recarga la página para reflejar los cambios
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error details:', textStatus, errorThrown, jqXHR.responseText);
+                    let serverResponse = JSON.parse(jqXHR.responseText);
+                    alert(serverResponse.message); // Muestra un mensaje de error del servidor
+                }
+            });
+
+            function sendBuyMail(){
+                $.ajax({
+                    url: '/sendBuyMail',
+                    method: 'POST',
+                    data: {
+                        cartItems: cartItems,
+                        _token: csrfToken,
+                    },
+                    success: function(data) {
+                        console.log("Mail sent");
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('Error details:', textStatus, errorThrown, jqXHR.responseText);
+                        let serverResponse = JSON.parse(jqXHR.responseText);
+                        alert(serverResponse.message); // Muestra un mensaje de error del servidor
+                    }
+                });
             }
         });
     } catch (error) {
-        console.error('Error in payment submission:', error);
-        alert('An error occurred during payment submission.');
+        console.error('Error:', error);
+        alert('An unexpected error occurred. Please try again.');
     }
 });
+
+// Muestra alertas si es necesario cuando la página se carga
+window.onload = function() {
+    try {
+        if (localStorage.getItem('showalertBuyCart') === 'true') {
+            displayAlert('alertBuyCart', 'alert-messageBuyCart', 'Purchase completed successfully!');
+            removeLocalStorageItem('showalertBuyCart');
+        }
+    } catch (error) {
+        console.error('Error in window onload handler:', error);
+    }
+}

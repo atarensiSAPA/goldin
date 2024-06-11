@@ -1,5 +1,5 @@
 import * as Cart from './cart.js';
-
+import * as Profile from './profile.js';
 $(document).ready(function() {
     try {
         // This function shows or hides the "Add to Cart" button when mouse enters or leaves a card
@@ -21,7 +21,7 @@ $(document).ready(function() {
                 $(this).click();
             }
         });
-
+        let myModal = new bootstrap.Modal(document.getElementById('clothesModal'));
         // This function handles the click event on a clothes card to show the description in the modal
         $('.clothesDiv').on('click', function() {
             try {
@@ -61,7 +61,6 @@ $(document).ready(function() {
                 }
             
                 // Open the modal
-                let myModal = new bootstrap.Modal(document.getElementById('clothesModal'));
                 myModal.show();
             } catch (error) {
                 console.error('Error:', error);
@@ -91,8 +90,7 @@ $(document).ready(function() {
                 };
                 
                 addToCart(userId, item);
-                alert('Item added to cart successfully!');
-                location.reload();
+                myModal.hide();
             } catch (error) {
                 console.error('Error:', error);
                 alert('An error occurred while adding the item to the cart.');
@@ -124,6 +122,9 @@ $(document).ready(function() {
                     cartItems.push(item);
                 }
                 Cart.saveCartItems(userId, cartItems);
+        
+                // Show alert message
+                Profile.displayAlert('alertUpdateCart', 'alert-messageUpdateCart', 'Item added to cart successfully!');
             } catch (error) {
                 console.error('Error:', error);
                 alert('An error occurred while adding the item to the cart.');
